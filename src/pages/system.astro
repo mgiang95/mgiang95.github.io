@@ -1,5 +1,39 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import Button from "../components/Button.astro";
+import Card from "../components/Card.astro";
+import Badge from "../components/Badge.astro";
+import TimelineItem from "../components/TimelineItem.astro";
+import TokenTable from "../components/TokenTable.astro";
+import ColorRamp from "../components/ColorRamp.astro";
+import { flattenTokens } from "../lib/tokens";
+import primitiveColors from "../../tokens/primitives/color.tokens.json";
+import semanticColorsLight from "../../tokens/semantic/color-light.tokens.json";
+import semanticSpace from "../../tokens/semantic/space-normal.tokens.json";
+import semanticShape from "../../tokens/semantic/shape.tokens.json";
+import semanticTypography from "../../tokens/semantic/typography.tokens.json";
+import buttonTokens from "../../tokens/component/button.tokens.json";
+import cardTokens from "../../tokens/component/card.tokens.json";
+import badgeTokens from "../../tokens/component/badge.tokens.json";
+import timelineTokens from "../../tokens/component/timeline.tokens.json";
+
+const primitives = flattenTokens(primitiveColors);
+const accentRamp = primitives.filter((t) => t.path.startsWith("color.accent."));
+const neutralRamp = primitives.filter((t) => t.path.startsWith("color.neutral."));
+
+const semanticColors = flattenTokens(semanticColorsLight);
+const semanticSpacing = flattenTokens(semanticSpace);
+const semanticOther = [
+  ...flattenTokens(semanticShape),
+  ...flattenTokens(semanticTypography),
+];
+
+const componentDocs = [
+  { name: "Button", tokens: flattenTokens(buttonTokens) },
+  { name: "Badge", tokens: flattenTokens(badgeTokens) },
+  { name: "Card", tokens: flattenTokens(cardTokens) },
+  { name: "TimelineItem", tokens: flattenTokens(timelineTokens) },
+];
 ---
 
 <BaseLayout
@@ -7,17 +41,161 @@ import BaseLayout from "../layouts/BaseLayout.astro";
   description="How this site is built: token architecture, theming mechanics and component docs."
 >
   <h1>How this site is built</h1>
-  <p class="page-placeholder">
-    The meta case study: token architecture (DTCG, three tiers), OKLCH
-    theming with a runtime hue, and component docs. Content follows once the
-    system itself is in place.
+  <p class="system__lead">
+    Every color, spacing and radius on this site resolves from design tokens
+    (DTCG JSON, built with Style Dictionary). Three tiers: primitives hold raw
+    scales, semantic tokens give them meaning and switch for light/dark and
+    density, component tokens consume semantics. The full case study follows
+    in a later phase — below are the living docs.
   </p>
+
+  <section class="system__section" aria-labelledby="tokens-heading">
+    <h2 id="tokens-heading">Tokens</h2>
+
+    <h3>Color primitives</h3>
+    <p class="system__note">
+      OKLCH ramps with fixed lightness/chroma steps; the hue comes from a
+      single <code>--hue</code> custom property. Every text/surface pair is
+      contrast-proven for all 360 hues on every build.
+    </p>
+    <div class="system__ramps">
+      <ColorRamp name="color.accent" tokens={accentRamp} />
+      <ColorRamp name="color.neutral" tokens={neutralRamp} />
+    </div>
+
+    <h3>Semantic colors</h3>
+    <p class="system__note">
+      Light mapping shown — the dark theme resolves the same tokens to other
+      primitives.
+    </p>
+    <TokenTable label="Semantic color tokens" tokens={semanticColors} />
+
+    <h3>Semantic spacing</h3>
+    <p class="system__note">
+      Normal density shown — tight and comfy resolve the same tokens to other
+      steps of the 4px scale. Font sizes never change with density.
+    </p>
+    <TokenTable label="Semantic spacing tokens" tokens={semanticSpacing} />
+
+    <h3>Shape &amp; typography</h3>
+    <TokenTable label="Shape and typography tokens" tokens={semanticOther} />
+  </section>
+
+  <section class="system__section" aria-labelledby="components-heading">
+    <h2 id="components-heading">Components</h2>
+
+    <article class="system__component">
+      <h3>Button</h3>
+      <div class="system__demo">
+        <Button>Primary</Button>
+        <Button variant="secondary">Secondary</Button>
+        <Button variant="ghost">Ghost</Button>
+      </div>
+      <TokenTable label="Button tokens" tokens={componentDocs[0].tokens} />
+    </article>
+
+    <article class="system__component">
+      <h3>Badge</h3>
+      <div class="system__demo">
+        <Badge>design-tokens</Badge>
+        <Badge>oklch</Badge>
+        <Badge>astro</Badge>
+      </div>
+      <TokenTable label="Badge tokens" tokens={componentDocs[1].tokens} />
+    </article>
+
+    <article class="system__component">
+      <h3>Card</h3>
+      <div class="system__demo">
+        <Card>
+          <h4>Card title</h4>
+          <p>
+            A raised surface for project teasers. Padding, radius and colors
+            come from <code>card.*</code> tokens.
+          </p>
+          <div class="system__demo-row">
+            <Badge>token-driven</Badge>
+          </div>
+        </Card>
+      </div>
+      <TokenTable label="Card tokens" tokens={componentDocs[2].tokens} />
+    </article>
+
+    <article class="system__component">
+      <h3>TimelineItem</h3>
+      <div class="system__demo">
+        <ul class="system__timeline-demo">
+          <TimelineItem
+            title="Design System Engineer"
+            meta="HIS Engineering AG (Zurich, CH)"
+            period="since 2023"
+          >
+            <p>The square marker is a flat accent zone — move the hue.</p>
+          </TimelineItem>
+          <TimelineItem
+            title="Interaction Designer"
+            meta="stellar design und engineering GmbH (Ulm, DE)"
+            period="2018 – 2020"
+          />
+        </ul>
+      </div>
+      <TokenTable label="Timeline tokens" tokens={componentDocs[3].tokens} />
+    </article>
+  </section>
 </BaseLayout>
 
 <style>
-  .page-placeholder {
+  .system__lead {
     margin-block-start: var(--space-stack-md);
-    max-width: 55ch;
+    max-width: 65ch;
+    font-size: var(--font-size-400);
     color: var(--color-text-secondary);
+  }
+
+  .system__section {
+    margin-block-start: var(--space-stack-xl);
+  }
+
+  .system__section h3 {
+    margin-block-start: var(--space-stack-lg);
+    margin-block-end: var(--space-stack-sm);
+  }
+
+  .system__note {
+    max-width: 65ch;
+    margin-block-end: var(--space-stack-sm);
+    color: var(--color-text-secondary);
+  }
+
+  .system__ramps {
+    display: grid;
+    gap: var(--space-stack-md);
+  }
+
+  .system__component {
+    margin-block-start: var(--space-stack-lg);
+  }
+
+  .system__demo {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: var(--space-inline-md);
+    padding: var(--space-inset-lg);
+    margin-block-end: var(--space-stack-sm);
+    border: 1px solid var(--color-border-default);
+    background: var(--color-surface-default);
+  }
+
+  .system__demo-row {
+    display: flex;
+    gap: var(--space-inline-sm);
+  }
+
+  .system__timeline-demo {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    inline-size: 100%;
   }
 </style>

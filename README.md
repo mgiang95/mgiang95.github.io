@@ -32,6 +32,8 @@ token pipeline. Full plan in [SPEC.md](SPEC.md), working rules in
 /src/content       Content collections (projects, timeline, certifications, about)
 /src/data          Small JSON data files (clients, books, contact, …)
 /src/styles        Generated tokens.css + global styles
+/src/components    Astro components (Button, Card, Badge, TimelineItem, docs components)
+/src/lib           Build-time helpers (DTCG token flattening for /system)
 /src/layouts       Base layout
 /src/pages         index, projects, about, system
 /legacy            Old portfolio as migration source — never deployed, deleted after cutover

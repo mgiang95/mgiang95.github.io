@@ -1,0 +1,22 @@
+---
+/**
+ * Badge / Tag — small technical label for skills, tech stack, token names.
+ * Mono type per design direction. Consumes only `badge.*` component tokens.
+ */
+---
+
+<span class="badge"><slot /></span>
+
+<style>
+  .badge {
+    display: inline-block;
+    padding: var(--badge-padding-block) var(--badge-padding-inline);
+    background: var(--badge-background);
+    color: var(--badge-text);
+    border: 1px solid var(--badge-border);
+    border-radius: var(--badge-radius);
+    font-family: var(--badge-font-family);
+    font-size: var(--badge-font-size);
+    line-height: var(--font-line-height-base);
+  }
+</style>

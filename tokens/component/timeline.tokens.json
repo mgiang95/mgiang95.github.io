@@ -1,0 +1,18 @@
+{
+  "timeline": {
+    "marker": {
+      "size": { "$value": "{space.inline.lg}", "$type": "dimension" },
+      "background": {
+        "$value": "{color.surface.accent}",
+        "$type": "color",
+        "$description": "Flat accent square — visibly reacts to the hue slider."
+      }
+    },
+    "line": {
+      "color": { "$value": "{color.border.default}", "$type": "color" }
+    },
+    "item": {
+      "gap": { "$value": "{space.inline.lg}", "$type": "dimension" }
+    }
+  }
+}

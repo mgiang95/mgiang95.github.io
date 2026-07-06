@@ -1,0 +1,76 @@
+---
+/**
+ * TimelineItem — one entry of the changelog-style CV timeline.
+ * Square accent marker (reacts to the hue slider) on a vertical line.
+ * Consumes only `timeline.*` component tokens plus semantic text colors.
+ */
+interface Props {
+  /** Role or degree, e.g. "Design System Engineer". */
+  title: string;
+  /** Institution or company, including location. */
+  meta: string;
+  /** Human-readable period, e.g. "2018 – 2020". */
+  period: string;
+}
+
+const { title, meta, period } = Astro.props;
+---
+
+<li class="timeline-item">
+  <span class="timeline-item__marker" aria-hidden="true"></span>
+  <div class="timeline-item__content">
+    <h3 class="timeline-item__title">{title}</h3>
+    <p class="timeline-item__meta">{meta}</p>
+    <p class="timeline-item__period">{period}</p>
+    <div class="timeline-item__body">
+      <slot />
+    </div>
+  </div>
+</li>
+
+<style>
+  .timeline-item {
+    display: grid;
+    grid-template-columns: var(--timeline-marker-size) 1fr;
+    column-gap: var(--timeline-item-gap);
+    list-style: none;
+    position: relative;
+    padding-block-end: var(--space-stack-lg);
+  }
+
+  /* Vertical line through the marker column. */
+  .timeline-item::before {
+    content: "";
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: calc(var(--timeline-marker-size) / 2);
+    border-inline-start: 1px solid var(--timeline-line-color);
+  }
+
+  .timeline-item:last-child::before {
+    inset-block-end: auto;
+    height: var(--timeline-marker-size);
+  }
+
+  .timeline-item__marker {
+    position: relative;
+    z-index: 1;
+    inline-size: var(--timeline-marker-size);
+    block-size: var(--timeline-marker-size);
+    background: var(--timeline-marker-background);
+  }
+
+  .timeline-item__meta {
+    color: var(--color-text-secondary);
+  }
+
+  .timeline-item__period {
+    color: var(--color-text-muted);
+    font-family: var(--typography-label-family);
+    font-size: var(--typography-label-size);
+  }
+
+  .timeline-item__body {
+    margin-block-start: var(--space-stack-xs);
+  }
+</style>

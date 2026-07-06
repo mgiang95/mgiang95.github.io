@@ -1,0 +1,9 @@
+{
+  "typography": {
+    "label": {
+      "$description": "Small technical labels: badges, token names, meta text. Mono per design direction.",
+      "size": { "$value": "{font.size.200}", "$type": "dimension" },
+      "family": { "$value": "{font.family.mono}", "$type": "fontFamily" }
+    }
+  }
+}

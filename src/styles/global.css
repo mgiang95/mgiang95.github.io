@@ -91,7 +91,8 @@ a:hover {
 }
 
 ::selection {
-  background: var(--color-accent-200);
+  background: var(--color-surface-accent);
+  color: var(--color-text-on-accent);
 }
 
 .skip-link {

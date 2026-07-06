@@ -1,0 +1,97 @@
+---
+/**
+ * TokenTable — tabular token documentation for the /system page.
+ * Shows the custom property, its raw DTCG value (references intact) and a
+ * live swatch for color tokens. Consumes semantic tokens only.
+ */
+import type { FlatToken } from "../lib/tokens";
+
+interface Props {
+  tokens: FlatToken[];
+  /** Accessible label for the table. */
+  label: string;
+}
+
+const { tokens, label } = Astro.props;
+---
+
+<div class="token-table__scroll">
+  <table class="token-table" aria-label={label}>
+    <thead>
+      <tr>
+        <th scope="col">Token</th>
+        <th scope="col">Value</th>
+        <th scope="col">Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      {
+        tokens.map((token) => (
+          <tr>
+            <td>
+              <span class="token-table__name">
+                {token.type === "color" && (
+                  <span
+                    class="token-table__swatch"
+                    style={`background: var(${token.cssVar})`}
+                    aria-hidden="true"
+                  />
+                )}
+                <code>{token.cssVar}</code>
+              </span>
+            </td>
+            <td>
+              <code>{token.value}</code>
+            </td>
+            <td class="token-table__description">{token.description}</td>
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+</div>
+
+<style>
+  .token-table__scroll {
+    overflow-x: auto;
+  }
+
+  .token-table {
+    border-collapse: collapse;
+    inline-size: 100%;
+    font-size: var(--typography-label-size);
+  }
+
+  .token-table th {
+    text-align: start;
+    font-family: var(--typography-label-family);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-text-secondary);
+  }
+
+  .token-table th,
+  .token-table td {
+    padding: var(--space-inset-xs) var(--space-inline-lg) var(--space-inset-xs) 0;
+    border-block-end: 1px solid var(--color-border-default);
+    vertical-align: top;
+  }
+
+  .token-table__name {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-inline-sm);
+    white-space: nowrap;
+  }
+
+  .token-table__swatch {
+    /* content sizing relative to type, not a spacing token */
+    inline-size: 1em;
+    block-size: 1em;
+    border: 1px solid var(--color-border-default);
+    flex-shrink: 0;
+  }
+
+  .token-table__description {
+    color: var(--color-text-secondary);
+  }
+</style>
