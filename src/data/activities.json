@@ -1,0 +1,30 @@
+{
+  "introduction": "Outside of design, I value being outdoors with the thrill of occasional spontaneity such as:",
+  "activities": [
+    {
+      "image": "img-cruise.jpg",
+      "alt": "Catamaran journey",
+      "caption": "A two-week catamaran journey from Italy to Tunisia with a 36-hour rainy cruise to Corsica"
+    },
+    {
+      "image": "img-korea_hike.jpg",
+      "alt": "Mount Seoraksan hike",
+      "caption": "An 18-hour autumn hike through Korea's rugged Mount Seoraksan fighting Ajumas and Ajussis along the trail"
+    },
+    {
+      "image": "img-sleepover.jpg",
+      "alt": "Freezing night under stars",
+      "caption": "A freezing night spent on a 2000-meter peak under the brightest stars with only a sleeping bag"
+    },
+    {
+      "image": "img-korea_hanbok.jpg",
+      "alt": "Cultural exploration",
+      "caption": "Exploring Korean culture and cuisine (especially Bibimbap or Mulnaengmyeon)"
+    },
+    {
+      "image": "img-beach.jpg",
+      "alt": "Beach",
+      "caption": "Whether exploring new trails or pushing my limits, I find a lot of inspiration outdoors."
+    }
+  ]
+}

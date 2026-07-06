@@ -1,0 +1,16 @@
+order: 2
+type: education
+title: Certificate of Advanced Studies in Object Oriented Programming
+institution: ZHAW School of Engineering
+location: CH
+country: sui
+dateStart: 2026-02-01
+dateEnd: 2026-07-31
+highlights:
+  - >-
+    Object-oriented software development, with focus on clean code, UML, and
+    software quality
+  - >-
+    Java-based application development, including file/data handling, and
+    database integration
+  - Web and mobile app development using common frontend frameworks

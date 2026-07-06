@@ -1,0 +1,17 @@
+order: 1
+type: work
+title: Design System Engineer / UX Designer
+institution: HIS Engineering AG
+location: Zurich, CH
+country: sui
+dateStart: 2023-09-01
+dateEnd: null
+highlights:
+  - >-
+    [Crafted a central design system](/projects/wincredit-design-system) in
+    Figma for four software products with clear design guidelines and patterns
+    for sustainable feature development.
+  - >-
+    [Designed UI using Bootstrap CSS framework](/projects/wincredit-ux-patterns);
+    adopted by a cross-functional team which led to the successful launch of
+    the product.
