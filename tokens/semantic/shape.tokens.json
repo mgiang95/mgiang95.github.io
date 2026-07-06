@@ -1,0 +1,14 @@
+{
+  "radius": {
+    "control": {
+      "$value": "{radius.sm}",
+      "$type": "dimension",
+      "$description": "Corner radius for interactive controls (buttons, inputs)."
+    },
+    "surface": {
+      "$value": "{radius.md}",
+      "$type": "dimension",
+      "$description": "Corner radius for container surfaces (cards, panels)."
+    }
+  }
+}

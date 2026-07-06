@@ -1,0 +1,29 @@
+{
+  "color": {
+    "surface": {
+      "default": { "$value": "{color.neutral.50}", "$type": "color" },
+      "raised": { "$value": "{color.neutral.0}", "$type": "color" },
+      "sunken": { "$value": "{color.neutral.100}", "$type": "color" },
+      "accent": {
+        "$value": "{color.accent.600}",
+        "$type": "color",
+        "$description": "Flat poster-style accent zones reacting to the hue slider."
+      }
+    },
+    "text": {
+      "primary": { "$value": "{color.neutral.950}", "$type": "color" },
+      "secondary": { "$value": "{color.neutral.700}", "$type": "color" },
+      "muted": { "$value": "{color.neutral.600}", "$type": "color" },
+      "on-accent": { "$value": "{color.neutral.0}", "$type": "color" }
+    },
+    "border": {
+      "default": { "$value": "{color.neutral.200}", "$type": "color" },
+      "strong": { "$value": "{color.neutral.400}", "$type": "color" }
+    },
+    "interactive": {
+      "default": { "$value": "{color.accent.600}", "$type": "color" },
+      "hover": { "$value": "{color.accent.700}", "$type": "color" },
+      "active": { "$value": "{color.accent.800}", "$type": "color" }
+    }
+  }
+}

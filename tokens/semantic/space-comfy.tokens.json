@@ -1,0 +1,25 @@
+{
+  "space": {
+    "inset": {
+      "xs": { "$value": "{space.3}", "$type": "dimension" },
+      "sm": { "$value": "{space.4}", "$type": "dimension" },
+      "md": { "$value": "{space.5}", "$type": "dimension" },
+      "lg": { "$value": "{space.6}", "$type": "dimension" },
+      "xl": { "$value": "{space.8}", "$type": "dimension" }
+    },
+    "stack": {
+      "xs": { "$value": "{space.3}", "$type": "dimension" },
+      "sm": { "$value": "{space.4}", "$type": "dimension" },
+      "md": { "$value": "{space.5}", "$type": "dimension" },
+      "lg": { "$value": "{space.8}", "$type": "dimension" },
+      "xl": { "$value": "{space.10}", "$type": "dimension" }
+    },
+    "inline": {
+      "xs": { "$value": "{space.2}", "$type": "dimension" },
+      "sm": { "$value": "{space.3}", "$type": "dimension" },
+      "md": { "$value": "{space.4}", "$type": "dimension" },
+      "lg": { "$value": "{space.5}", "$type": "dimension" },
+      "xl": { "$value": "{space.6}", "$type": "dimension" }
+    }
+  }
+}

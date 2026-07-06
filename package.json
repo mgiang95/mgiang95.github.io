@@ -1,0 +1,19 @@
+{
+  "name": "mgiang95.github.io",
+  "type": "module",
+  "version": "2.0.0",
+  "private": true,
+  "scripts": {
+    "tokens": "node scripts/build-tokens.mjs",
+    "dev": "npm run tokens && astro dev",
+    "build": "npm run tokens && astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "astro": "^7.0.6"
+  },
+  "devDependencies": {
+    "style-dictionary": "^5.5.0"
+  }
+}

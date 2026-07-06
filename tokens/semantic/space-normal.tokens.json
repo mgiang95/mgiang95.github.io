@@ -1,0 +1,28 @@
+{
+  "space": {
+    "inset": {
+      "$description": "Padding inside containers. Resolves to different primitives per density mode.",
+      "xs": { "$value": "{space.2}", "$type": "dimension" },
+      "sm": { "$value": "{space.3}", "$type": "dimension" },
+      "md": { "$value": "{space.4}", "$type": "dimension" },
+      "lg": { "$value": "{space.5}", "$type": "dimension" },
+      "xl": { "$value": "{space.6}", "$type": "dimension" }
+    },
+    "stack": {
+      "$description": "Vertical rhythm between stacked blocks.",
+      "xs": { "$value": "{space.2}", "$type": "dimension" },
+      "sm": { "$value": "{space.3}", "$type": "dimension" },
+      "md": { "$value": "{space.4}", "$type": "dimension" },
+      "lg": { "$value": "{space.6}", "$type": "dimension" },
+      "xl": { "$value": "{space.9}", "$type": "dimension" }
+    },
+    "inline": {
+      "$description": "Horizontal gaps between inline siblings.",
+      "xs": { "$value": "{space.1}", "$type": "dimension" },
+      "sm": { "$value": "{space.2}", "$type": "dimension" },
+      "md": { "$value": "{space.3}", "$type": "dimension" },
+      "lg": { "$value": "{space.4}", "$type": "dimension" },
+      "xl": { "$value": "{space.5}", "$type": "dimension" }
+    }
+  }
+}

@@ -1,0 +1,123 @@
+---
+import "../styles/tokens.css";
+import "../styles/global.css";
+
+interface Props {
+  /** Page title, appended with the site name. */
+  title: string;
+  /** Meta description for search engines and previews. */
+  description: string;
+}
+
+const { title, description } = Astro.props;
+
+const navItems = [
+  { href: "/", label: "Home" },
+  { href: "/projects", label: "Projects" },
+  { href: "/about", label: "About" },
+  { href: "/system", label: "System" },
+];
+
+const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title} — Michael Giang</title>
+  </head>
+  <body>
+    <a href="#main" class="skip-link">Skip to main content</a>
+    <header class="site-header">
+      <a href="/" class="site-header__wordmark">Michael Giang</a>
+      <nav class="site-header__nav" aria-label="Main navigation">
+        <ul class="site-header__list">
+          {
+            navItems.map((item) => (
+              <li class="site-header__item">
+                <a
+                  href={item.href}
+                  class="site-header__link"
+                  aria-current={currentPath === item.href ? "page" : undefined}
+                >
+                  {item.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+    </header>
+    <main id="main" class="site-main">
+      <slot />
+    </main>
+    <footer class="site-footer">
+      <p class="site-footer__note">
+        Built with Astro on a live design token pipeline — see
+        <a href="/system">how this site is built</a>.
+      </p>
+      <p class="site-footer__copyright">© 2026 Michael Giang</p>
+    </footer>
+  </body>
+</html>
+
+<style>
+  .site-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-inline-lg);
+    padding: var(--space-inset-md) var(--space-inset-lg);
+    border-block-end: 1px solid var(--color-border-default);
+  }
+
+  .site-header__wordmark {
+    font-family: var(--font-family-display);
+    font-weight: var(--font-weight-bold);
+    font-size: var(--font-size-400);
+    color: var(--color-text-primary);
+    text-decoration: none;
+  }
+
+  .site-header__list {
+    display: flex;
+    gap: var(--space-inline-lg);
+    list-style: none;
+    padding: 0;
+  }
+
+  .site-header__link {
+    color: var(--color-text-secondary);
+    text-decoration: none;
+  }
+
+  .site-header__link:hover {
+    color: var(--color-interactive-hover);
+  }
+
+  .site-header__link[aria-current="page"] {
+    color: var(--color-text-primary);
+    font-weight: var(--font-weight-medium);
+  }
+
+  .site-main {
+    max-width: 72rem;
+    margin-inline: auto;
+    padding: var(--space-stack-xl) var(--space-inset-lg);
+  }
+
+  .site-footer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: var(--space-inline-lg);
+    padding: var(--space-inset-lg);
+    border-block-start: 1px solid var(--color-border-default);
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-200);
+  }
+</style>

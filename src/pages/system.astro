@@ -1,0 +1,23 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="System"
+  description="How this site is built: token architecture, theming mechanics and component docs."
+>
+  <h1>How this site is built</h1>
+  <p class="page-placeholder">
+    The meta case study: token architecture (DTCG, three tiers), OKLCH
+    theming with a runtime hue, and component docs. Content follows once the
+    system itself is in place.
+  </p>
+</BaseLayout>
+
+<style>
+  .page-placeholder {
+    margin-block-start: var(--space-stack-md);
+    max-width: 55ch;
+    color: var(--color-text-secondary);
+  }
+</style>

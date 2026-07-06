@@ -1,0 +1,38 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="Design System Engineer"
+  description="Portfolio of Michael Giang, Design System Engineer and UX Designer in Zurich. This site runs on a live design token pipeline — adjust hue, color scheme and density yourself."
+>
+  <section class="hero">
+    <h1 class="hero__headline">
+      This site is a running design system.
+    </h1>
+    <p class="hero__lead">
+      I'm Michael Giang, a Design System Engineer and UX Designer based in
+      Zurich. Everything you see here is driven by a live token pipeline —
+      the theme panel to adjust hue, color scheme and density lands in a
+      later phase.
+    </p>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero {
+    display: grid;
+    gap: var(--space-stack-lg);
+    padding-block: var(--space-stack-xl);
+  }
+
+  .hero__headline {
+    max-width: 20ch;
+  }
+
+  .hero__lead {
+    max-width: 55ch;
+    font-size: var(--font-size-400);
+    color: var(--color-text-secondary);
+  }
+</style>
