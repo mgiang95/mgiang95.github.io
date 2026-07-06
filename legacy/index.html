@@ -1,0 +1,1265 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Michael Giang Portfolio</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Standard Favicon -->
+    <link rel="icon" href="/img/assets/favicon_io/favicon.ico" sizes="any" />
+    <!-- 16x16, 32x32, 48x48... -->
+
+    <!-- PNG-Icons für verschiedene Geräte und Bildschirme -->
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="img/assets/favicon_io/favicon-32x32.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="48x48"
+      href="img/assets/favicon_io/favicon-48x48.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="192x192"
+      href="img/assets/favicon_io/android-chrome-192x192.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="512x512"
+      href="img/assets/favicon_io/android-chrome-512x512.png"
+    />
+
+    <!-- Apple Touch Icon für iOS -->
+    <link
+      rel="apple-touch-icon"
+      href="img/assets/favicon_io/apple-touch-icon.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="img/assets/favicon_io/apple-touch-icon-180x180.png"
+    />
+
+    <!-- Manifest für Android -->
+    <link rel="manifest" href="img/assets/favicon_io/site.webmanifest" />
+  </head>
+  <body>
+    <div class="cursor-circle" id="cursorCircle"></div>
+    <div class="outer-container" id="outer-container">
+      <aside class="sidebar">
+        <h1 id="profile-title">Michael Giang</h1>
+        <div id="profile-img" class="profile-container">
+          <img
+            src="img/assets/img-profile.png"
+            alt="A picture of Michael Giang"
+            class="profile-image"
+          />
+          <img
+            src="img/assets/img-memoji.png"
+            alt="Memoji of Michael Giang"
+            class="profile-memoji"
+          />
+        </div>
+        <div id="profile-description">
+          <p class="s mb-xxs">
+            I’m a Design System Engineer and UX Designer with deep interest in
+            design operations and UX governance.
+          </p>
+
+          <p class="s mb-xxs">* Based in Zurich</p>
+        </div>
+
+        <nav id="profile-nav" class="sidebar-nav fw-400">
+          <ul>
+            <li>
+              <a href="#about" class="nav-link" id="about-link">About Me</a>
+            </li>
+            <li>
+              <a href="#journey" class="nav-link" id="journey-link"
+                >My journey</a
+              >
+            </li>
+            <li>
+              <a href="#projects" class="nav-link" id="projects-link"
+                >Projects</a
+              >
+            </li>
+            <li>
+              <a href="#misc" class="nav-link" id="more-link">More About Me</a>
+            </li>
+            <!-- <li>
+              <a href="#contact" class="nav-link" id="contact-link">Contact</a>
+            </li> -->
+          </ul>
+          <br />
+        </nav>
+
+        <div id="profile-social" class="social">
+          <!-- GitHub -->
+          <a href="https://github.com/mgiang95/" target="_blank">
+            <svg
+              width="32"
+              height="32"
+              viewBox="0 0 32 32"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M16.0033 2.66699C8.63659 2.66699 2.66993 8.63366 2.66993 16.0003C2.66751 18.7994 3.54694 21.5281 5.18333 23.799C6.81973 26.0699 9.12993 27.7676 11.7859 28.651C12.4526 28.767 12.7033 28.367 12.7033 28.0163C12.7033 27.7003 12.6859 26.651 12.6859 25.5337C9.33659 26.151 8.46993 24.7177 8.20326 23.967C8.05259 23.583 7.40326 22.4003 6.83659 22.083C6.36993 21.8337 5.70326 21.2163 6.81926 21.2003C7.86993 21.183 8.61926 22.167 8.86993 22.567C10.0699 24.583 11.9859 24.0163 12.7526 23.667C12.8699 22.8003 13.2193 22.2177 13.6033 21.8843C10.6366 21.551 7.53659 20.4003 7.53659 15.3003C7.53659 13.8497 8.05259 12.651 8.90326 11.7177C8.76993 11.3843 8.30326 10.0177 9.03659 8.18433C9.03659 8.18433 10.1526 7.83366 12.7033 9.54966C13.7888 9.24918 14.9102 9.09802 16.0366 9.10033C17.1699 9.10033 18.3033 9.24966 19.3699 9.54966C21.9206 7.81633 23.0366 8.18433 23.0366 8.18433C23.7699 10.0177 23.3033 11.3843 23.1699 11.7177C24.0193 12.651 24.5366 13.8337 24.5366 15.3003C24.5366 20.4177 21.4206 21.551 18.4539 21.8843C18.9366 22.3003 19.3539 23.1003 19.3539 24.351C19.3539 26.1337 19.3366 27.567 19.3366 28.0177C19.3366 28.367 19.5873 28.783 20.2539 28.6497C22.8999 27.7551 25.1991 26.0538 26.828 23.7848C28.4569 21.5159 29.3338 18.7935 29.3353 16.0003C29.3353 8.63366 23.3686 2.66699 16.0019 2.66699"
+                fill="currentColor"
+              />
+            </svg>
+          </a>
+          <!-- LinkedIn -->
+          <a href="https://www.linkedin.com/in/michael-giang/" target="_blank">
+            <svg
+              width="32"
+              height="32"
+              viewBox="0 0 32 32"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M25.3333 4C26.0406 4 26.7189 4.28095 27.219 4.78105C27.719 5.28115 28 5.95942 28 6.66667V25.3333C28 26.0406 27.719 26.7189 27.219 27.219C26.7189 27.719 26.0406 28 25.3333 28H6.66667C5.95942 28 5.28115 27.719 4.78105 27.219C4.28095 26.7189 4 26.0406 4 25.3333V6.66667C4 5.95942 4.28095 5.28115 4.78105 4.78105C5.28115 4.28095 5.95942 4 6.66667 4H25.3333ZM24.6667 24.6667V17.6C24.6667 16.4472 24.2087 15.3416 23.3936 14.5264C22.5784 13.7113 21.4728 13.2533 20.32 13.2533C19.1867 13.2533 17.8667 13.9467 17.2267 14.9867V13.5067H13.5067V24.6667H17.2267V18.0933C17.2267 17.0667 18.0533 16.2267 19.08 16.2267C19.5751 16.2267 20.0499 16.4233 20.3999 16.7734C20.75 17.1235 20.9467 17.5983 20.9467 18.0933V24.6667H24.6667ZM9.17333 11.4133C9.76742 11.4133 10.3372 11.1773 10.7573 10.7573C11.1773 10.3372 11.4133 9.76742 11.4133 9.17333C11.4133 7.93333 10.4133 6.92 9.17333 6.92C8.57571 6.92 8.00257 7.1574 7.57999 7.57999C7.1574 8.00257 6.92 8.57571 6.92 9.17333C6.92 10.4133 7.93333 11.4133 9.17333 11.4133ZM11.0267 24.6667V13.5067H7.33333V24.6667H11.0267Z"
+                fill="currentColor"
+              />
+            </svg>
+          </a>
+          <!-- Instagram -->
+          <a href="https://www.instagram.com/mchlgn/" target="_blank">
+            <svg
+              width="32"
+              height="32"
+              viewBox="0 0 32 32"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M10.3993 2.6665H21.5993C25.866 2.6665 29.3327 6.13317 29.3327 10.3998V21.5998C29.3327 23.6508 28.5179 25.6178 27.0676 27.0681C25.6174 28.5184 23.6504 29.3332 21.5993 29.3332H10.3993C6.13268 29.3332 2.66602 25.8665 2.66602 21.5998V10.3998C2.66602 8.34883 3.48078 6.38183 4.93106 4.93154C6.38134 3.48126 8.34834 2.6665 10.3993 2.6665ZM10.1327 5.33317C8.85964 5.33317 7.63874 5.83888 6.73857 6.73906C5.8384 7.63923 5.33268 8.86013 5.33268 10.1332V21.8665C5.33268 24.5198 7.47935 26.6665 10.1327 26.6665H21.866C23.1391 26.6665 24.36 26.1608 25.2601 25.2606C26.1603 24.3604 26.666 23.1395 26.666 21.8665V10.1332C26.666 7.47984 24.5193 5.33317 21.866 5.33317H10.1327ZM22.9993 7.33317C23.4414 7.33317 23.8653 7.50877 24.1779 7.82133C24.4904 8.13389 24.666 8.55781 24.666 8.99984C24.666 9.44186 24.4904 9.86579 24.1779 10.1783C23.8653 10.4909 23.4414 10.6665 22.9993 10.6665C22.5573 10.6665 22.1334 10.4909 21.8208 10.1783C21.5083 9.86579 21.3327 9.44186 21.3327 8.99984C21.3327 8.55781 21.5083 8.13389 21.8208 7.82133C22.1334 7.50877 22.5573 7.33317 22.9993 7.33317ZM15.9993 9.33317C17.7675 9.33317 19.4632 10.0355 20.7134 11.2858C21.9636 12.536 22.666 14.2317 22.666 15.9998C22.666 17.7679 21.9636 19.4636 20.7134 20.7139C19.4632 21.9641 17.7675 22.6665 15.9993 22.6665C14.2312 22.6665 12.5355 21.9641 11.2853 20.7139C10.0351 19.4636 9.33268 17.7679 9.33268 15.9998C9.33268 14.2317 10.0351 12.536 11.2853 11.2858C12.5355 10.0355 14.2312 9.33317 15.9993 9.33317ZM15.9993 11.9998C14.9385 11.9998 13.9211 12.4213 13.1709 13.1714C12.4208 13.9216 11.9993 14.939 11.9993 15.9998C11.9993 17.0607 12.4208 18.0781 13.1709 18.8283C13.9211 19.5784 14.9385 19.9998 15.9993 19.9998C17.0602 19.9998 18.0776 19.5784 18.8278 18.8283C19.5779 18.0781 19.9993 17.0607 19.9993 15.9998C19.9993 14.939 19.5779 13.9216 18.8278 13.1714C18.0776 12.4213 17.0602 11.9998 15.9993 11.9998Z"
+                fill="currentColor"
+              />
+            </svg>
+          </a>
+        </div>
+      </aside>
+      <div class="content" id="scrollableContent">
+        <section id="about" class="section">
+          <h2>About Me</h2>
+          <br />
+          <p>
+            I started in web development in 2014, but my curiosity
+            <strong> of the “why” behind products</strong> led me to transition
+            into design in 2018.
+          </p>
+          <br />
+          <p>
+            Since then, I’ve focused on
+            <strong>creating and managing design systems,</strong> which are
+            sets of guidelines that help make products look and work
+            consistently. I’ve also become
+            <strong>interested in UX governance and web accessibility,</strong>
+            which is about setting rules to ensure a good, unified user
+            experience across all products. Essentially, I make sure that the
+            user experience is well-planned and aligns with the needs of
+            everyone involved.
+          </p>
+          <br />
+          <p>
+            I’ve been lucky to learn from amazing colleagues and from experts
+            like
+            <strong>Alice Packard, Diana Mounter, and Nathan Curtis.</strong>
+            Outside of work, I enjoy connecting with others in Zurich at design
+            events like
+            <strong>Last Thursday Talks or Friends of Figma.</strong>
+          </p>
+          <br />
+          <p class="mb-lg">
+            Thanks to the broad nature of UX, I’ve been able to apply my design
+            system work to both consumer-focused (B2C) and business-focused
+            (B2B) products, which you can see in the following sections of my
+            portfolio.
+          </p>
+
+          <div class="scroll-down-container">
+            <!-- SVG für das Scroll-Down-Icon -->
+            <svg
+              class="scroll-down-icon"
+              viewBox="0 0 40 64"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <!-- Mausumriss -->
+              <rect
+                x="2"
+                y="2"
+                width="36"
+                height="58"
+                rx="19"
+                stroke="#061A2D"
+                stroke-width="3"
+              />
+              <!-- Mausrad -->
+              <rect
+                class="scroll-wheel"
+                x="17.5"
+                y="14"
+                width="5"
+                height="14"
+                rx="2.5"
+                fill="#061A2D"
+              />
+            </svg>
+            <p class="scroll-text s fw-500">Scroll down</p>
+          </div>
+
+          <div class="logo-marquee-container">
+            <p class="scroll-text s fw-400 mb-sm it text-muted">
+              Completed projects for
+            </p>
+
+            <div class="logo-marquee fade-in-on-scroll">
+              <div class="logo-track">
+                <img
+                  src="img/logos/logo-basenet.svg"
+                  alt="Logo 1: BaseNet Informatik AG"
+                />
+                <img
+                  src="img/logos/logo-linde_mh.svg"
+                  alt="Logo 2: Linde Material Handling AG"
+                />
+                <img
+                  src="img/logos/logo-salzburg_ag.svg"
+                  alt="Logo 3: Salzburg AG"
+                />
+                <img
+                  src="img/logos/logo-eurofunk_kappacher.svg"
+                  alt="Logo 4: eurofunk KAPPACHER"
+                />
+                <img src="img/logos/logo-bmw.svg" alt="Logo 5: BMW Group" />
+                <img
+                  src="img/logos/logo-bsh.svg"
+                  alt="Logo 6: Bosch Haushaltsgeräte"
+                />
+                <!-- Füge die Logos hier erneut hinzu, um einen nahtlosen Effekt zu erzielen -->
+                <img
+                  src="img/logos/logo-basenet.svg"
+                  alt="Logo 1: BaseNet Informatik AG"
+                />
+                <img
+                  src="img/logos/logo-linde_mh.svg"
+                  alt="Logo 2: Linde Material Handling AG"
+                />
+                <img
+                  src="img/logos/logo-salzburg_ag.svg"
+                  alt="Logo 3: Salzburg AG"
+                />
+                <img
+                  src="img/logos/logo-eurofunk_kappacher.svg"
+                  alt="Logo 4: eurofunk KAPPACHER"
+                />
+                <img src="img/logos/logo-bmw.svg" alt="Logo 5: BMW Group" />
+                <img
+                  src="img/logos/logo-bsh.svg"
+                  alt="Logo 6: Bosch Haushaltsgeräte"
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="journey" class="section">
+          <h2>My Journey</h2>
+          <br />
+          <p class="mb-lg">
+            This timeline offers a glimpse into some of the key highlights of my
+            professional and educational journey. From impactful projects to
+            significant milestones:
+          </p>
+
+          <div class="timeline-controls mb-md">
+            <div class="slider"></div>
+
+            <button data-filter="work" class="active">
+              <svg
+                width="32"
+                height="32"
+                viewBox="0 0 32 32"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M13.4 9.90127V7.4H19.6V9.90127H13.4ZM11 7C11 5.89543 11.8954 5 13 5H20C21.1046 5 22 5.89543 22 7V9.90127V10H26C27.1046 10 28 10.8954 28 12V25C28 26.1046 27.1046 27 26 27H7C5.89543 27 5 26.1046 5 25V12C5 10.8954 5.89543 10 7 10H11V9.90127V7ZM7.4 24.6V12.4H25.6V24.6H7.4Z"
+                  fill="currentColor"
+                />
+              </svg>
+
+              Work
+            </button>
+            <button data-filter="education">
+              <svg
+                width="32"
+                height="32"
+                viewBox="0 0 32 32"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M1.33398 11.6L15.3487 6L29.3633 11.6L15.3487 17.2L1.33398 11.6Z"
+                  stroke="currentColor"
+                  stroke-width="2.3"
+                  stroke-linejoin="round"
+                />
+                <path
+                  d="M29.3637 11.6733V17.822M7.70508 14.55V22.8447C7.70508 22.8447 10.9117 26 15.3491 26C19.7871 26 22.9937 22.8447 22.9937 22.8447V14.55"
+                  stroke="currentColor"
+                  stroke-width="2.3"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+
+              Education
+            </button>
+            <button data-filter="all">All</button>
+          </div>
+          <div class="timeline">
+            <div class="timeline-item" data-category="work">
+              <div class="timeline-icon">
+                <!-- Bild oder Emoji hier -->
+                <img src="img/assets/timeline-flag_sui.png" alt="Switzerland" />
+              </div>
+              <div class="timeline-content">
+                <h3 class="vertical-align">
+                  Design System Engineer&thinsp;/&thinsp;UX Designer
+                </h3>
+                <p class="timeline-institution">
+                  HIS Engineering AG (Zurich, CH)
+                </p>
+                <p class="timeline-date mb-xxs">since 09.2023</p>
+                <ul class="styled-list">
+                  <li>
+                    <a
+                      class="link-text-inline s"
+                      href="usecase-bni-design-system.html?ref=journey"
+                      >Crafted a central design system</a
+                    >
+                    in Figma for four software products with clear design
+                    guidelines and patterns for sustainable feature development.
+                  </li>
+                  <li>
+                    <a
+                      class="link-text-inline s"
+                      href="usecase-bni-ux-ui-design.html?ref=journey"
+                      >Designed UI using Bootstrap CSS framework;</a
+                    >
+                    adopted by a cross-functional team which led to the
+                    successful launch of the product.
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="timeline-item" data-category="education">
+              <div class="timeline-icon">
+                <!-- Bild oder Emoji hier -->
+                <img src="img/assets/timeline-flag_sui.png" alt="Switzerland" />
+              </div>
+              <div class="timeline-content">
+                <h3>
+                  Certificate of Advanced Studies in Object Oriented Programming
+                </h3>
+                <p class="timeline-institution">
+                  ZHAW School of Engineering (CH)
+                </p>
+                <p class="timeline-date mb-xxs">
+                  02.2026&thinsp;–&thinsp;07.2026
+                </p>
+                <ul class="styled-list">
+                  <li>
+                    Object-oriented software development, with focus on clean
+                    code, UML, and software quality
+                  </li>
+                  <li>
+                    Java-based application development, including file/data
+                    handling, and database integration
+                  </li>
+                  <li>
+                    Web and mobile app development using common frontend
+                    frameworks
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="timeline-item" data-category="education">
+              <div class="timeline-icon">
+                <!-- Bild oder Emoji hier -->
+                <img src="img/assets/timeline-flag_aut.png" alt="Austria" />
+              </div>
+              <div class="timeline-content">
+                <h3>M.&thinsp;Sc. Human-Computer Interaction</h3>
+                <p class="timeline-institution">
+                  University of Salzburg&thinsp;/&thinsp;FH Salzburg (AT)
+                </p>
+                <p class="timeline-date mb-xxs">
+                  10.2020&thinsp;–&thinsp;03.2023
+                </p>
+                <ul class="styled-list">
+                  <li>
+                    Grade: 1.3 (pass with distinction) | Master’s Thesis: 1.0
+                  </li>
+                  <li>
+                    Focus: Interaction Design, User Research and Project
+                    Management
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div class="timeline-item" data-category="education">
+              <div class="timeline-icon">
+                <!-- Bild oder Emoji hier -->
+                <img src="img/assets/timeline-flag_sko.png" alt="South Korea" />
+              </div>
+              <div class="timeline-content">
+                <h3>Semester Abroad</h3>
+                <p class="timeline-institution">
+                  EWHA Womans University (Seoul, KR)
+                </p>
+
+                <p class="timeline-date mb-xxs">
+                  08.2022&thinsp;–&thinsp;12.2022
+                </p>
+                <ul class="styled-list">
+                  <li>
+                    Topic: Korean Language II (GPA: 3.3&thinsp;/&thinsp;4.3)
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="timeline-item" data-category="work">
+              <div class="timeline-icon">
+                <!-- Bild oder Emoji hier -->
+                <img src="img/assets/timeline-flag_aut.png" alt="Austria" />
+              </div>
+              <div class="timeline-content">
+                <h3>UX Designer (intern)</h3>
+                <p class="timeline-institution">
+                  Salzburg AG für Energie, Verkehr und Telekommunikation (AT)
+                </p>
+
+                <p class="timeline-date mb-xxs">
+                  10.2021&thinsp;–&thinsp;09.2022
+                </p>
+                <ul class="styled-list">
+                  <li>
+                    Built a design system for
+                    <a
+                      class="link-button s"
+                      target="_blank"
+                      href="https://presse.salzburg-ag.at/news-ava-app-die-persoenliche-energie-steuerung-fuer-daheim?id=177009&menueid=30119&l=deutsch"
+                      >a mobile app<span class="arrow-icon-top-right"
+                        >↗</span
+                      ></a
+                    >
+                    facilitating domestic solar system management. Launched from
+                    scratch, reaching over 1,500 users in the initial rollout.
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="timeline-item" data-category="work">
+              <div class="timeline-icon">
+                <!-- Bild oder Emoji hier -->
+                <img src="img/assets/timeline-flag_ger.png" alt="Germany" />
+              </div>
+              <div class="timeline-content">
+                <h3>Interaction Designer</h3>
+                <p class="timeline-institution">
+                  stellar design und engineering GmbH (Ulm, DE)
+                  <br />
+                </p>
+
+                <p class="timeline-date mb-xxs">
+                  08.2018&thinsp;–&thinsp;08.2020 |
+                  08.2016&thinsp;–&thinsp;12.2017 (intern)
+                </p>
+                <ul class="styled-list">
+                  <li>
+                    Conceptualized features for the fleet management system
+                    <a
+                      class="link-text-inline s"
+                      href="usecase-connect_desk.html?ref=journey"
+                      >connect:desk.</a
+                    >
+                  </li>
+                  <li>
+                    Developed interaction concept for automotive and kitchen
+                    appliances.
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="timeline-item" data-category="education">
+              <div class="timeline-icon">
+                <!-- Bild oder Emoji hier -->
+                <img src="img/assets/timeline-flag_ger.png" alt="Germany" />
+              </div>
+              <div class="timeline-content">
+                <h3>B.&thinsp;A. Digital Media</h3>
+                <p class="timeline-institution">TH Ulm (DE)</p>
+                <p class="timeline-date mb-xxs">
+                  10.2014&thinsp;–&thinsp;08.2018
+                </p>
+                <ul class="styled-list">
+                  <li>Grade: 1.5 | Bachelor’s Thesis: 1.5</li>
+                  <li>Focus: Web Development and Interaction Design</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="timeline-item" data-category="education">
+              <div class="timeline-icon">
+                <!-- Bild oder Emoji hier -->
+                <img src="img/assets/timeline-flag_usa.png" alt="USA" />
+              </div>
+              <div class="timeline-content">
+                <h3>Semester Abroad</h3>
+                <p class="timeline-institution">
+                  University of Memphis TN (US)
+                </p>
+                <p class="timeline-date mb-xxs">
+                  01.2018&thinsp;–&thinsp;05.2018
+                </p>
+                <ul class="styled-list">
+                  <li>
+                    Topics: Marketing and Graphic Design (GPA:
+                    4.0&thinsp;/&thinsp;4.0)
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <!-- <a
+            class="link-button s fw-500"
+            href="#"
+            target="_blank"
+            >View full resume<span class="arrow-icon-top-right">↗</span></a
+          > -->
+        </section>
+        <!-- Projects -->
+        <section id="projects" class="section">
+          <h2>Projects</h2>
+          <a
+            target="_blank"
+            href="usecase-bni.html"
+            class="project-link fade-in-on-scroll"
+          >
+            <div class="card-project">
+              <div class="image-container">
+                <img
+                  src="img/usecase/BNI-hero.jpg"
+                  alt="Use Case: BNI - WinCredit 3"
+                  class="project-image"
+                />
+              </div>
+              <div class="project-header">
+                <h3 class="project-title project-title-link">
+                  Redesign: WinCredit 3<span class="arrow-icon-top-right"
+                    >↗</span
+                  >
+                </h3>
+                <p class="project-duration">2024&thinsp;–&thinsp;2025</p>
+              </div>
+
+              <p class="project-subtitle">
+                Enhanced design system scalability, and user-focused solutions
+              </p>
+
+              <p class="project-description">
+                A credit management tool where I worked within a Scrum team to
+                redesign the UI and the most essential features according to
+                modern usability standards. I established a design system which
+                was finally used for four different software products.
+              </p>
+              <p class="project-keywords-introduction">Key Areas</p>
+              <div class="project-keywords">
+                <span class="keyword">Design System</span>
+                <span class="keyword">UX Patterns</span>
+                <span class="keyword">Component Migration</span>
+              </div>
+            </div>
+          </a>
+          <a
+            href="usecase-connect_desk.html?ref=projects"
+            class="project-link fade-in-on-scroll"
+          >
+            <div class="card-project">
+              <div class="image-container">
+                <img
+                  src="img/usecase/connect_desk-hero.jpg"
+                  alt="Use Case: connect:desk"
+                  class="project-image"
+                />
+              </div>
+
+              <div class="project-header">
+                <h3 class="project-title project-title-link">
+                  connect:desk<span class="arrow-icon-top-right">↗</span>
+                </h3>
+                <p class="project-duration">2018&thinsp;–&thinsp;2020</p>
+              </div>
+              <p class="project-subtitle">
+                Modernized UI with enhanced performance
+              </p>
+
+              <p class="project-description">
+                A fleet management and analyzing tool for industrial truck data.
+                Within a multidisciplinary team, I focused on modernizing the
+                UI, addressing performance issues, and introducing new features,
+                while maintaining the component library and streamlining the
+                software’s usability.
+              </p>
+              <p class="project-keywords-introduction">Key Areas</p>
+              <div class="project-keywords">
+                <span class="keyword">Modularization</span>
+                <span class="keyword">Facelift</span>
+                <span class="keyword">Design System</span>
+              </div>
+            </div>
+          </a>
+
+          <a
+            href="usecase-cookflow.html"
+            class="project-link fade-in-on-scroll"
+          >
+            <div class="card-project">
+              <div class="image-container">
+                <img
+                  src="img/usecase/Cookflow-hero.jpg"
+                  alt="Use Case: Cookflow"
+                  class="project-image"
+                />
+              </div>
+              <div class="project-header">
+                <h3 class="project-title project-title-link">
+                  App Concept: Cookflow<span class="arrow-icon-top-right"
+                    >↗</span
+                  >
+                </h3>
+                <p class="project-duration">2021</p>
+              </div>
+              <p class="project-subtitle">
+                Journey towards a high-fidelity interactive prototype
+              </p>
+
+              <p class="project-description">
+                This project presents an app concept designed to host cooking
+                sessions. The focus is on the process from initial sketches to
+                an interactive high-fidelity prototype, including the
+                development of a comprehensive component library.
+              </p>
+              <p class="project-keywords-introduction">Key Areas</p>
+              <div class="project-keywords">
+                <span class="keyword">Component Library</span>
+                <span class="keyword">Prototyping</span>
+                <span class="keyword">User Flow Mapping</span>
+              </div>
+            </div>
+          </a>
+
+          <div class="card-project-list fade-in-on-scroll">
+            <h3 class="project-title">More Projects</h3>
+            <div class="project-list-item">
+              <div class="project-list-header">
+                <p><strong class="project-title">Salzburg AG</strong></p>
+                <span class="project-date">2021&thinsp;–&thinsp;2022</span>
+              </div>
+              <div class="project-description">
+                <ul class="styled-list">
+                  <li>
+                    Built a design system and designed UI for
+                    <a
+                      class="link-button s"
+                      target="_blank"
+                      href="https://presse.salzburg-ag.at/news-ava-app-die-persoenliche-energie-steuerung-fuer-daheim?id=177009&menueid=30119&l=deutsch"
+                      >AVA<span class="arrow-icon-top-right">↗</span></a
+                    >, a mobile app facilitating domestic solar system
+                    management. Launched from scratch, reaching over 1,500 users
+                    in the initial rollout.
+                  </li>
+                  <li>
+                    Designed user research methodology for IoT solutions (<a
+                      class="link-button s"
+                      target="_blank"
+                      href="https://www.enox.energy/de-at"
+                      >enox.energy<span class="arrow-icon-top-right">↗</span></a
+                    >
+                    ) in decentralized energy systems resulting in accessibility
+                    improvements.
+                  </li>
+                </ul>
+              </div>
+              <p class="project-keywords-introduction">Key Areas</p>
+
+              <div class="project-keywords">
+                <span class="keyword">UX/UI Design</span>
+                <span class="keyword">Interaction Design</span>
+                <span class="keyword">User Research</span>
+              </div>
+            </div>
+            <div class="project-list-item">
+              <div class="project-list-header">
+                <p><strong class="project-title">eurofunk Kappacher</strong></p>
+                <span class="project-date">2021&thinsp;–&thinsp;2022</span>
+              </div>
+              <div class="project-description">
+                <ul class="styled-list">
+                  <li>
+                    Conducted user research for Salzburg Fire Brigade and
+                    Austrian Red Cross.
+                  </li>
+                  <li>
+                    Designed a prototype with key features later implemented in
+                    the live
+                    <a
+                      class="link-button s"
+                      target="_blank"
+                      href="https://www.eurofunk.com/products/command-control/resqnect-mobile-apps/"
+                      >resQnect DRIVE system.<span class="arrow-icon-top-right"
+                        >↗</span
+                      ></a
+                    >
+                  </li>
+                </ul>
+              </div>
+
+              <p class="project-keywords-introduction">Key Areas</p>
+              <div class="project-keywords">
+                <span class="keyword">User Research</span>
+                <span class="keyword">Contextual Analysis</span>
+                <span class="keyword">User Requirements Engineering</span>
+              </div>
+            </div>
+
+            <div class="project-list-item">
+              <div class="project-list-header">
+                <strong class="project-title"
+                  ><a
+                    class="link-button"
+                    target="_blank"
+                    href="https://www.fh-salzburg.ac.at/en/study/ct/human-computer-interaction-joint-master/projects/wayve-a-wearable-device-for-tourists"
+                    >GastroHackathon<span class="arrow-icon-top-right"
+                      >↗</span
+                    ></a
+                  ></strong
+                >
+                <span class="project-date">2021</span>
+              </div>
+              <p class="project-description">
+                Within 24 hours, my team developed Wayve, a screenless wearable
+                prototype that enhances the travel experience for tourists by
+                enabling intuitive interactions with locals and discovering
+                points of interest.
+              </p>
+              <p class="project-keywords-introduction">Key Areas</p>
+              <div class="project-keywords">
+                <span class="keyword">User Research</span>
+                <span class="keyword">Interaction Design</span>
+                <span class="keyword">Physical Prototyping</span>
+              </div>
+            </div>
+            <div class="project-list-item">
+              <div class="project-list-header">
+                <p><strong class="project-title"> BMW Group</strong></p>
+                <span class="project-date">2017</span>
+              </div>
+              <p class="project-description">
+                Developed a virtual keyboard with dynamic target search for a
+                car prototype using Apache Cordova, HTML, CSS, jQuery and JSON.
+              </p>
+              <p class="project-keywords-introduction">Key Areas</p>
+              <div class="project-keywords">
+                <span class="keyword">Web Development</span>
+                <span class="keyword">Prototyping</span>
+                <span class="keyword">Interaction Design</span>
+              </div>
+            </div>
+
+            <div class="project-list-item">
+              <div class="project-list-header">
+                <p>
+                  <strong class="project-title"> BSH Hausgeräte GmbH</strong>
+                </p>
+                <span class="project-date">2016</span>
+              </div>
+              <p class="project-description">
+                Created an interaction concept visualized via a user journey,
+                followed by a physical prototype of an oven control panel with
+                an NFC chip.
+              </p>
+              <p class="project-keywords-introduction">Key Areas</p>
+              <div class="project-keywords">
+                <span class="keyword">Interaction Design</span>
+                <span class="keyword">Physical Prototyping</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="misc" class="section">
+          <h2>More About Me</h2>
+          <br />
+          <p>
+            Outside of design, I value being outdoors with the thrill of
+            occasional spontaneity such as:
+          </p>
+          <!-- Rotating card with indicators -->
+          <div class="card-carousell">
+            <div class="card-carousell-indicator">
+              <div class="card-carousell-indicator-dot active"></div>
+              <div class="card-carousell-indicator-dot"></div>
+              <div class="card-carousell-indicator-dot"></div>
+              <div class="card-carousell-indicator-dot"></div>
+              <div class="card-carousell-indicator-dot"></div>
+            </div>
+            <div class="card-caroussell-content">
+              <!-- Inhalte der Card, jeder Abschnitt wird durch die Klasse "card-section" repräsentiert -->
+              <div class="card-carousell-section" data-index="0">
+                <img
+                  id="cruiseImage"
+                  src="img/assets/img-cruise.jpg"
+                  alt="Catamaran journey"
+                />
+                <div class="overlay">
+                  A two-week catamaran journey from Italy to Tunisia with a
+                  36-hour rainy cruise to Corsica
+                </div>
+              </div>
+              <div class="card-carousell-section" data-index="1">
+                <img
+                  id="koreahikeImage"
+                  src="img/assets/img-korea_hike.jpg"
+                  alt="Mount Seoraksan hike"
+                />
+                <div class="overlay">
+                  An 18-hour autumn hike through Korea’s rugged Mount Seoraksan
+                  fighting Ajumas and Ajussis along the trail
+                </div>
+              </div>
+              <div class="card-carousell-section" data-index="2">
+                <img
+                  id="sleepoverImage"
+                  src="img/assets/img-sleepover.jpg"
+                  alt="Freezing night under stars"
+                />
+                <div class="overlay">
+                  A freezing night spent on a 2000-meter peak under the
+                  brightest stars with only a sleeping bag
+                </div>
+              </div>
+              <div class="card-carousell-section" data-index="3">
+                <img
+                  id="hanbokImage"
+                  src="img/assets/img-korea_hanbok.jpg"
+                  alt="Cultural exploration"
+                />
+                <div class="overlay">
+                  Exploring Korean culture and cuisine (especially Bibimbap or
+                  Mulnaengmyeon)
+                </div>
+              </div>
+              <div class="card-carousell-section" data-index="4">
+                <img
+                  id="beachImage"
+                  src="img/assets/img-beach.jpg"
+                  alt="Beach"
+                />
+                <div class="overlay">
+                  Whether exploring new trails or pushing my limits, I find a
+                  lot of inspiration outdoors.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Dropdown Licenses -->
+          <div class="dropdown">
+            <div class="dropdown-header" onclick="toggleDropdown(this)">
+              <p><strong>Licences and certifications</strong></p>
+              <span class="dropdown-icon">✕</span>
+            </div>
+            <div class="dropdown-content">
+              <ul class="award-list">
+                <li class="award-item">
+                  <p>
+                    <strong>
+                      <a
+                        class="link-button s"
+                        target="_blank"
+                        href="https://courses.bradfrost.com/certificates/qxiavb2uqj"
+                        >Atomic Design Certification Course<span
+                          class="arrow-icon-top-right"
+                          >↗</span
+                        ></a
+                      ></strong
+                    >
+                  </p>
+                  <p class="mb-xs">
+                    <em> Issued by Brad Frost Web | Jun 2026</em>
+                  </p>
+                </li>
+
+                <li class="award-item">
+                  <p>
+                    <strong>
+                      <a
+                        class="link-button s"
+                        target="_blank"
+                        href="https://drive.google.com/file/d/1DkqVNwsiw5eOD1T9ef-S4d21DLvzXxkf/view"
+                        >UX-Writing Foundations<span
+                          class="arrow-icon-top-right"
+                          >↗</span
+                        ></a
+                      ></strong
+                    >
+                  </p>
+                  <p class="mb-xs">
+                    <em>
+                      Issued by The Gondola - UX-Writing Kompetenzzentrum | Jun
+                      2025</em
+                    >
+                  </p>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Dropdown Awards -->
+          <div class="dropdown">
+            <div class="dropdown-header" onclick="toggleDropdown(this)">
+              <p><strong>Achievements and scholarships</strong></p>
+              <span class="dropdown-icon">✕</span>
+            </div>
+            <div class="dropdown-content">
+              <p>
+                Throughout my career and education, I’ve been grateful to
+                receive the following awards:
+              </p>
+
+              <ul class="award-list">
+                <li class="award-item">
+                  <p>
+                    <strong>
+                      🎓 Global Korea Scholarship: Strategic Key Partnership
+                      Countries</strong
+                    >
+                  </p>
+                  <p class="mb-xs">
+                    <em>
+                      Issued by National Institute for International Education
+                      (NIIED) | Sep 2022</em
+                    >
+                  </p>
+
+                  <p>
+                    This scholarship lets international students study in Korea
+                    and experience its culture. Ewha Womans University
+                    recommended four top applicants for final selection.
+                  </p>
+                </li>
+
+                <li class="award-item">
+                  <p>
+                    <strong>
+                      <a
+                        class="link-button s"
+                        target="_blank"
+                        href="https://www.linkedin.com/posts/nextgrid_last-weekend-we-co-hosted-the-first-ai-hackathon-activity-6924695827630186496-qVY-?utm_source=share&utm_medium=member_desktop"
+                        >🥈 2nd Winner - AI Hackathon Salzburg<span
+                          class="arrow-icon-top-right"
+                          >↗</span
+                        ></a
+                      ></strong
+                    >
+                  </p>
+                  <p class="mb-xs">
+                    <em> Issued by FH Salzburg & Nextgrid | Apr 2022</em>
+                  </p>
+
+                  <p>
+                    At the AI Hackathon, our team won second place with “Amby,”
+                    an AI-powered app leveraging GPT-3 and HRV to detect and
+                    manage panic attacks using grounding techniques.
+                  </p>
+                </li>
+                <li class="award-item">
+                  <p>
+                    <strong>
+                      🎓 Performance Scholarship for the academic year
+                      2020/21</strong
+                    >
+                  </p>
+                  <p class="mb-xs">
+                    <em>Issued by FH Salzburg | Dec 2021 </em>
+                  </p>
+
+                  <p>
+                    The scholarship was awarded for the recognition of
+                    outstanding academic achievements.
+                  </p>
+                </li>
+                <li class="award-item">
+                  <p>
+                    <strong>
+                      <a
+                        class="link-button s"
+                        target="_blank"
+                        href="https://www.fh-salzburg.ac.at/en/study/ct/human-computer-interaction-joint-master/projects/wayve-a-wearable-device-for-tourists"
+                      >
+                        🥉 3rd Winner - GastroHackathon 2021<span
+                          class="arrow-icon-top-right"
+                          >↗</span
+                        ></a
+                      ></strong
+                    >
+                  </p>
+                  <p class="mb-xs">
+                    <em> Issued by Independent judge panel | Nov 2021</em>
+                  </p>
+
+                  <p>
+                    At GAST’21, our team of five placed third with our project
+                    “WAYVE.”
+                  </p>
+                </li>
+                <li class="award-item">
+                  <p>
+                    <strong>
+                      <a
+                        class="link-button s"
+                        target="_blank"
+                        href="https://www.fh-salzburg.ac.at/en/study/ct/human-computer-interaction-joint-master/projects/wayve-a-wearable-device-for-tourists"
+                      >
+                        🏅 Social Impact Award - GastroHackathon 2021<span
+                          class="arrow-icon-top-right"
+                          >↗</span
+                        ></a
+                      ></strong
+                    >
+                  </p>
+                  <p class="mb-xs">
+                    <em> Issued by Independent judge panel | Nov 2021</em>
+                  </p>
+
+                  <p>
+                    At GAST’21, our team won the “Social Impact Award” for
+                    “WAYVE,” recognized for its innovative social impact.
+                  </p>
+                </li>
+                <li class="award-item">
+                  <p>
+                    <strong>
+                      <a
+                        class="link-button s"
+                        target="_blank"
+                        href="https://www.linkedin.com/posts/salzburg-ag_wirsindzukunft-salzburgag-youngprofessionals-activity-6838759266568986624-EhmR"
+                      >
+                        🎓 #wirsindzukunft Scholarship
+
+                        <span class="arrow-icon-top-right">↗</span>
+                      </a>
+                    </strong>
+                  </p>
+                  <p class="mb-xs">
+                    <em>
+                      Issued by Salzburg AG für Energie, Verkehr &
+                      Telekommunikation | Sep 2021</em
+                    >
+                  </p>
+
+                  <p>
+                    Salzburg AG awarded 10 scholarships, focusing on technology,
+                    innovation, and sustainability.
+                  </p>
+                </li>
+                <li class="award-item">
+                  <p>
+                    <strong>🎓 Scholarship abroad DAAD PROMOS</strong>
+                  </p>
+                  <p class="mb-xs">
+                    <em>
+                      Issued by German Academic Exchange Service | Aug 2017</em
+                    >
+                  </p>
+
+                  <p>PROMOS supports international mobility for students.</p>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Dropdown Books -->
+          <div class="dropdown">
+            <div class="dropdown-header" onclick="toggleDropdown(this)">
+              <p><strong>What I like to read</strong></p>
+              <span class="dropdown-icon">✕</span>
+            </div>
+            <div class="dropdown-content">
+              <p>
+                I enjoy reading across a wide range of topics. Some highlights
+                are shown here:
+              </p>
+              <br />
+              <ul class="book-list">
+                <li class="book-item">
+                  <img
+                    src="img/assets/book-invisible_women.jpg"
+                    alt="Invisible Women by Caroline Criado Perez"
+                  />
+                  <p>
+                    <strong class="book-title">
+                      Invisible Women by Caroline C. Perez
+                    </strong>
+                    It made me realize how often design overlooks women’s needs,
+                    particularly in health, safety, and efficiency across many
+                    study cases.
+                  </p>
+                </li>
+
+                <li class="book-item">
+                  <img
+                    src="img/assets/book-user_friendly.jpg"
+                    alt="User Friendly by Cliff Kuang and Robert Fabricant"
+                  />
+                  <p>
+                    <strong class="book-title">
+                      User Friendly by Cliff Kuang
+                    </strong>
+                    A key takeaway for me is understanding how design shapes
+                    daily life and the benefits of designing with inclusivity,
+                    especially for disabilities.
+                  </p>
+                </li>
+
+                <li class="book-item">
+                  <img
+                    src="img/assets/book-feel_good_productivity.jpg"
+                    alt="Feel Good Productivity by Ali Abdaal"
+                  />
+                  <p>
+                    <strong class="book-title">
+                      Feel Good Productivity by Ali Abdaal
+                    </strong>
+                    It reminds me to enjoy the journey, rather forcing a
+                    specific outcome. Feeling good and staying sincere, and
+                    approach work with flexibility leads to real productivity.
+                  </p>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </section>
+        <section class="call-to-action" id="contact">
+          <h2>Interested in connecting?</h2>
+          <br />
+          <p>
+            I’d love to hear from you! Whether you have questions, want to
+            explore something further, or just feel like saying hi, don’t
+            hesitate to reach out.
+          </p>
+          <div class="contact-container">
+            <!-- Email Section -->
+            <div class="email-section">
+              <p class="label">Email</p>
+              <p class="email fw-400">m.giang@hotmail.de</p>
+              <button class="copy-btn button" onclick="copyToClipboard()">
+                Copy Email
+              </button>
+            </div>
+
+            <!-- LinkedIn and Resume Section -->
+            <div class="other-links">
+              <!-- LinkedIn -->
+              <a
+                target="_blank"
+                class="link-card"
+                href="https://www.linkedin.com/in/michael-giang"
+              >
+                <div class="icon-container">
+                  <svg
+                    width="32"
+                    height="32"
+                    viewBox="0 0 32 32"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M25.3333 4C26.0406 4 26.7189 4.28095 27.219 4.78105C27.719 5.28115 28 5.95942 28 6.66667V25.3333C28 26.0406 27.719 26.7189 27.219 27.219C26.7189 27.719 26.0406 28 25.3333 28H6.66667C5.95942 28 5.28115 27.719 4.78105 27.219C4.28095 26.7189 4 26.0406 4 25.3333V6.66667C4 5.95942 4.28095 5.28115 4.78105 4.78105C5.28115 4.28095 5.95942 4 6.66667 4H25.3333ZM24.6667 24.6667V17.6C24.6667 16.4472 24.2087 15.3416 23.3936 14.5264C22.5784 13.7113 21.4728 13.2533 20.32 13.2533C19.1867 13.2533 17.8667 13.9467 17.2267 14.9867V13.5067H13.5067V24.6667H17.2267V18.0933C17.2267 17.0667 18.0533 16.2267 19.08 16.2267C19.5751 16.2267 20.0499 16.4233 20.3999 16.7734C20.75 17.1235 20.9467 17.5983 20.9467 18.0933V24.6667H24.6667ZM9.17333 11.4133C9.76742 11.4133 10.3372 11.1773 10.7573 10.7573C11.1773 10.3372 11.4133 9.76742 11.4133 9.17333C11.4133 7.93333 10.4133 6.92 9.17333 6.92C8.57571 6.92 8.00257 7.1574 7.57999 7.57999C7.1574 8.00257 6.92 8.57571 6.92 9.17333C6.92 10.4133 7.93333 11.4133 9.17333 11.4133ZM11.0267 24.6667V13.5067H7.33333V24.6667H11.0267Z"
+                      fill="currentColor"
+                    />
+                  </svg>
+                </div>
+                <p class="s">LinkedIn</p>
+              </a>
+
+              <!-- Resume -->
+              <a
+                href="https://drive.google.com/file/d/1LXZRX8sWdNtL2Q_f804BxYJWQXL-Mb_8/view?usp=sharing"
+                target="_blank"
+                class="link-card"
+              >
+                <div class="icon-container">
+                  <svg
+                    width="32"
+                    height="32"
+                    viewBox="0 0 32 32"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      clip-rule="evenodd"
+                      d="M4 6.6C4 5.16406 5.16406 4 6.6 4H25.4C26.8359 4 28 5.16406 28 6.6V25.4C28 26.8359 26.8359 28 25.4 28H6.6C5.16406 28 4 26.8359 4 25.4V6.6ZM18.6429 12.1196L20.4327 18.273H20.5009L22.2907 12.1196H24.9668L22.0861 20.8469H18.8475L15.9668 12.1196H18.6429ZM12.7784 15.392H15.1818C15.1364 14.8494 15.0071 14.3679 14.794 13.9474C14.581 13.527 14.2997 13.1733 13.9503 12.8864C13.6009 12.5966 13.1946 12.3764 12.7315 12.2259C12.2685 12.0753 11.7614 12 11.2102 12C10.4261 12 9.71591 12.1719 9.07955 12.5156C8.44318 12.8565 7.9375 13.3608 7.5625 14.0284C7.1875 14.6932 7 15.5114 7 16.483C7 17.4489 7.18324 18.2656 7.54972 18.9332C7.91903 19.6009 8.42045 20.1065 9.05398 20.4503C9.69034 20.794 10.4091 20.9659 11.2102 20.9659C11.8494 20.9659 12.4105 20.8679 12.8935 20.6719C13.3764 20.4759 13.7812 20.2173 14.108 19.8963C14.4375 19.5724 14.6918 19.2202 14.8707 18.8395C15.0497 18.456 15.1534 18.0795 15.1818 17.7102L12.7784 17.6932C12.75 17.8807 12.6946 18.0497 12.6122 18.2003C12.5327 18.348 12.429 18.4744 12.3011 18.5795C12.1733 18.6847 12.0227 18.7656 11.8494 18.8224C11.6761 18.8764 11.4801 18.9034 11.2614 18.9034C10.8778 18.9034 10.5497 18.8139 10.277 18.6349C10.0043 18.4531 9.79545 18.1832 9.65057 17.8253C9.50852 17.4645 9.4375 17.017 9.4375 16.483C9.4375 15.9773 9.5071 15.544 9.64631 15.1832C9.78835 14.8224 9.99574 14.5455 10.2685 14.3523C10.544 14.1591 10.8807 14.0625 11.2784 14.0625C11.5057 14.0625 11.7088 14.0952 11.8878 14.1605C12.0668 14.223 12.2188 14.3139 12.3438 14.4332C12.4716 14.5497 12.571 14.6889 12.642 14.8509C12.7159 15.0128 12.7614 15.1932 12.7784 15.392Z"
+                      fill="currentColor"
+                    />
+                  </svg>
+                </div>
+                <p class="s">Resume</p>
+              </a>
+            </div>
+          </div>
+        </section>
+
+        <footer class="footer">
+          <p>
+            Concept and design through Figma and coded in Visual Studio Code.
+            Built with Vanilla HTML, CSS, and JS.
+          </p>
+          <br />
+          <p>Copyright © 2026 Michael Giang. All Rights Reserved.</p>
+        </footer>
+      </div>
+    </div>
+
+    <script src="main.js"></script>
+    <script src="script.js"></script>
+    <script src="carousell.js"></script>
+  </body>
+</html>

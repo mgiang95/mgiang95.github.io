@@ -1,0 +1,584 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Case: WinCredit 3 - Design System</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Standard Favicon -->
+    <link rel="icon" href="img/assets/favicon_io/favicon.ico" sizes="any" />
+    <!-- 16x16, 32x32, 48x48... -->
+
+    <!-- PNG-Icons für verschiedene Geräte und Bildschirme -->
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="img/assets/favicon_io/favicon-32x32.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="48x48"
+      href="img/assets/favicon_io/favicon-48x48.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="192x192"
+      href="img/assets/favicon_io/android-chrome-192x192.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="512x512"
+      href="img/assets/favicon_io/android-chrome-512x512.png"
+    />
+
+    <!-- Apple Touch Icon für iOS -->
+    <link
+      rel="apple-touch-icon"
+      href="img/assets/favicon_io/apple-touch-icon.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="img/assets/favicon_io/apple-touch-icon-180x180.png"
+    />
+    <!-- Manifest für Android -->
+    <link rel="manifest" href="img/assets/favicon_io/site.webmanifest" />
+  </head>
+  <body class="case-body">
+    <!-- Zurück-Link -->
+
+    <main class="case-main">
+      <section class="case-section">
+        <!-- Hero Bild -->
+        <img
+          src="img/usecase/BNI_DS-hero.jpg"
+          alt="BNI Use Case 1: Hero Image"
+          class="hero-image fade-in-on-scroll"
+        />
+
+        <div class="case-text">
+          <div class="navigation-links">
+            <a id="back-link" href="#" class="back-link fw-500 mb-xs">
+              <span class="arrow-icon-left">←</span>Back to previous page
+            </a>
+          </div>
+          <h1 class="mb-xxs">
+            Migrating the Component Library from Adobe XD to Figma
+          </h1>
+        </div>
+      </section>
+      <!-- Project Context -->
+      <section class="case-section">
+        <div class="case-text mb-sm">
+          <h2>Project Context</h2>
+          <br />
+          <p>
+            As part of the <em>WinCredit 3</em> project, our design team
+            migrated the component library from Adobe XD to Figma. The goal was
+            to establish a scalable and efficient design system that could
+            support not only <em>WinCredit 3</em> but also other company
+            products. This system became a central source of truth, accessible
+            to designers and stakeholders for assets, patterns and code
+            components.
+          </p>
+          <br />
+          <p>
+            There was central design language, but individual child themes were
+            derived depending on the project. These individual themes mostly
+            affected color, fonts, spacing, assets or border radiuses. Since
+            every product had Bootstrap 5 as foundational framework, this would
+            also streamline processes within the design team.
+          </p>
+        </div>
+        <figure>
+          <img
+            src="img/usecase/BNI_DS-css-hierarchy.jpg"
+            alt="CSS hierarchy"
+            class="case-image fade-in-on-scroll"
+          />
+          <figcaption>
+            There was central design language, but individual child themes were
+            derived depending on the project
+          </figcaption>
+        </figure>
+      </section>
+
+      <!--  Problem Statement -->
+      <section class="case-section">
+        <div class="case-text">
+          <h2>Problem statement</h2>
+          <br />
+          <p>
+            Before the project began, Adobe XD was the main tool to design
+            components, but it had become outdated in recent years. Tasks like
+            creating high-fidelity screens became increasingly tedious as
+            projects grew in complexity.
+          </p>
+          <br />
+          <p>
+            The other two designers had primarily been focused on
+            cross-functional work and developing new features, which left less
+            time for maintaining the components. This contributed to some
+            inconsistencies across the designs.
+          </p>
+          <br />
+          <p>
+            Although an initial cost-benefit analysis suggested that migrating
+            to Figma might not be essential, growing design requirements, new
+            functionality, and the launch of WinCredit 3 made the transition
+            viable.
+          </p>
+          <br />
+        </div>
+        <figure>
+          <img
+            src="img/usecase/BNI_DS-layout_inconsistencies.jpg"
+            alt="Layout inconsistencies"
+            class="case-image fade-in-on-scroll"
+          />
+          <figcaption>
+            Growing design requirements contributed to some inconsistencies
+          </figcaption>
+        </figure>
+      </section>
+
+      <!--  Responsibilities -->
+      <section class="case-section">
+        <div class="case-text">
+          <h2>My responsibilities</h2>
+          <br />
+          <ul class="styled-list">
+            <li>
+              <p>Conduct a visual audit</p>
+            </li>
+            <li>
+              <p>Component library migration</p>
+            </li>
+            <li>
+              <p>Standardized design library for cross-project consistency</p>
+            </li>
+            <li>
+              <p>
+                Continuous optimization of components and screen design process
+              </p>
+            </li>
+            <li>
+              <p>Stakeholder education</p>
+            </li>
+          </ul>
+          <br />
+        </div>
+      </section>
+
+      <!--  Visual audit -->
+      <section class="case-section">
+        <div class="case-text">
+          <h2>Conduct a visual audit</h2>
+          <br />
+          <p>
+            To maintain design integrity, I conducted a visual audit of the
+            existing assets and components to gain an understanding of the
+            environment. I began by taking inventory of the actual
+            implementation and compared it with the design components, reviewing
+            styles to identify inconsistencies and outdated classes. Next, I
+            focused on the visual qualities of the elements, such as color,
+            typography, and spacing. This involved looking for inconsistencies
+            and making necessary adjustments to bring them up to standard.
+          </p>
+          <br />
+        </div>
+        <figure>
+          <img
+            src="img/usecase/BNI_DS-visual_audit.jpg"
+            alt="Layout inconsistencies"
+            class="case-image fade-in-on-scroll"
+          />
+          <figcaption>
+            The visual audit consisted of taking inventory of the actual
+            implementation and compared it with the design components
+          </figcaption>
+        </figure>
+      </section>
+
+      <!--  Component library migration -->
+      <section class="case-section">
+        <div class="case-text">
+          <h2>Component library migration</h2>
+          <br />
+          <p>
+            I was responsible for transitioning the entire component library
+            from Adobe XD to Figma. For the process I drew inspiration from
+            articles by
+            <a
+              class="link-text-inline"
+              target="_blank"
+              href="https://www.alicepackarddesign.com/blog/12-ways-to-make-your-figma-components-more-delightful-to-use"
+              >Alice Packard</a
+            >
+            and the
+            <a
+              class="link-text-inline"
+              target="_blank"
+              href="https://medium.com/doctolib/building-smarter-figma-components-crafting-for-efficiency-91704229643"
+              >design team of DoctorLib</a
+            >
+            while adhering to the specified QA standards.
+          </p>
+          <br />
+          <p>
+            This process involved rebuilding each component from scratch to
+            ensure consistency and precision. I established patterns for layer
+            naming conventions and usage guides to improve clarity. In addition,
+            I set conventions to leverage advanced design components such as
+            swap properties and starter-kits to streamline the workflow.
+          </p>
+          <br />
+          <p>
+            During the transition, I encountered initial performance issues with
+            stakeholders, particularly related to layer count and file size,
+            which I addressed by optimizing the components for example by
+            reducing hidden layers and separating loaded design files in feature
+            epics.
+          </p>
+          <br />
+        </div>
+        <figure>
+          <img
+            src="img/usecase/BNI_DS-qa_assurance.jpg"
+            alt="Quality Assurance"
+            class="case-image fade-in-on-scroll"
+          />
+          <figcaption>
+            Component where built from scratch adhering to specified QA
+            standards
+          </figcaption>
+        </figure>
+      </section>
+
+      <!--  Standardized design library -->
+      <section class="case-section">
+        <div class="case-text">
+          <h2>Standardized design library for cross-project consistency</h2>
+          <br />
+          <p>
+            In the trajectory of the project, standards for design components
+            and interaction patterns were defined in a library in collaboration
+            with the design team. It follows
+            <a
+              class="link-text-inline"
+              target="_blank"
+              href="https://atomicdesign.bradfrost.com/chapter-2/"
+              >Brad Frost's atomic design paradigm</a
+            >
+            while reflecting the documentation structure of Bootstrap 5, which
+            is the visual code base of the product family. Instead of atoms,
+            molecules and organisms, we categorized out files to such as
+            components, layout, forms and content. This step helped to ensure
+            that all designers and developers were able to navigate across four
+            different projects.
+          </p>
+          <br />
+        </div>
+        <figure>
+          <img
+            src="img/usecase/BNI_DS-design_system_components.jpg"
+            alt="Design system components"
+            class="case-image fade-in-on-scroll"
+          />
+          <figcaption>
+            The hierarchy of the design files reflected the Bootstrap 5
+            documentation
+          </figcaption>
+        </figure>
+      </section>
+
+      <!--  Continuous optimization -->
+      <section class="case-section">
+        <div class="case-text">
+          <h2>
+            Continuous optimization of components and screen design process
+          </h2>
+          <br />
+          <p>
+            As part of my responsibility, I continuously improved the components
+            based on feedback from the design team. For example, I introduced
+            the switch from base components to the use of swap component
+            properties in the component library to facilitate maintainability.
+            This approach ensured that the components not only met the current
+            project requirements, but were modular to implement in future
+            applications.
+          </p>
+          <br />
+          <p>
+            With new component iterations, I introduced a process to indicate
+            and archive deprecated components (inspired by the
+            <a
+              class="link-text-inline"
+              target="_blank"
+              href="https://www.youtube.com/watch?t=703&v=LjFIUk1MNp8&feature=youtu.be"
+              >Verizon product team</a
+            >). In another case, I improved the efficiency of the screen design
+            workflow by introducing starter kits for more complex components,
+            such as accordions, modals or tables. These starter kits became
+            important tools for other designers, allowing them to quickly
+            implement standard components without having to start from scratch.
+          </p>
+          <br />
+        </div>
+        <figure>
+          <img
+            src="img/usecase/BNI_DS-deprecated_mode.jpg"
+            alt="Design system components"
+            class="case-image fade-in-on-scroll"
+          />
+          <figcaption>
+            The hierarchy of the design files reflected the Bootstrap 5
+            documentation
+          </figcaption>
+        </figure>
+      </section>
+
+      <!--  Stakeholder education -->
+      <section class="case-section">
+        <div class="case-text">
+          <h2>Stakeholder Education</h2>
+          <br />
+          <p>
+            Finally, I facilitated several brown-bag sessions to onboard the
+            design team and scrum team. These sessions ensured that everyone
+            involved could get familiar with Figma and navigate through new
+            design system in their respective roles. It also involved weekly
+            open hours to improve component composition and monthly session to
+            discuss further opportunities such as implementing variables or
+            plugins.
+          </p>
+
+          <br />
+        </div>
+        <figure>
+          <img
+            src="img/usecase/BNI_DS-stakeholder_education.jpg"
+            alt="Brown-bag session"
+            class="case-image fade-in-on-scroll"
+          />
+          <figcaption>
+            Brown-bag sessions helped to introduce how to navigate through the
+            file structure
+          </figcaption>
+        </figure>
+      </section>
+
+      <!-- Challenges faced -->
+      <section class="case-section mb-xs">
+        <div class="case-text">
+          <h2>Challenges faced</h2>
+          <br />
+          <p>
+            The main challenge was to create an appropriate shared resource and
+            understanding for all stakeholders, while ensuring that this design
+            system was ready for production. Whilst I had experience of setting
+            up Figma components from previous projects, in most cases the system
+            was set up for other designers. Therefore, this project required
+            attention to detail as well as collaboration between the different
+            disciplines and the pace to finish deliverables.
+          </p>
+          <br />
+          <p>
+            Another challenge during the design was the performance and file
+            size of the components within Figma. While in the project, we had
+            issues with loading times as all the designs were located in a few
+            files. Splitting the files into several was one option, but to find
+            a sustainable solution I also had to rework the component files to
+            reduce complexity and layer count.
+          </p>
+          <br />
+        </div>
+      </section>
+
+      <!-- Outcome -->
+      <section class="case-section mb-xs">
+        <div class="case-text">
+          <h2>Outcome</h2>
+          <br />
+          <p>
+            The transition to Figma not only improved the scalability of the
+            design system but also streamlined collaboration between designers
+            and developers. My contributions to this project led to the
+            following results:
+          </p>
+          <br />
+
+          <div class="case-overview">
+            <div class="pin">📌</div>
+
+            <div class="case-overview-content">
+              <p class="mb-xxs">
+                <strong>Key achievements</strong>
+              </p>
+              <ul class="styled-list">
+                <li>
+                  <p>
+                    A fully production-ready design system used across multiple
+                    products
+                  </p>
+                </li>
+                <li>
+                  <p>
+                    Improved scalability and flexibility of the design system
+                  </p>
+                </li>
+                <li>
+                  <p>
+                    Streamlined collaboration between designers and developers
+                  </p>
+                </li>
+                <li>
+                  <p>
+                    Ensured high quality and eliminated duplicate components
+                  </p>
+                </li>
+
+                <li>
+                  <p>
+                    Design processes such as deprecation mode, starter kits,
+                    basic variables introduction
+                  </p>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- Lessons Learned -->
+      <section class="case-section mb-xs">
+        <div class="case-text">
+          <h2>Lessons learned</h2>
+          <br />
+          <p>
+            Looking back, the decision to migrate to Figma was a crucial step in
+            future-proofing the design system, both for this and future
+            projects. In an earlier design job in 2021, I had suggested the
+            creation of a dedicated “librarian” role to manage component
+            libraries. However, this idea was not implemented at the time due to
+            cost-benefit concerns.
+          </p>
+          <br />
+          <p>
+            This project highlighted the significance of that role even more, as
+            maintaining a healthy design system requires ongoing attention.
+            Nevertheless, it was a balancing between the maintenance of the
+            library and the primary goal of meeting deliverable deadlines. When
+            feature releases became more urgent, it was tangible that the
+            library was getting dusted, highlighting that it is a living
+            document after all.
+          </p>
+          <br />
+        </div>
+      </section>
+      <!-- CTA -->
+      <section class="call-to-action case-text" id="contact">
+        <h2>Interested in connecting?</h2>
+        <br />
+        <p>
+          I’d love to hear from you! Whether you have questions, want to explore
+          something further, or just feel like saying hi, don’t hesitate to
+          reach out.
+        </p>
+        <div class="contact-container">
+          <!-- Email Section -->
+          <div class="email-section">
+            <p class="label">Email</p>
+            <p class="email">m.giang@hotmail.de</p>
+            <button class="copy-btn button" onclick="copyToClipboard()">
+              Copy Email
+            </button>
+          </div>
+
+          <!-- LinkedIn and Resume Section -->
+          <div class="other-links">
+            <!-- LinkedIn -->
+            <a
+              href="https://www.linkedin.com/in/michael-giang"
+              target="_blank"
+              class="link-card"
+            >
+              <div class="icon-container">
+                <svg
+                  width="32"
+                  height="32"
+                  viewBox="0 0 32 32"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M25.3333 4C26.0406 4 26.7189 4.28095 27.219 4.78105C27.719 5.28115 28 5.95942 28 6.66667V25.3333C28 26.0406 27.719 26.7189 27.219 27.219C26.7189 27.719 26.0406 28 25.3333 28H6.66667C5.95942 28 5.28115 27.719 4.78105 27.219C4.28095 26.7189 4 26.0406 4 25.3333V6.66667C4 5.95942 4.28095 5.28115 4.78105 4.78105C5.28115 4.28095 5.95942 4 6.66667 4H25.3333ZM24.6667 24.6667V17.6C24.6667 16.4472 24.2087 15.3416 23.3936 14.5264C22.5784 13.7113 21.4728 13.2533 20.32 13.2533C19.1867 13.2533 17.8667 13.9467 17.2267 14.9867V13.5067H13.5067V24.6667H17.2267V18.0933C17.2267 17.0667 18.0533 16.2267 19.08 16.2267C19.5751 16.2267 20.0499 16.4233 20.3999 16.7734C20.75 17.1235 20.9467 17.5983 20.9467 18.0933V24.6667H24.6667ZM9.17333 11.4133C9.76742 11.4133 10.3372 11.1773 10.7573 10.7573C11.1773 10.3372 11.4133 9.76742 11.4133 9.17333C11.4133 7.93333 10.4133 6.92 9.17333 6.92C8.57571 6.92 8.00257 7.1574 7.57999 7.57999C7.1574 8.00257 6.92 8.57571 6.92 9.17333C6.92 10.4133 7.93333 11.4133 9.17333 11.4133ZM11.0267 24.6667V13.5067H7.33333V24.6667H11.0267Z"
+                    fill="currentColor"
+                  />
+                </svg>
+              </div>
+              <p class="s">LinkedIn</p>
+            </a>
+
+            <!-- Resume -->
+            <a
+              href="https://drive.google.com/file/d/1LXZRX8sWdNtL2Q_f804BxYJWQXL-Mb_8/view?usp=sharing"
+              target="_blank"
+              class="link-card"
+            >
+              <div class="icon-container">
+                <svg
+                  width="32"
+                  height="32"
+                  viewBox="0 0 32 32"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    clip-rule="evenodd"
+                    d="M4 6.6C4 5.16406 5.16406 4 6.6 4H25.4C26.8359 4 28 5.16406 28 6.6V25.4C28 26.8359 26.8359 28 25.4 28H6.6C5.16406 28 4 26.8359 4 25.4V6.6ZM18.6429 12.1196L20.4327 18.273H20.5009L22.2907 12.1196H24.9668L22.0861 20.8469H18.8475L15.9668 12.1196H18.6429ZM12.7784 15.392H15.1818C15.1364 14.8494 15.0071 14.3679 14.794 13.9474C14.581 13.527 14.2997 13.1733 13.9503 12.8864C13.6009 12.5966 13.1946 12.3764 12.7315 12.2259C12.2685 12.0753 11.7614 12 11.2102 12C10.4261 12 9.71591 12.1719 9.07955 12.5156C8.44318 12.8565 7.9375 13.3608 7.5625 14.0284C7.1875 14.6932 7 15.5114 7 16.483C7 17.4489 7.18324 18.2656 7.54972 18.9332C7.91903 19.6009 8.42045 20.1065 9.05398 20.4503C9.69034 20.794 10.4091 20.9659 11.2102 20.9659C11.8494 20.9659 12.4105 20.8679 12.8935 20.6719C13.3764 20.4759 13.7812 20.2173 14.108 19.8963C14.4375 19.5724 14.6918 19.2202 14.8707 18.8395C15.0497 18.456 15.1534 18.0795 15.1818 17.7102L12.7784 17.6932C12.75 17.8807 12.6946 18.0497 12.6122 18.2003C12.5327 18.348 12.429 18.4744 12.3011 18.5795C12.1733 18.6847 12.0227 18.7656 11.8494 18.8224C11.6761 18.8764 11.4801 18.9034 11.2614 18.9034C10.8778 18.9034 10.5497 18.8139 10.277 18.6349C10.0043 18.4531 9.79545 18.1832 9.65057 17.8253C9.50852 17.4645 9.4375 17.017 9.4375 16.483C9.4375 15.9773 9.5071 15.544 9.64631 15.1832C9.78835 14.8224 9.99574 14.5455 10.2685 14.3523C10.544 14.1591 10.8807 14.0625 11.2784 14.0625C11.5057 14.0625 11.7088 14.0952 11.8878 14.1605C12.0668 14.223 12.2188 14.3139 12.3438 14.4332C12.4716 14.5497 12.571 14.6889 12.642 14.8509C12.7159 15.0128 12.7614 15.1932 12.7784 15.392Z"
+                    fill="currentColor"
+                  />
+                </svg>
+              </div>
+              <p class="s">Resume</p>
+            </a>
+          </div>
+        </div>
+      </section>
+      <!-- Footer -->
+      <section class="case-section">
+        <div class="case-text">
+          <div class="navigation-links">
+            <a id="back-link" href="#" class="back-link fw-500 mb-xs">
+              <span class="arrow-icon-left">←</span>Back to previous page
+            </a>
+            <a
+              id="next-usecase-link"
+              href="usecase-connect_desk.html"
+              class="next-link fw-500 mb-xs"
+            >
+              Read next use case: connect:desk<span class="arrow-icon-right"
+                >→</span
+              >
+            </a>
+          </div>
+          <footer class="case-footer">
+            <p>Copyright © 2026 Michael Giang. All Rights Reserved.</p>
+          </footer>
+        </div>
+      </section>
+    </main>
+    <script src="main.js"></script>
+  </body>
+</html>
