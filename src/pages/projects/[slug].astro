@@ -1,0 +1,201 @@
+---
+import { getCollection, getEntry, render } from "astro:content";
+import { Image } from "astro:assets";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Badge from "../../components/Badge.astro";
+
+export async function getStaticPaths() {
+  // Featured cases and their sub-cases get pages; short "more projects"
+  // entries only appear in the overview list.
+  const entries = await getCollection(
+    "projects",
+    ({ data }) => data.featured || data.parent !== undefined,
+  );
+  return entries.map((entry) => ({
+    params: { slug: entry.id },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { title, subtitle, description, period, role, client, externalUrl, keywords, heroImage, achievements, parent } =
+  entry.data;
+const { Content } = await render(entry);
+const parentEntry = parent ? await getEntry(parent) : undefined;
+---
+
+<BaseLayout title={title} description={description}>
+  <article class="case">
+    {
+      parentEntry && (
+        <p class="case__breadcrumb">
+          <a href={`/projects/${parentEntry.id}`}>
+            ← Part of: {parentEntry.data.title}
+          </a>
+        </p>
+      )
+    }
+    <header class="case__header">
+      <h1 class="case__title">{title}</h1>
+      <p class="case__subtitle">{subtitle}</p>
+    </header>
+
+    {
+      heroImage && (
+        <Image
+          class="case__hero"
+          src={heroImage}
+          alt=""
+          widths={[720, 1200, 1800]}
+          sizes="(min-width: 76rem) 72rem, 100vw"
+        />
+      )
+    }
+
+    <dl class="case__facts">
+      <div class="case__fact">
+        <dt>Role</dt>
+        <dd>{role}</dd>
+      </div>
+      <div class="case__fact">
+        <dt>Period</dt>
+        <dd>{period}</dd>
+      </div>
+      {
+        client && (
+          <div class="case__fact">
+            <dt>Client</dt>
+            <dd>
+              {externalUrl ? <a href={externalUrl}>{client}</a> : client}
+            </dd>
+          </div>
+        )
+      }
+      <div class="case__fact">
+        <dt>Key areas</dt>
+        <dd>
+          <ul class="case__keywords">
+            {
+              keywords.map((keyword) => (
+                <li>
+                  <Badge>{keyword}</Badge>
+                </li>
+              ))
+            }
+          </ul>
+        </dd>
+      </div>
+    </dl>
+
+    <div class="prose case__body">
+      <Content />
+    </div>
+
+    {
+      achievements && (
+        <aside class="case__achievements" aria-labelledby="achievements-heading">
+          <h2 class="case__achievements-heading" id="achievements-heading">
+            Key achievements
+          </h2>
+          <ul>
+            {achievements.map((item) => (
+              <li>{item}</li>
+            ))}
+          </ul>
+        </aside>
+      )
+    }
+
+    <nav class="case__footer-nav" aria-label="Case study navigation">
+      <a href="/projects">← All projects</a>
+    </nav>
+  </article>
+</BaseLayout>
+
+<style>
+  .case__breadcrumb {
+    margin-block-end: var(--space-stack-md);
+    font-family: var(--typography-label-family);
+    font-size: var(--typography-label-size);
+  }
+
+  .case__header {
+    display: grid;
+    gap: var(--space-stack-sm);
+    margin-block-end: var(--space-stack-lg);
+  }
+
+  .case__title {
+    max-width: 24ch;
+  }
+
+  .case__subtitle {
+    font-size: var(--typography-lead-size);
+    color: var(--color-text-secondary);
+    max-width: 55ch;
+  }
+
+  .case__hero {
+    inline-size: 100%;
+    block-size: auto;
+    border: 1px solid var(--color-border-default);
+  }
+
+  .case__facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-stack-sm) var(--space-inline-xl);
+    margin-block: var(--space-stack-lg);
+    padding: var(--space-inset-md);
+    border-block: 1px solid var(--color-border-default);
+  }
+
+  .case__fact dt {
+    font-family: var(--typography-label-family);
+    font-size: var(--typography-label-size);
+    color: var(--color-text-muted);
+  }
+
+  .case__fact dd {
+    margin: 0;
+  }
+
+  .case__keywords {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-inline-sm);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .case__body {
+    max-width: 65ch;
+  }
+
+  .case__achievements {
+    margin-block-start: var(--space-stack-lg);
+    padding: var(--space-inset-lg);
+    background: var(--color-surface-sunken);
+    border-inline-start: var(--space-inline-xs) solid var(--color-surface-accent);
+    max-width: 65ch;
+  }
+
+  .case__achievements-heading {
+    font-size: var(--typography-heading-sm-size);
+    margin-block-end: var(--space-stack-sm);
+  }
+
+  .case__achievements ul {
+    margin: 0;
+    padding-inline-start: var(--space-inset-lg);
+    display: grid;
+    gap: var(--space-stack-xs);
+  }
+
+  .case__footer-nav {
+    margin-block-start: var(--space-stack-xl);
+    font-family: var(--typography-label-family);
+    font-size: var(--typography-label-size);
+  }
+</style>

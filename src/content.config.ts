@@ -36,6 +36,8 @@ const projects = defineCollection({
 const timeline = defineCollection({
   loader: glob({ pattern: "**/*.yaml", base: "./src/content/timeline" }),
   schema: z.object({
+    /** Changelog framing: semver label shown in the CV timeline. */
+    version: z.string(),
     order: z.number(),
     type: z.enum(["work", "education"]),
     title: z.string(),

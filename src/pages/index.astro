@@ -1,6 +1,13 @@
 ---
+import { getCollection } from "astro:content";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import ThemePanel from "../components/ThemePanel.tsx";
+import ProjectCard from "../components/ProjectCard.astro";
+import Button from "../components/Button.astro";
+
+const featured = (
+  await getCollection("projects", ({ data }) => data.featured)
+).sort((a, b) => a.data.order - b.data.order);
 ---
 
 <BaseLayout
@@ -15,10 +22,25 @@ import ThemePanel from "../components/ThemePanel.tsx";
         Zurich. Everything here resolves from design tokens — try it: change
         hue, scheme and density. Contrast stays AA by construction.
       </p>
+      <p class="hero__cta">
+        <Button href="/system" variant="secondary">
+          Read how this site is built
+        </Button>
+      </p>
     </div>
     <div class="hero__panel">
       <ThemePanel client:idle />
     </div>
+  </section>
+
+  <section class="teasers" aria-labelledby="teasers-heading">
+    <h2 id="teasers-heading">Selected work</h2>
+    <div class="teasers__grid">
+      {featured.map((project) => <ProjectCard project={project} />)}
+    </div>
+    <p class="teasers__all">
+      <a href="/projects">All projects →</a>
+    </p>
   </section>
 </BaseLayout>
 
@@ -48,7 +70,30 @@ import ThemePanel from "../components/ThemePanel.tsx";
 
   .hero__lead {
     max-width: 55ch;
-    font-size: var(--font-size-400);
+    font-size: var(--typography-lead-size);
     color: var(--color-text-secondary);
+  }
+
+  .teasers {
+    padding-block: var(--space-stack-xl);
+  }
+
+  .teasers__grid {
+    display: grid;
+    gap: var(--space-stack-lg);
+    margin-block-start: var(--space-stack-lg);
+  }
+
+  @media (min-width: 60rem) {
+    .teasers__grid {
+      grid-template-columns: repeat(3, 1fr);
+      column-gap: var(--space-inline-lg);
+    }
+  }
+
+  .teasers__all {
+    margin-block-start: var(--space-stack-md);
+    font-family: var(--typography-label-family);
+    font-size: var(--typography-label-size);
   }
 </style>

@@ -11,14 +11,17 @@ interface Props {
   meta: string;
   /** Human-readable period, e.g. "2018 – 2020". */
   period: string;
+  /** Changelog framing: semver label, e.g. "4.0". */
+  version?: string;
 }
 
-const { title, meta, period } = Astro.props;
+const { title, meta, period, version } = Astro.props;
 ---
 
 <li class="timeline-item">
   <span class="timeline-item__marker" aria-hidden="true"></span>
   <div class="timeline-item__content">
+    {version && <p class="timeline-item__version">v{version}</p>}
     <h3 class="timeline-item__title">{title}</h3>
     <p class="timeline-item__meta">{meta}</p>
     <p class="timeline-item__period">{period}</p>
@@ -58,6 +61,13 @@ const { title, meta, period } = Astro.props;
     inline-size: var(--timeline-marker-size);
     block-size: var(--timeline-marker-size);
     background: var(--timeline-marker-background);
+  }
+
+  .timeline-item__version {
+    font-family: var(--typography-label-family);
+    font-size: var(--typography-label-size);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-interactive-default);
   }
 
   .timeline-item__meta {

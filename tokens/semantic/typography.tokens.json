@@ -4,6 +4,14 @@
       "$description": "Small technical labels: badges, token names, meta text. Mono per design direction.",
       "size": { "$value": "{font.size.200}", "$type": "dimension" },
       "family": { "$value": "{font.family.mono}", "$type": "fontFamily" }
+    },
+    "heading-sm": {
+      "$description": "Compact headings inside components (card titles, timeline entries).",
+      "size": { "$value": "{font.size.500}", "$type": "dimension" }
+    },
+    "lead": {
+      "$description": "Intro/lead paragraphs, slightly above body size.",
+      "size": { "$value": "{font.size.400}", "$type": "dimension" }
     }
   }
 }

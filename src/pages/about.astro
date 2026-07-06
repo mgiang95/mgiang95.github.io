@@ -1,21 +1,196 @@
 ---
+import { getCollection, getEntry, render } from "astro:content";
+import { Image } from "astro:assets";
 import BaseLayout from "../layouts/BaseLayout.astro";
+import TimelineItem from "../components/TimelineItem.astro";
+import { inlineMarkdown } from "../lib/inline-md";
+
+const intro = await getEntry("about", "intro");
+if (!intro) throw new Error("about/intro.md missing");
+const { Content: Bio } = await render(intro);
+
+const timeline = (await getCollection("timeline")).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+
+const certifications = (await getCollection("certifications")).sort((a, b) =>
+  b.data.date.localeCompare(a.data.date),
+);
+
+/** "2022-09" -> "Sep 2022" for display. */
+function formatDate(date: string): string {
+  const [year, month] = date.split("-").map(Number);
+  return new Date(year, month - 1).toLocaleString("en", {
+    month: "short",
+    year: "numeric",
+  });
+}
+
+function formatPeriod(start: Date, end: Date | null): string {
+  const fmt = (d: Date) =>
+    d.toLocaleString("en", { month: "short", year: "numeric" });
+  return end ? `${fmt(start)} – ${fmt(end)}` : `since ${fmt(start)}`;
+}
 ---
 
 <BaseLayout
   title="About"
-  description="About Michael Giang — Design System Engineer and UX Designer in Zurich."
+  description="About Michael Giang — Design System Engineer and UX Designer in Zurich: bio, changelog-style CV and certifications."
 >
-  <h1>About</h1>
-  <p class="page-placeholder">
-    Bio and the changelog-style CV timeline will land here in a later phase.
-  </p>
+  <section class="about__intro">
+    <div class="about__bio">
+      <h1>About</h1>
+      <p class="about__tagline">{intro.data.tagline}</p>
+      <div class="prose">
+        <Bio />
+      </div>
+    </div>
+    {
+      intro.data.profileImage && (
+        <Image
+          class="about__portrait"
+          src={intro.data.profileImage}
+          alt={`Portrait of ${intro.data.name}`}
+          widths={[320, 640]}
+          sizes="(min-width: 60rem) 20rem, 60vw"
+        />
+      )
+    }
+  </section>
+
+  <section class="about__changelog" aria-labelledby="changelog-heading">
+    <h2 id="changelog-heading">Changelog</h2>
+    <p class="about__note">
+      My journey, versioned: majors are new chapters, minors what happened
+      inside them.
+    </p>
+    <ul class="about__timeline">
+      {
+        timeline.map((entry) => (
+          <TimelineItem
+            version={entry.data.version}
+            title={entry.data.title}
+            meta={`${entry.data.institution} (${entry.data.location})`}
+            period={formatPeriod(entry.data.dateStart, entry.data.dateEnd)}
+          >
+            {entry.data.highlights.length > 0 && (
+              <ul class="about__highlights">
+                {entry.data.highlights.map((highlight) => (
+                  <li set:html={inlineMarkdown(highlight)} />
+                ))}
+              </ul>
+            )}
+          </TimelineItem>
+        ))
+      }
+    </ul>
+  </section>
+
+  <section class="about__certs" aria-labelledby="certs-heading">
+    <h2 id="certs-heading">Certifications, scholarships &amp; awards</h2>
+    <ul class="about__certs-list">
+      {
+        certifications.map(({ data }) => (
+          <li class="about__cert">
+            <p class="about__cert-title">
+              {data.emoji && (
+                <span aria-hidden="true">{data.emoji} </span>
+              )}
+              {data.url ? <a href={data.url}>{data.title}</a> : data.title}
+            </p>
+            <p class="about__cert-meta">
+              {data.issuer} · {formatDate(data.date)}
+            </p>
+            {data.description && (
+              <p class="about__cert-description">{data.description}</p>
+            )}
+          </li>
+        ))
+      }
+    </ul>
+  </section>
 </BaseLayout>
 
 <style>
-  .page-placeholder {
-    margin-block-start: var(--space-stack-md);
-    max-width: 55ch;
+  .about__intro {
+    display: grid;
+    gap: var(--space-stack-lg);
+    align-items: start;
+    padding-block-end: var(--space-stack-xl);
+  }
+
+  @media (min-width: 60rem) {
+    .about__intro {
+      grid-template-columns: 1fr 20rem;
+      column-gap: var(--space-inline-xl);
+    }
+  }
+
+  .about__bio {
+    display: grid;
+    gap: var(--space-stack-md);
+    max-width: 65ch;
+  }
+
+  .about__tagline {
+    font-size: var(--typography-lead-size);
+    color: var(--color-text-secondary);
+  }
+
+  .about__portrait {
+    inline-size: 100%;
+    block-size: auto;
+    border: 1px solid var(--color-border-default);
+  }
+
+  .about__changelog,
+  .about__certs {
+    margin-block-start: var(--space-stack-xl);
+  }
+
+  .about__note {
+    margin-block: var(--space-stack-xs) var(--space-stack-lg);
+    color: var(--color-text-secondary);
+  }
+
+  .about__timeline {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    max-width: 65ch;
+  }
+
+  .about__highlights {
+    padding-inline-start: var(--space-inset-lg);
+    display: grid;
+    gap: var(--space-stack-xs);
+  }
+
+  .about__certs-list {
+    list-style: none;
+    margin: var(--space-stack-lg) 0 0;
+    padding: 0;
+    max-width: 65ch;
+  }
+
+  .about__cert {
+    display: grid;
+    gap: var(--space-stack-xs);
+    padding-block: var(--space-stack-md);
+    border-block-start: 1px solid var(--color-border-default);
+  }
+
+  .about__cert-title {
+    font-weight: var(--font-weight-medium);
+  }
+
+  .about__cert-meta {
+    font-family: var(--typography-label-family);
+    font-size: var(--typography-label-size);
+    color: var(--color-text-muted);
+  }
+
+  .about__cert-description {
     color: var(--color-text-secondary);
   }
 </style>

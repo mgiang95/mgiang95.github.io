@@ -44,12 +44,58 @@ const componentDocs = [
 >
   <h1>How this site is built</h1>
   <p class="system__lead">
-    Every color, spacing and radius on this site resolves from design tokens
-    (DTCG JSON, built with Style Dictionary). Three tiers: primitives hold raw
-    scales, semantic tokens give them meaning and switch for light/dark and
-    density, component tokens consume semantics. The full case study follows
-    in a later phase — below are the living docs.
+    The site is its own case study: a live design system with a real token
+    pipeline. Below is the reasoning — and the living docs generated from the
+    actual token source.
   </p>
+
+  <div class="prose system__case">
+    <h2>Problem</h2>
+    <p>
+      Portfolio sites usually <em>describe</em> design system work with
+      screenshots. That proves little — the craft is in constraints that hold
+      under change: contrast that survives any brand color, spacing that
+      adapts without breaking rhythm, components that never hardcode a value.
+    </p>
+
+    <h2>Approach</h2>
+    <p>
+      Make the system itself the exhibit. Design tokens live as DTCG JSON in
+      three strict tiers — primitives (raw scales), semantic (meaning;
+      the switching point for light/dark and density) and component tokens.
+      Style Dictionary compiles them to CSS custom properties; components may
+      only consume component or semantic tokens. Visitors change hue, scheme
+      and density at runtime and watch every part of the site follow.
+    </p>
+
+    <h2>Decisions</h2>
+    <p>
+      <strong>OKLCH with fixed lightness/chroma steps.</strong> All color
+      primitives derive from a single <code>--hue</code>. Because contrast is
+      driven by lightness, every text/surface pair is proven against WCAG AA
+      for all 360 hues at build time — a failing pair fails the build. The
+      theme panel shows the same math live.
+    </p>
+    <p>
+      <strong>Astro with one React island.</strong> Static content stays
+      static; JavaScript is reserved for the theme panel. Without JS the site
+      falls back to system color scheme and default density — theming is an
+      enhancement, not a dependency.
+    </p>
+    <p>
+      <strong>Density switches spacing, never type.</strong>
+      <code>data-density</code> resolves semantic spacing tokens to other
+      steps of the 4px scale; readability is untouched.
+    </p>
+
+    <h2>Outcome</h2>
+    <p>
+      A portfolio where the design system claim is verifiable in the browser:
+      version 2 of this site, rebuilt from the vanilla HTML/CSS v1 as a
+      token-driven system. The docs below are generated from the same token
+      files the site consumes — they cannot drift.
+    </p>
+  </div>
 
   <section class="system__section" aria-labelledby="tokens-heading">
     <h2 id="tokens-heading">Tokens</h2>
@@ -168,8 +214,13 @@ const componentDocs = [
   .system__lead {
     margin-block-start: var(--space-stack-md);
     max-width: 65ch;
-    font-size: var(--font-size-400);
+    font-size: var(--typography-lead-size);
     color: var(--color-text-secondary);
+  }
+
+  .system__case {
+    margin-block-start: var(--space-stack-lg);
+    max-width: 65ch;
   }
 
   .system__section {
