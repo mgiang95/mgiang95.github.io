@@ -18,7 +18,7 @@
     },
     "border": {
       "default": { "$value": "{color.neutral.800}", "$type": "color" },
-      "strong": { "$value": "{color.neutral.600}", "$type": "color" }
+      "strong": { "$value": "{color.neutral.500}", "$type": "color" }
     },
     "interactive": {
       "default": { "$value": "{color.accent.400}", "$type": "color" },

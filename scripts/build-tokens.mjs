@@ -97,8 +97,16 @@ const parts = await Promise.all(
 );
 // Strip the per-file timestamp headers SD prepends, keep one banner.
 const stripped = parts.map((css) => css.replace(/^\/\*\*[\s\S]*?\*\/\n*/, ""));
+
+// System preference as no-JS default: repeat the dark overrides inside a
+// prefers-color-scheme media query, scoped so an explicit data-theme wins.
+const systemDark =
+  "@media (prefers-color-scheme: dark) {\n" +
+  stripped[1].replace('[data-theme="dark"]', ':root:not([data-theme="light"])') +
+  "}\n";
+
 await mkdir(path.dirname(OUT_FILE), { recursive: true });
-await writeFile(OUT_FILE, banner + "\n" + stripped.join("\n"));
+await writeFile(OUT_FILE, banner + "\n" + [...stripped, systemDark].join("\n"));
 await rm(BUILD_DIR, { recursive: true, force: true });
 
 console.log(`✔ tokens built -> ${OUT_FILE}`);

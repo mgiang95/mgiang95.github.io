@@ -18,6 +18,13 @@ html {
   color-scheme: dark;
 }
 
+/* System preference as no-JS default; an explicit data-theme wins. */
+@media (prefers-color-scheme: dark) {
+  html:not([data-theme="light"]) {
+    color-scheme: dark;
+  }
+}
+
 body {
   font-family: var(--font-family-body);
   font-size: var(--font-size-300);
