@@ -1,0 +1,91 @@
+/* ThemePanel island — consumes theme-panel.* component tokens. */
+
+.theme-panel {
+  display: grid;
+  gap: var(--theme-panel-gap);
+  padding: var(--theme-panel-padding);
+  background: var(--theme-panel-background);
+  border: 1px solid var(--theme-panel-border);
+  border-radius: var(--theme-panel-radius);
+  max-inline-size: 28rem;
+}
+
+.theme-panel__heading {
+  font-family: var(--typography-label-family);
+  font-size: var(--typography-label-size);
+  font-weight: var(--font-weight-medium);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-text-primary);
+}
+
+.theme-panel__label {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-inline-md);
+  font-family: var(--typography-label-family);
+  font-size: var(--typography-label-size);
+  color: var(--color-text-secondary);
+}
+
+.theme-panel__token {
+  color: var(--color-text-muted);
+}
+
+.theme-panel__control {
+  display: grid;
+  gap: var(--space-stack-xs);
+}
+
+.theme-panel__control .theme-panel__label {
+  width: 100%;
+}
+
+.theme-panel__slider {
+  inline-size: 100%;
+  accent-color: var(--theme-panel-control-accent);
+}
+
+.theme-panel__group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-inline-md);
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+.theme-panel__group .theme-panel__label {
+  inline-size: 100%;
+  padding: 0;
+}
+
+.theme-panel__option {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-inline-xs);
+}
+
+.theme-panel__option input {
+  accent-color: var(--theme-panel-control-accent);
+}
+
+.theme-panel__contrast {
+  font-size: var(--typography-label-size);
+  font-family: var(--typography-label-family);
+  color: var(--color-text-secondary);
+}
+
+.theme-panel__ratio {
+  display: inline-block;
+  padding: var(--space-inline-xs) var(--space-inline-sm);
+  background: var(--color-surface-accent);
+  color: var(--color-text-on-accent);
+  border-radius: var(--radius-control);
+  font-weight: var(--font-weight-medium);
+}
+
+.theme-panel__ratio--fail {
+  background: var(--color-text-primary);
+  color: var(--color-surface-default);
+}

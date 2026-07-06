@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import ThemePanel from "../components/ThemePanel.tsx";
 ---
 
 <BaseLayout
@@ -7,15 +8,17 @@ import BaseLayout from "../layouts/BaseLayout.astro";
   description="Portfolio of Michael Giang, Design System Engineer and UX Designer in Zurich. This site runs on a live design token pipeline — adjust hue, color scheme and density yourself."
 >
   <section class="hero">
-    <h1 class="hero__headline">
-      This site is a running design system.
-    </h1>
-    <p class="hero__lead">
-      I'm Michael Giang, a Design System Engineer and UX Designer based in
-      Zurich. Everything you see here is driven by a live token pipeline —
-      the theme panel to adjust hue, color scheme and density lands in a
-      later phase.
-    </p>
+    <div class="hero__copy">
+      <h1 class="hero__headline">This site is a running design system.</h1>
+      <p class="hero__lead">
+        I'm Michael Giang, a Design System Engineer and UX Designer based in
+        Zurich. Everything here resolves from design tokens — try it: change
+        hue, scheme and density. Contrast stays AA by construction.
+      </p>
+    </div>
+    <div class="hero__panel">
+      <ThemePanel client:idle />
+    </div>
   </section>
 </BaseLayout>
 
@@ -24,6 +27,19 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     display: grid;
     gap: var(--space-stack-lg);
     padding-block: var(--space-stack-xl);
+    align-items: start;
+  }
+
+  @media (min-width: 60rem) {
+    .hero {
+      grid-template-columns: 3fr 2fr;
+      column-gap: var(--space-inline-xl);
+    }
+  }
+
+  .hero__copy {
+    display: grid;
+    gap: var(--space-stack-lg);
   }
 
   .hero__headline {

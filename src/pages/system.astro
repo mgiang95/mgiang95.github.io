@@ -16,6 +16,8 @@ import buttonTokens from "../../tokens/component/button.tokens.json";
 import cardTokens from "../../tokens/component/card.tokens.json";
 import badgeTokens from "../../tokens/component/badge.tokens.json";
 import timelineTokens from "../../tokens/component/timeline.tokens.json";
+import themePanelTokens from "../../tokens/component/theme-panel.tokens.json";
+import ThemePanel from "../components/ThemePanel.tsx";
 
 const primitives = flattenTokens(primitiveColors);
 const accentRamp = primitives.filter((t) => t.path.startsWith("color.accent."));
@@ -140,6 +142,24 @@ const componentDocs = [
         </ul>
       </div>
       <TokenTable label="Timeline tokens" tokens={componentDocs[3].tokens} />
+    </article>
+
+    <article class="system__component">
+      <h3>ThemePanel</h3>
+      <p class="system__note">
+        React island (hydrated when visible). Writes <code>--hue</code>,
+        <code>data-theme</code> and <code>data-density</code> and persists
+        them to <code>localStorage</code>. The badge shows the live WCAG
+        ratio of the weakest semantic pair — same math as the build-time
+        proof.
+      </p>
+      <div class="system__demo">
+        <ThemePanel client:visible />
+      </div>
+      <TokenTable
+        label="ThemePanel tokens"
+        tokens={flattenTokens(themePanelTokens)}
+      />
     </article>
   </section>
 </BaseLayout>
