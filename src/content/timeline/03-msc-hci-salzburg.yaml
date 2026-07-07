@@ -1,0 +1,12 @@
+version: "3.0"
+order: 3
+type: education
+title: M. Sc. Human-Computer Interaction
+institution: University of Salzburg / FH Salzburg
+location: AT
+country: aut
+dateStart: 2020-10-01
+dateEnd: 2023-03-31
+highlights:
+  - "Grade: 1.3 (pass with distinction) | Master's Thesis: 1.0"
+  - "Focus: Interaction Design, User Research and Project Management"

@@ -1,0 +1,12 @@
+version: "1.0"
+order: 7
+type: education
+title: B. A. Digital Media
+institution: TH Ulm
+location: DE
+country: ger
+dateStart: 2014-10-01
+dateEnd: 2018-08-31
+highlights:
+  - "Grade: 1.5 | Bachelor's Thesis: 1.5"
+  - "Focus: Web Development and Interaction Design"

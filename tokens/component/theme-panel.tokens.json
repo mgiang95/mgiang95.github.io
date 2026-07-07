@@ -1,0 +1,14 @@
+{
+  "theme-panel": {
+    "background": { "$value": "{color.surface.raised}", "$type": "color" },
+    "border": { "$value": "{color.border.default}", "$type": "color" },
+    "padding": { "$value": "{space.inset.lg}", "$type": "dimension" },
+    "gap": { "$value": "{space.stack.md}", "$type": "dimension" },
+    "radius": { "$value": "{radius.surface}", "$type": "dimension" },
+    "control-accent": {
+      "$value": "{color.interactive.default}",
+      "$type": "color",
+      "$description": "accent-color for the range slider and radio inputs."
+    }
+  }
+}

@@ -1,0 +1,11 @@
+version: "3.2"
+order: 4
+type: education
+title: Semester Abroad
+institution: EWHA Womans University
+location: Seoul, KR
+country: sko
+dateStart: 2022-08-01
+dateEnd: 2022-12-31
+highlights:
+  - "Topic: Korean Language II (GPA: 3.3 / 4.3)"

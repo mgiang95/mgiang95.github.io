@@ -1,0 +1,354 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Button from "../components/Button.astro";
+import Card from "../components/Card.astro";
+import Badge from "../components/Badge.astro";
+import TimelineItem from "../components/TimelineItem.astro";
+import TokenTable from "../components/TokenTable.astro";
+import ColorRamp from "../components/ColorRamp.astro";
+import { flattenTokens } from "../lib/tokens";
+import primitiveColors from "../../tokens/primitives/color.tokens.json";
+import semanticColorsLight from "../../tokens/semantic/color-light.tokens.json";
+import semanticSpace from "../../tokens/semantic/space-normal.tokens.json";
+import semanticShape from "../../tokens/semantic/shape.tokens.json";
+import semanticTypography from "../../tokens/semantic/typography.tokens.json";
+import buttonTokens from "../../tokens/component/button.tokens.json";
+import cardTokens from "../../tokens/component/card.tokens.json";
+import badgeTokens from "../../tokens/component/badge.tokens.json";
+import timelineTokens from "../../tokens/component/timeline.tokens.json";
+import themePanelTokens from "../../tokens/component/theme-panel.tokens.json";
+import ThemePanel from "../components/ThemePanel.tsx";
+import ComponentDoc from "../components/ComponentDoc.astro";
+import buttonMeta from "../components/Button.metadata.json";
+import badgeMeta from "../components/Badge.metadata.json";
+import cardMeta from "../components/Card.metadata.json";
+import timelineMeta from "../components/TimelineItem.metadata.json";
+import themePanelMeta from "../components/ThemePanel.metadata.json";
+
+const primitives = flattenTokens(primitiveColors);
+const accentRamp = primitives.filter((t) => t.path.startsWith("color.accent."));
+const neutralRamp = primitives.filter((t) => t.path.startsWith("color.neutral."));
+
+const semanticColors = flattenTokens(semanticColorsLight);
+const semanticSpacing = flattenTokens(semanticSpace);
+const semanticOther = [
+  ...flattenTokens(semanticShape),
+  ...flattenTokens(semanticTypography),
+];
+---
+
+<BaseLayout
+  title="System"
+  description="How this site is built: token architecture, theming mechanics and component docs."
+>
+  <h1>How this site is built</h1>
+  <p class="system__lead">
+    The site is its own case study: a live design system with a real token
+    pipeline. Below is the reasoning — and the living docs generated from the
+    actual token source.
+  </p>
+
+  <div class="prose system__case">
+    <h2>Problem</h2>
+    <p>
+      Portfolio sites usually <em>describe</em> design system work with
+      screenshots. That proves little — the craft is in constraints that hold
+      under change: contrast that survives any brand color, spacing that
+      adapts without breaking rhythm, components that never hardcode a value.
+    </p>
+
+    <h2>Approach</h2>
+    <p>
+      Make the system itself the exhibit. Design tokens live as DTCG JSON in
+      three strict tiers — primitives (raw scales), semantic (meaning;
+      the switching point for light/dark and density) and component tokens.
+      Style Dictionary compiles them to CSS custom properties; components may
+      only consume component or semantic tokens. Visitors change hue, scheme
+      and density at runtime and watch every part of the site follow.
+    </p>
+
+    <h2>Decisions</h2>
+    <p>
+      <strong>OKLCH with fixed lightness/chroma steps.</strong> All color
+      primitives derive from a single <code>--hue</code>. Because contrast is
+      driven by lightness, every text/surface pair is proven against WCAG AA
+      for all 360 hues at build time — a failing pair fails the build. The
+      theme panel shows the same math live.
+    </p>
+    <p>
+      <strong>Astro with one React island.</strong> Static content stays
+      static; JavaScript is reserved for the theme panel. Without JS the site
+      falls back to system color scheme and default density — theming is an
+      enhancement, not a dependency.
+    </p>
+    <p>
+      <strong>Density switches spacing, never type.</strong>
+      <code>data-density</code> resolves semantic spacing tokens to other
+      steps of the 4px scale; readability is untouched.
+    </p>
+    <p>
+      <strong>Invariants are enforced, not promised.</strong> An auditor
+      script checks every architecture rule on each build and fails the
+      build on violations. What that means, and what it found in this very
+      codebase: see <a href="#ai-heading">Machine-readable by design</a>.
+    </p>
+
+    <h2>Outcome</h2>
+    <p>
+      A portfolio where the design system claim is verifiable in the browser:
+      version 2 of this site, rebuilt from the vanilla HTML/CSS v1 as a
+      token-driven system. The docs below are generated from the same token
+      and metadata files the site consumes — they cannot drift.
+    </p>
+  </div>
+
+  <section class="system__section" aria-labelledby="tokens-heading">
+    <h2 id="tokens-heading">Tokens</h2>
+
+    <h3>Color primitives</h3>
+    <p class="system__note">
+      OKLCH ramps with fixed lightness/chroma steps; the hue comes from a
+      single <code>--hue</code> custom property. Every text/surface pair is
+      contrast-proven for all 360 hues on every build.
+    </p>
+    <div class="system__ramps">
+      <ColorRamp name="color.accent" tokens={accentRamp} />
+      <ColorRamp name="color.neutral" tokens={neutralRamp} />
+    </div>
+
+    <h3>Semantic colors</h3>
+    <p class="system__note">
+      Light mapping shown — the dark theme resolves the same tokens to other
+      primitives.
+    </p>
+    <TokenTable label="Semantic color tokens" tokens={semanticColors} />
+
+    <h3>Semantic spacing</h3>
+    <p class="system__note">
+      Normal density shown — tight and comfy resolve the same tokens to other
+      steps of the 4px scale. Font sizes never change with density.
+    </p>
+    <TokenTable label="Semantic spacing tokens" tokens={semanticSpacing} />
+
+    <h3>Shape &amp; typography</h3>
+    <TokenTable label="Shape and typography tokens" tokens={semanticOther} />
+  </section>
+
+  <section class="system__section" aria-labelledby="components-heading">
+    <h2 id="components-heading">Components</h2>
+    <p class="system__note">
+      Every component ships a co-located <code>*.metadata.json</code> —
+      description, use cases, anti-patterns, consumed tokens. The entries
+      below are rendered from those files; the same JSON is what AI tooling
+      queries before creating or changing a component.
+    </p>
+
+    <ComponentDoc meta={buttonMeta} tokens={flattenTokens(buttonTokens)}>
+      <Button>Primary</Button>
+      <Button variant="secondary">Secondary</Button>
+      <Button variant="ghost">Ghost</Button>
+    </ComponentDoc>
+
+    <ComponentDoc meta={badgeMeta} tokens={flattenTokens(badgeTokens)}>
+      <Badge>design-tokens</Badge>
+      <Badge>oklch</Badge>
+      <Badge>astro</Badge>
+    </ComponentDoc>
+
+    <ComponentDoc meta={cardMeta} tokens={flattenTokens(cardTokens)}>
+      <Card>
+        <h4>Card title</h4>
+        <p>
+          A raised surface for project teasers. Padding, radius and colors
+          come from <code>card.*</code> tokens.
+        </p>
+        <div class="system__demo-row">
+          <Badge>token-driven</Badge>
+        </div>
+      </Card>
+    </ComponentDoc>
+
+    <ComponentDoc meta={timelineMeta} tokens={flattenTokens(timelineTokens)}>
+      <ul class="system__timeline-demo">
+        <TimelineItem
+          title="Design System Engineer"
+          meta="HIS Engineering AG (Zurich, CH)"
+          period="since 2023"
+        >
+          <p>The square marker is a flat accent zone — move the hue.</p>
+        </TimelineItem>
+        <TimelineItem
+          title="Interaction Designer"
+          meta="stellar design und engineering GmbH (Ulm, DE)"
+          period="2018 – 2020"
+        />
+      </ul>
+    </ComponentDoc>
+
+    <ComponentDoc
+      meta={themePanelMeta}
+      tokens={flattenTokens(themePanelTokens)}
+    >
+      <ThemePanel client:visible />
+    </ComponentDoc>
+  </section>
+
+  <section class="system__section" aria-labelledby="ai-heading">
+    <h2 id="ai-heading">Machine-readable by design</h2>
+
+    <div class="prose system__case">
+      <h3>Problem</h3>
+      <p>
+        AI-assisted development has a failure mode that code review is bad
+        at catching: an assistant references a token that does not exist.
+        The CSS compiles, the custom property resolves to nothing, and a
+        style silently disappears. The same assistant will hardcode a hex
+        value under deadline pressure, or rebuild a component that already
+        exists two files away. Prose rules — &ldquo;components never consume
+        primitives&rdquo; — prevent none of this. They rely on every
+        contributor, human or machine, reading and remembering them.
+      </p>
+      <p>
+        A nine-component portfolio can absorb that risk. A token system that
+        is meant to be reused across future projects cannot: every drift
+        compounds with each new consumer.
+      </p>
+
+      <h3>Approach</h3>
+      <p>
+        Treat the design system as a data structure that can be queried and
+        checked, not just text to interpret — Cristian Morales
+        Achiardi&rsquo;s{" "}
+        <a
+          href="https://www.designsystemscollective.com/building-an-ai-ready-design-system-35e709f54edf"
+          rel="external"
+        >
+          AI-ready design system
+        </a>{" "}
+        approach, scaled down to a system this size. Three parts:
+      </p>
+      <p>
+        <strong>Executable governance.</strong> An auditor script encodes
+        eleven rules in three groups: token hierarchy (primitives reference
+        nothing, semantic references primitives, component references
+        semantic, every reference resolves), authored CSS (no color
+        literals, no px beyond hairlines, every custom property exists,
+        components never consume primitives, BEM blocks match file names)
+        and metadata (every component carries one, none is orphaned). It
+        runs inside <code>npm run build</code> — a violation is a failed
+        build, not a review comment.
+      </p>
+      <p>
+        <strong>Component metadata.</strong> Every component ships a
+        co-located JSON file holding the decisions that usually live in
+        heads: use cases, anti-patterns with reasons and alternatives,
+        selection criteria, consumed token prefixes, accessibility notes.
+        AI tooling queries these files before creating or changing anything
+        — extending an existing component beats building a new one.
+      </p>
+      <p>
+        <strong>Deliberate restraint.</strong> The larger machinery of
+        AI-ready systems — dependency indexes, adoption reports — is
+        documented as growth triggers, not built ahead of need. At nine
+        components a dependency graph is trivia; maintaining it would be
+        pure staleness risk.
+      </p>
+
+      <h3>Decisions</h3>
+      <p>
+        <strong>One source for humans and machines.</strong> The component
+        docs above are rendered from the same metadata files the tooling
+        queries. There is no second, hand-written documentation that could
+        drift — the docs <em>are</em> the data.
+      </p>
+      <p>
+        <strong>Metadata lives next to the component.</strong> A co-located
+        file moves, renames and dies with its component. The auditor treats
+        an orphaned metadata file as an error, not a leftover.
+      </p>
+      <p>
+        <strong>The pipeline is portable.</strong> Build, contrast proof and
+        auditor read their paths from one config file. When a second project
+        adopts the token layer, the governance moves with it unchanged —
+        the rules are part of the system, not of this site.
+      </p>
+
+      <h3>Outcome</h3>
+      <p>
+        The auditor&rsquo;s first run — against a codebase written under the
+        prose version of these exact rules — found 14 violations: six
+        primitive-token usages across five components, plus the then-missing
+        metadata files.
+      </p>
+      <pre class="system__audit-log" aria-label="Excerpt of the first audit run"><code>Design system audit: 14 violation(s)
+
+src/components/Badge.astro
+  ✘ [C4] var(--font-line-height-base) is a primitive —
+         components consume component/semantic tokens only
+src/components/Button.astro
+  ✘ [C4] var(--font-weight-medium) is a primitive —
+         components consume component/semantic tokens only
+…</code></pre>
+      <p>
+        The rules had existed as prose the whole time; the violations
+        shipped anyway. Two new semantic tokens fixed all six, and since
+        then the invariants hold by construction: every build proves
+        contrast for all 360 hues and all eleven rules before a single page
+        renders.
+      </p>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .system__lead {
+    margin-block-start: var(--space-stack-md);
+    max-width: 65ch;
+    font-size: var(--typography-lead-size);
+    color: var(--color-text-secondary);
+  }
+
+  .system__case {
+    margin-block-start: var(--space-stack-lg);
+    max-width: 65ch;
+  }
+
+  .system__section {
+    margin-block-start: var(--space-stack-xl);
+  }
+
+  .system__section h3 {
+    margin-block-start: var(--space-stack-lg);
+    margin-block-end: var(--space-stack-sm);
+  }
+
+  .system__note {
+    max-width: 65ch;
+    margin-block-end: var(--space-stack-sm);
+    color: var(--color-text-secondary);
+  }
+
+  .system__ramps {
+    display: grid;
+    gap: var(--space-stack-md);
+  }
+
+  .system__audit-log {
+    padding: var(--space-inset-lg);
+    border: 1px solid var(--color-border-default);
+    background: var(--color-surface-sunken);
+    overflow-x: auto;
+  }
+
+  .system__demo-row {
+    display: flex;
+    gap: var(--space-inline-sm);
+  }
+
+  .system__timeline-demo {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    inline-size: 100%;
+  }
+</style>

@@ -1,0 +1,1714 @@
+@import url("config.css");
+
+/*----------------- Basis-Styling -----------------*/
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth; /* Smooth scroll */
+}
+
+body {
+  background-image:
+    url(img/assets/img-noise.png),
+    radial-gradient(circle, rgba(253, 254, 255, 1) 0%, rgb(245, 250, 255) 100%);
+  background-repeat: repeat; /* Bild wird sowohl horizontal als auch vertikal wiederholt */
+  color: var(--text-color);
+  min-height: 100vh;
+  overflow-x: hidden; /* Kein horizontaler Scrollbalken */
+  font-family: "Inter", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 300;
+  font-style: normal;
+}
+
+.section {
+  scroll-margin-top: 50px; /* Headspace when scrolling */
+}
+
+.cursor-circle {
+  position: fixed;
+  width: 800px; /* Durchmesser des Kreises */
+  height: 800px;
+  background-color: var(--primary-20);
+  opacity: 0.06;
+  border-radius: 50%;
+  pointer-events: none; /* Verhindert Interaktion mit dem Kreis */
+  filter: blur(100px); /* Weicher, verwaschener Effekt */
+  transform: translate(-50%, -50%); /* Zentriert den Kreis um den Mauszeiger */
+  transition: transform 0.15s ease-out;
+  z-index: -1;
+}
+
+strong {
+  font-weight: 500;
+}
+
+/*----------------- Base Elements -----------------*/
+
+/* Button */
+.button {
+  display: inline-block;
+  align-self: flex-start;
+  padding: 1rem 1.5rem;
+  font-size: var(--font-size-s);
+  color: var(--button-primary-text);
+  background-color: var(--button-primary-bg-normal);
+  border: none;
+  border-radius: 50px;
+  text-decoration: none;
+  transition: background-color 0.3s ease-in-out;
+  cursor: pointer;
+}
+
+.button:hover {
+  background-color: var(--button-primary-bg-hover);
+}
+
+/* Link-text, Link button für externe Links  */
+.link-text,
+.link-button,
+.link-text-inline {
+  font-size: var(--font-size-p);
+  line-height: var(--line-height-p);
+  color: var(--text-color);
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  transition: color 0.3s ease;
+}
+
+.link-text,
+.link-button {
+  text-decoration: none;
+}
+
+.link-text:hover,
+.link-button:hover,
+.link-text-inline:hover,
+.project-title-link:hover {
+  color: var(--highlight);
+}
+
+.arrow-icon-right {
+  display: inline-block;
+  margin-left: 4px;
+  transition: transform 0.3s ease;
+}
+
+.link-text:hover .arrow-icon-right {
+  transform: translateX(3px);
+}
+
+.arrow-icon-top-right {
+  display: inline-block;
+  margin-left: clamp(
+    1px,
+    0.5em,
+    4px
+  ); /* Dynamischer Abstand zwischen Text und Pfeil */
+  transition: transform 0.15s ease;
+}
+
+.project-title-link:hover .arrow-icon-top-right,
+.link-button:hover .arrow-icon-top-right {
+  transform: translate(clamp(1px, 0.2vw, 2px), clamp(-2px, -0.4vw, -4px));
+}
+
+.scroll-top {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  height: 48px;
+  width: 48px;
+  background-color: var(--button-primary-bg-normal);
+  color: var(--button-primary-text);
+  font-size: var(--font-size-p);
+  border-radius: 50%;
+  text-align: center;
+  align-content: center;
+  cursor: pointer;
+  text-decoration: none;
+
+  /* Versteckt und für den Transition-Effekt vorbereitet */
+  opacity: 0;
+  transform: translateY(20px);
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease,
+    background-color 0.15s ease;
+}
+
+.scroll-top.show {
+  /* Sichtbar und zurück in die Ausgangsposition */
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.scroll-top:hover {
+  background-color: var(--button-primary-bg-hover);
+}
+
+/*----------------- Container-Styling -----------------*/
+/* center content + scroll container */
+.outer-container {
+  display: flex;
+  height: 100vh;
+  justify-content: center;
+  overflow-y: auto; /* scrolling */
+  padding: 0 2rem;
+}
+
+/* Main-Container für Sidebar und Content */
+.main-container {
+  display: flex;
+  max-width: 1600px; /* Adjust content */
+  width: 100%;
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--scrollbar-thumb);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: var(--scrollbar-track);
+}
+
+/*----------------- Sticky Sidebar (Grid) -----------------*/
+
+/*--------- Profile Image in Sidebar ---------*/
+.profile-container {
+  width: 175px;
+  height: 175px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary-88), var(--petrol-90));
+  animation: scroll-gradient 10s ease infinite;
+  box-shadow: var(--box-shadow-md);
+}
+
+/* Stil für das normale Bild */
+.profile-image,
+.profile-memoji {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  position: absolute;
+  top: 5px;
+  left: 0;
+  transition: transform 1s ease-in-out;
+}
+
+/* Ausgangsposition des normalen Bilds etwas weiter unten */
+.profile-image {
+  transform: translateY(10%);
+  z-index: 1;
+}
+
+/* Anfangs versteckt das Memoji */
+.profile-memoji {
+  transform: translateY(100%);
+  z-index: 0;
+}
+
+/* Bounce-Animation für das Hochrutschen des Memoji */
+@keyframes bounceIn {
+  0% {
+    transform: translateY(100%);
+  }
+  60% {
+    transform: translateY(-2%);
+  }
+  80% {
+    transform: translateY(2%);
+  }
+  100% {
+    transform: translateY(5%);
+  }
+}
+
+/* Bounce-Animation für das Runterrutschen des normalen Bilds */
+@keyframes bounceOut {
+  0% {
+    transform: translateY(2%);
+  }
+  20% {
+    transform: translateY(-2%);
+  }
+  100% {
+    transform: translateY(100%);
+  }
+}
+
+.sidebar {
+  width: 33%;
+  min-width: 300px;
+  max-width: 450px;
+  background-color: transparent;
+  padding: var(--space-xl) var(--space-xl) var(--space-xl) 0;
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  min-height: 100vh;
+  z-index: 1;
+  display: grid;
+  grid-template-rows: auto auto auto 1fr auto;
+  grid-template-columns: 1fr;
+  gap: var(--space-md);
+}
+
+#profile-title {
+  /* background-color: #89d5c9; */
+  grid-row: 1;
+}
+
+#profile-img {
+  /* background-color: #ff9100; */
+  grid-row: 2;
+}
+
+#profile-description {
+  /* background-color: #5f7ba9; */
+  grid-row: 3;
+}
+
+#profile-description p {
+  color: var(--gray-40);
+  width: 30ch;
+}
+
+#profile-nav {
+  /* background-color: #fe5f6c; */
+  grid-row: 4;
+}
+
+#profile-social {
+  /* background-color: #bebfee; */
+  grid-row: 5;
+  align-items: flex-end;
+}
+
+/* Tablet Layout */
+@media (min-width: 650px) and (max-width: 1199px) {
+  .sidebar {
+    display: grid;
+    grid-template-columns: 1fr 2fr; /* 1/3 für das Bild, 2/3 für den Text */
+    grid-template-rows: auto auto auto; /* Reduzierte Höhe */
+    height: auto; /* Höhe wird dem Inhalt angepasst */
+    gap: 1rem;
+    background-color: var(--card-bg);
+    box-shadow: var(--box-shadow-md);
+    padding: var(--space-lg) !important;
+    border-radius: var(--border-radius);
+  }
+
+  #profile-img {
+    grid-row: 1 / span 3; /* Bild über die ganze Höhe links */
+    grid-column: 1 / 2;
+    align-self: center;
+  }
+
+  #profile-title {
+    grid-row: 1;
+    grid-column: 2;
+    margin-bottom: unset;
+  }
+
+  #profile-description {
+    grid-row: 2;
+    grid-column: 2;
+  }
+
+  #profile-social {
+    grid-row: 3 !important;
+    grid-column: 2 !important;
+  }
+
+  .profile-container {
+    width: 25vw !important; /* Festlegen eines quadratischen Containers */
+    max-width: 175px;
+    height: 25vw !important; /* Gleiches Seitenverhältnis für Kreisform */
+    max-height: 175px;
+  }
+}
+
+/* Mobile-Anpassungen */
+@media (max-width: 1200px) {
+  .content {
+    max-width: 100%;
+  }
+
+  .logo-track img {
+    height: 60px;
+  }
+
+  .outer-container {
+    flex-direction: column; /* Stack Sidebar and Content */
+    overflow-y: visible; /* Scroll full page */
+    padding: var(--space-container-padding);
+    height: unset;
+  }
+
+  .sidebar-nav {
+    display: none; /* no nav on tablet */
+  }
+
+  #profile-social {
+    grid-row: 4;
+    grid-column: 1;
+  }
+
+  .sidebar {
+    width: 100%;
+    height: auto;
+    min-height: unset;
+    position: relative;
+    padding: var(--space-xs);
+    margin-bottom: var(--space-xl); /* Abstand zum Content */
+  }
+
+  #profile-description p {
+    width: 100%;
+  }
+
+  .content {
+    width: 100%; /* Inhalt nimmt volle Breite ein */
+    padding: var(--space-xs);
+  }
+
+  .content-container {
+    padding: var(--space-xs);
+  }
+}
+
+.sidebar p {
+  color: var(--mid-grey);
+}
+
+.sidebar-nav ul {
+  list-style: none;
+  text-transform: uppercase;
+  letter-spacing: 0.05rem;
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+}
+
+.sidebar-nav ul li {
+  margin: 1.2rem 0;
+  color: var(--text-muted);
+  text-decoration: none;
+}
+
+.sidebar .social a {
+  display: block;
+  margin-top: 1rem;
+  color: var(--text-muted);
+  text-decoration: none;
+}
+
+/* Grundlegende Styles für die Navigation */
+/* Standard-Stil für Links */
+.sidebar-nav a {
+  display: inline-flex;
+  align-items: center;
+  position: relative;
+  transition:
+    color 0.3s ease,
+    margin 0.3s ease,
+    padding 0.3s ease;
+  margin-left: 30px;
+}
+
+/* Aktiver Navigationspunkt */
+.sidebar-nav a.active {
+  color: var(--text-color);
+  font-weight: 700;
+}
+
+/* Strich Navigation */
+.sidebar-nav a::before {
+  content: "";
+  position: absolute;
+  left: -30px; /* Abstand zum Text */
+  width: 20px; /* Anfangsbreite des Strichs */
+  height: 12%; /* Höhe des Strichs */
+  background-color: var(--text-muted); /* Farbe des Strichs */
+  transition:
+    color 0.3s ease,
+    width 0.3s ease; /* Sanfter Übergang für die Breite */
+  opacity: 1;
+  top: 46%; /* Vertikale Positionierung */
+}
+
+/* Strich wächst und verschiebt den Text, wenn der Punkt aktiv ist */
+.sidebar-nav a.active,
+.sidebar-nav a:hover {
+  padding-left: 30px; /* Verschiebung des Textes nach rechts */
+}
+
+/* Strich wird sichtbar und wächst, wenn der Punkt aktiv ist */
+.sidebar-nav a.active::before {
+  background-color: var(--text-color); /* Farbe des Strichs */
+}
+
+.sidebar-nav a.active::before,
+.sidebar-nav a:hover::before {
+  width: 45px; /* Endbreite des Strichs, passe dies nach Bedarf an */
+}
+
+/* Optional: Hover-Effekt für Links */
+.sidebar-nav a:hover {
+  color: var(--text-muted);
+}
+
+/* Highlighted link */
+.nav-link {
+  color: var(--text-muted);
+  text-decoration: none;
+}
+
+.nav-link.active {
+  font-weight: 700;
+}
+
+.social {
+  display: flex; /* horizontale Anordnung */
+  gap: 0.75rem; /* Abstand zwischen den Icons */
+  align-items: center;
+}
+
+.social a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+  background-color: transparent;
+  transition: background-color 0.3s ease-in-out;
+  text-decoration: none;
+  position: relative;
+}
+
+.social a:hover {
+  background-color: var(--primary-90);
+}
+
+.social svg {
+  width: 32px;
+  height: 32px;
+  fill: var(--text-muted);
+  transition: color 0.3s ease;
+}
+
+.social a:hover svg {
+  color: var(--primary-10); /* Icon-Farbe bei Hover */
+}
+
+/*--------------------------- Footer ---------------------------*/
+
+.footer,
+.case-footer {
+  position: relative;
+  padding: var(--space-xl) 0;
+}
+
+.footer p,
+.footer a,
+.case-footer p {
+  font-size: var(--font-size-s) !important;
+  color: var(--text-muted);
+}
+
+/* Inhaltsbereich */
+.content {
+  flex-grow: 1;
+  max-width: clamp(
+    70ch,
+    80ch,
+    90ch
+  ); /* Weniger Breite für den scrollbaren Inhalt */
+  padding: var(--space-xl) 0 var(--space-xl) var(--space-xl);
+}
+
+/* Styling der Sektionen im Inhalt */
+section {
+  margin-bottom: var(--space-xxl);
+}
+
+/*--------------------------- Logo Marquee ---------------------------*/
+
+.logo-marquee-container {
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 2.5%,
+    black 10%,
+    black 90%,
+    transparent 97.5%
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent 2.5%,
+    black 10%,
+    black 90%,
+    transparent 97.5%
+  );
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: 100%;
+  mask-size: 100%;
+}
+
+.logo-marquee {
+  width: 100%;
+  height: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  overflow: hidden;
+  position: relative;
+  background: transparent;
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%); /* Laufe über den gesamten Track */
+  }
+}
+
+.logo-track {
+  display: flex;
+  height: 100%;
+  width: max-content;
+  animation: marquee 24s linear infinite;
+}
+
+.logo-track img {
+  height: 80px; /* Höhe der Logos anpassen */
+  margin: 0 0; /* Abstand zwischen den Logos */
+}
+
+/* Mobile-Anpassungen */
+@media (max-width: 1199px) {
+  .content {
+    max-width: 100%;
+  }
+  .logo-track img {
+    height: 60px;
+  }
+
+  @keyframes marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%); /* Laufe über den gesamten Track */
+    }
+  }
+  .outer-container {
+    flex-direction: column; /* Sidebar und Content in Spalten stapeln */
+    overflow-y: visible; /* Ermöglicht Scrollen über die gesamte Seite */
+    padding: var(--space-container-padding);
+    height: unset;
+  }
+
+  .sidebar-nav {
+    display: none;
+  }
+  .sidebar {
+    width: 100%;
+    max-width: unset;
+    height: auto;
+    position: relative;
+    padding: var(--space-xs);
+    margin-bottom: var(--space-xl); /* Abstand zum Content */
+  }
+
+  .content {
+    width: 100%; /* Inhalt nimmt volle Breite ein */
+    padding: var(--space-xs);
+  }
+
+  .content-container {
+    padding: var(--space-xs);
+  }
+}
+
+/*--------------------------- Timeline ---------------------------*/
+
+.timeline {
+  position: relative;
+  max-width: 100%;
+  margin: 1rem auto 0 auto;
+  padding: var(--space-xs) 0.25rem;
+  transition: height 0.3s ease;
+}
+
+.timeline-item {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: var(--space-md);
+  flex-wrap: nowrap;
+  opacity: 1;
+  height: auto;
+  transition:
+    opacity 0.3s ease,
+    height 0.3s ease,
+    margin-bottom 0.3s ease;
+}
+
+.timeline-item.hidden {
+  opacity: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+.timeline-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: var(--timeline-bg);
+  box-shadow: var(--box-shadow-sm);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 1rem; /* Gap to Text */
+  position: relative;
+  flex-shrink: 0; /* Blocks shrinking icon */
+  transition: 0.3s ease;
+}
+
+.timeline-icon img {
+  width: 70%;
+  height: auto;
+  border-radius: 50%; /* Emojis and images are round */
+  flex-shrink: 0; /* Blocks shrinking icon */
+}
+
+.timeline-content {
+  position: relative;
+}
+
+.timeline-content p {
+  position: relative;
+  font-size: var(--font-size-s);
+  line-height: var(--line-height-s);
+}
+
+.timeline-item::before {
+  content: "";
+  position: absolute;
+  width: 2px;
+  height: 91.5%;
+  background-color: var(--timeline-bg);
+  left: 19px;
+  top: 40px;
+  z-index: -1; /* Line positioned behind circles */
+}
+
+/* Remove last stroke */
+.timeline-item:last-child::before {
+  display: none;
+}
+
+/* Anfangszustand für h3 und timeline-institution */
+.timeline-item h3 {
+  font-size: var(--font-size-p); /* h3 wird als p dargestellt (wirkt ruhiger) */
+}
+
+.timeline-item h3,
+.timeline-item .timeline-institution {
+  opacity: 1; /* Standardmäßig sichtbar */
+  transform: translateY(0); /* Keine Verschiebung */
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease,
+    font-size 0.3s ease; /* Übergänge für alle animierten Eigenschaften */
+}
+
+/* Wenn die Timeline angezeigt wird (Transition für h3 und institution) */
+.timeline-item.showing h3,
+.timeline-item.showing .timeline-institution {
+  opacity: 1; /* Sicherstellen, dass es sichtbar bleibt */
+  transform: translateY(0); /* Keine Verschiebung */
+}
+
+/* Wenn die Timeline reduziert ist (Nur h3 wird kleiner, timeline-institution verschwindet) */
+.timeline-item.reduced-view h3 {
+  opacity: 1; /* H3 bleibt sichtbar */
+  transform: translateY(0); /* Keine Verschiebung */
+  font-size: var(--font-size-xs); /* Kleinere Schriftgröße */
+}
+
+.timeline-item.reduced-view .timeline-institution {
+  opacity: 0; /* Institution ausblenden */
+  transform: translateY(10px); /* Leicht nach unten verschieben */
+}
+
+/* Für versteckte Elemente */
+.timeline-item.hiding h3,
+.timeline-item.hiding .timeline-institution {
+  opacity: 0; /* Ausblenden */
+  transform: translateY(10px); /* Nach unten verschieben */
+}
+
+.vertical-align {
+  display: inline-flex;
+  align-items: center;
+}
+
+/*--------- Timeline Controls ---------*/
+/* Track */
+.timeline-controls {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  background-color: var(--primary-90);
+  border-radius: 25px;
+  gap: 0.25rem;
+  min-width: 100%;
+  height: 50px;
+  box-shadow: var(--box-shadow-sm);
+}
+
+/* Buttons */
+.timeline-controls button {
+  position: relative;
+  width: 33.333%;
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--primary-10);
+  font-size: var(--font-size-s);
+  padding: 0.5rem 1rem;
+  border-radius: 25px;
+  cursor: pointer;
+  z-index: 1;
+  transition: color 0.3s ease-in-out;
+}
+
+.timeline-controls button.active {
+  color: var(--primary-10);
+  font-weight: 700;
+}
+
+/* Allgemeines Styling für SVG-Icons in den Buttons */
+/* Buttons: Ensure icons and text are aligned */
+.timeline-controls button {
+  display: flex; /* Use flexbox for alignment */
+  align-items: center; /* Vertically center-align text and icon */
+  justify-content: center; /* Center content horizontally */
+  gap: 0.4rem; /* Add spacing between the icon and text */
+}
+
+/* Ensure icons are aligned and consistent */
+.timeline-controls button svg {
+  display: inline-block;
+  width: 24px; /* Set consistent width */
+  height: 24px; /* Set consistent height */
+  vertical-align: middle; /* Vertically align with text */
+  padding-bottom: 1px;
+}
+
+/* Work: Styling mit `fill` */
+.timeline-controls button[data-filter="work"] svg.work-icon {
+  fill: currentColor;
+  stroke: none; /* Keine Kontur für Work */
+}
+
+.timeline-controls button[data-filter="work"].active svg.work-icon {
+  fill: var(--primary-10);
+}
+
+.timeline-controls button[data-filter="work"]:hover svg.work-icon {
+  fill: var(--primary-10);
+}
+
+/* Education: Styling mit `stroke` */
+.timeline-controls button[data-filter="education"] svg.education-icon {
+  fill: none; /* Keine Füllung für Education */
+  stroke: currentColor;
+}
+
+.timeline-controls button[data-filter="education"].active svg.education-icon {
+  stroke: var(--primary-10);
+}
+
+.timeline-controls button[data-filter="education"]:hover svg.education-icon {
+  stroke: var(--primary-10);
+}
+
+/* All: Standard-Fill */
+.timeline-controls button[data-filter="all"] svg.all-icon {
+  fill: currentColor;
+}
+
+.timeline-controls button[data-filter="all"].active svg.all-icon {
+  fill: var(--primary-10);
+}
+
+.timeline-controls button[data-filter="all"]:hover svg.all-icon {
+  fill: var(--highlight);
+}
+
+/* Slider Background */
+.timeline-controls .slider {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 33.333%; /* Dynamische Größe */
+  height: 100%;
+  background: var(--button-primary-bg-normal);
+  border-radius: 25px;
+  transition:
+    transform 0.3s ease,
+    width 0.3s ease;
+  z-index: 0;
+}
+
+/* Timeline Items */
+.timeline-item {
+  opacity: 1;
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease;
+}
+
+.timeline-item.hidden {
+  opacity: 0;
+  transform: translateY(20px);
+  pointer-events: none;
+}
+
+/* "reduced-view" Klasse für reduzierte Darstellung */
+.timeline-item.reduced-view {
+  margin-bottom: var(--space-sm);
+  transition: margin-bottom 0.9s ease;
+}
+
+.timeline-item.reduced-view .timeline-institution,
+.timeline-item.reduced-view .timeline-location,
+.timeline-item.reduced-view .styled-list {
+  opacity: 0;
+  height: 0;
+  overflow: hidden;
+  transition:
+    opacity 0.3s ease,
+    height 0.3s ease;
+}
+
+/* Textstile bei reduzierter Darstellung */
+.timeline-item.reduced-view h3 {
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  color: var(--text-muted);
+  transition:
+    font-size 0.6s ease,
+    color 0.6s ease;
+}
+
+.timeline-item.reduced-view .timeline-date {
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  color: var(--text-muted);
+  transition:
+    font-size 0.6s ease,
+    color 0.6s ease;
+}
+
+/* Animationsklassen */
+.timeline-item.showing {
+  opacity: 1;
+  height: auto;
+  transition:
+    opacity 0.6s ease,
+    height 0.6s ease;
+}
+
+.timeline-item.hiding {
+  opacity: 0;
+  height: 0;
+  margin-bottom: 0;
+  overflow: hidden;
+  transition:
+    opacity 0.6s ease,
+    height 0.6s ease;
+}
+
+/* Eingeklappter Zustand */
+.timeline-item.reduced-view .styled-list {
+  height: 0;
+  opacity: 0;
+}
+
+/* Geöffneter Zustand */
+.timeline-item.showing .styled-list {
+  height: auto; /* Voll anzeigen */
+  opacity: 1;
+}
+
+/*--------------------------- Cards ---------------------------*/
+/*--------- Projects ---------*/
+
+.card-project,
+.card-project-list {
+  background-color: var(--card-bg);
+  /* border: 1px solid var(--card-border); */
+  border-radius: var(--border-radius);
+  padding-left: var(--space-tile-padding);
+  padding-right: var(--space-tile-padding);
+  padding-top: var(--space-tile-padding);
+  padding-bottom: clamp(2rem, 0.3333rem + 2.2222vw, 3rem);
+  max-width: 100%;
+  margin: var(--space-lg) auto;
+  box-shadow: var(--box-shadow-lg);
+  transition:
+    background-color 0.3s ease-in-out,
+    border 0.3s ease-in-out,
+    box-shadow 0.3s ease-in-out;
+}
+/* Neuer Padding für Tapestry */
+/* .card-project {
+  padding-bottom: 3.75rem;
+} */
+
+/* Tapestry-Hintergrund */
+/* .tapestry::before {
+  content: "";
+  transition: background-color 0.3s ease-in-out;
+  box-shadow: 0px 6px 6px 1px rgba(var(--shadow-color), 0.25);
+}
+
+.tapestry::after {
+  content: "";
+  position: absolute;
+  bottom: 0px;
+  left: 0;
+  width: 100%;
+  height: 56px;
+  opacity: 0.9;
+  background-position: bottom;
+  background-repeat: no-repeat;
+  background-size: cover;
+  border-radius: 0 0 var(--border-radius) var(--border-radius);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.tapestry-1::after {
+  background-image: url("img/assets/tapestry-1.jpg");
+}
+
+.tapestry-2::after {
+  background-image: url("img/assets/tapestry-2.jpg");
+}
+
+.tapestry-3::after {
+  background-image: url("img/assets/tapestry-3.jpg");
+} */
+
+/* Zusätzlicher Übergang */
+/* .tapestry::before {
+  content: "";
+  position: absolute;
+  bottom: 36px;
+  left: 0;
+  width: 100%;
+  height: 20px;
+  background-color: var(--card-bg);
+  border-radius: 0 0 var(--border-radius) var(--border-radius);
+  z-index: 3;
+}
+
+.tapestry.hovered::before {
+  background-color: var(--card-bg-hover);
+} */
+
+.card-project:first-of-type {
+  margin-top: var(--space-md) !important;
+}
+
+/* Entfernt die Standardstile für Links */
+.project-link {
+  text-decoration: none;
+  color: inherit;
+  display: block; /* Lässt das <a> als Block erscheinen */
+}
+
+.card-project:hover {
+  background-color: var(--primary-88);
+  box-shadow: var(--box-shadow-lg-hover);
+  /* border: 1px solid var(--card-border-hover); */
+  cursor: pointer;
+}
+
+.project-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Bild füllt den Container und schneidet überschüssige Teile */
+  transition: transform 0.6s ease-in-out;
+}
+
+.image-container {
+  overflow: hidden;
+  width: 100%;
+  height: 100%; /* Passe die Höhe je nach Bedarf an */
+  border-radius: var(--border-radius-inner);
+  margin-bottom: var(--space-sm);
+  display: flex;
+}
+
+.card-project:hover img {
+  transform: scale(1.1); /* Zoom-in-Effekt */
+}
+
+.project-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Passt die Ausrichtung an */
+  flex-wrap: wrap; /* Umbrüche für kleinere Bildschirme */
+}
+
+.project-title {
+  transition: color 0.3s ease-in-out;
+}
+
+.project-duration {
+  font-size: var(--font-size-s) !important;
+  line-height: var(--line-height-s) !important;
+  margin-left: var(--space-sm);
+}
+
+.project-subtitle {
+  margin-bottom: var(--space-xs);
+}
+
+.project-description {
+  font-size: var(--font-size-s) !important;
+  margin-bottom: var(--space-sm);
+}
+
+.project-keywords-introduction {
+  margin-bottom: var(--space-xs);
+  color: var(--text-muted);
+  font-size: var(--font-size-xs) !important;
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+}
+
+.project-keywords {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.keyword {
+  background-color: var(--keyword-bg);
+  color: var(--keyword-text);
+  padding: clamp(0.375rem, 0.3295rem + 0.2273vw, 0.5rem)
+    clamp(0.625rem, 0.5795rem + 0.2273vw, 0.75rem);
+  border-radius: 24px;
+  font-weight: 500;
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+}
+
+/*--------- Project list ---------*/
+
+.project-list-item {
+  padding: clamp(1.5rem, 1.3182rem + 0.9091vw, 2rem) 0;
+  border-bottom: 1px solid var(--divider);
+}
+
+.project-list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  margin-bottom: var(--space-xxs);
+}
+
+.project-list-item:last-child {
+  border-bottom: none !important;
+  padding-bottom: 0;
+}
+
+/*--------- Dropdowns ---------*/
+
+.dropdown {
+  background-color: var(--card-bg);
+  /* border: 1px solid var(--card-border); */
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  transition: all 0.6s ease;
+  margin: var(--space-sm) 0;
+  box-shadow: var(--box-shadow-sm);
+}
+.dropdown-header {
+  padding: var(--space-tile-padding);
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--card-bg);
+}
+
+.dropdown-content {
+  padding: 0 var(--space-tile-padding);
+  max-height: 0;
+  overflow: hidden;
+  transition:
+    max-height 0.6s ease,
+    padding 0.6s ease,
+    margin 0.6s ease,
+    opacity 0.6s ease;
+  opacity: 0;
+}
+
+.dropdown-icon {
+  transition: transform 0.3s ease;
+  transform: rotate(45deg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dropdown.open .dropdown-icon {
+  transform: rotate(0deg);
+}
+
+.styled-list {
+  padding-left: 1.5rem;
+  overflow: hidden; /* Verhindert, dass Inhalte überlaufen */
+  height: auto; /* Standardmäßig zeigen wir alles */
+  opacity: 1; /* Standardmäßig sichtbar */
+  transition:
+    height 0.3s ease,
+    opacity 0.3s ease; /* Sanfte Übergänge */
+}
+
+.styled-list li {
+  margin-bottom: var(--space-xxs);
+}
+
+/*--------- Card Carousell ---------*/
+.card-carousell {
+  background-color: var(--card-bg);
+  border-radius: var(--border-radius);
+  /* border: 1px solid var(--card-border); */
+  max-width: 100%;
+  margin: var(--space-md) auto var(--space-lg) auto;
+  box-shadow: var(--box-shadow-lg);
+  overflow: hidden;
+  position: relative;
+  opacity: 0; /* invisible until in view */
+  transform: translateY(20px);
+  transition:
+    opacity 1s ease,
+    transform 1s ease;
+}
+
+/* Container for images and incidcators */
+.card-caroussell-content {
+  position: relative;
+  width: 100%;
+  height: 60vw; /* height depends on viewport */
+  max-height: 425px; /* desktop */
+  min-height: 300px; /* mobile */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* Tablet */
+@media (max-width: 1199px) {
+  .card-caroussell-content {
+    max-height: 610px;
+  }
+}
+
+.card-carousell-section img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: var(--border-radius);
+  transition: opacity 0.8s ease-in-out;
+}
+
+/* Indicators */
+.card-carousell-indicator {
+  position: absolute;
+  right: 1.25rem;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 2; /* over img */
+  transition:
+    background-color 0.3s ease-in-out,
+    opacity 0.3s ease-in-out;
+  cursor: pointer;
+}
+
+.card-carousell-indicator-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  opacity: 0.8;
+  background-color: var(--indicator-default);
+  box-shadow: var(--box-shadow-sm);
+}
+
+.card-carousell-indicator-dot:hover {
+  background-color: var(--primary-90);
+  box-shadow: var(--box-shadow-sm);
+  opacity: 1;
+}
+
+.card-carousell-indicator-dot.active {
+  background-color: var(--primary-99);
+  opacity: 1;
+}
+
+/* Bild-Container für die Animation */
+.card-carousell-section {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 1s ease;
+}
+
+.card-carousell-section.active {
+  opacity: 1;
+}
+
+.card-carousell-text {
+  padding: 0 3.25rem;
+  font-size: var(--font-size-h3) !important;
+}
+
+/* Ausgangszustand für allgemeine Fade-In-Elemente */
+.fade-in-on-scroll {
+  opacity: 0;
+  transform: translateY(20px); /* Leichte Verschiebung nach unten */
+  transition:
+    opacity 1s ease,
+    transform 1s ease;
+}
+
+.fade-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Overlay-Text */
+.overlay {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: var(--primary-99);
+  padding: var(--space-sm);
+  font-size: var(--font-size-s) !important;
+  line-height: var(--line-height-s);
+  text-align: center;
+  text-shadow: 0 0 3px rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+}
+
+/*--------- Award list ---------*/
+
+.award-item {
+  padding: clamp(1rem, 1.3182rem + 0.9091vw, 1.5rem) 0;
+  border-bottom: 1px solid var(--divider);
+  list-style: none;
+}
+
+.award-item p {
+  font-size: var(--font-size-s);
+  line-height: var(--line-height-s);
+}
+
+.award-item:last-child {
+  border-bottom: none !important;
+  padding-bottom: 0;
+}
+
+/*--------- Book list ---------*/
+.book-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.book-item p {
+  font-size: var(--font-size-s);
+  line-height: var(--line-height-s);
+}
+
+.book-item {
+  display: grid;
+  grid-template-columns: 1fr 5fr; /* Adjusts the columns: 1/5 for image, 4/5 for description */
+  gap: var(--space-md);
+  margin-bottom: var(--space-xl);
+}
+
+.book-item:last-child {
+  margin-bottom: var(--space-sm);
+}
+
+.book-item img {
+  max-width: 100%;
+  max-height: 125px; /* Ensures the image is small */
+  margin-left: 2px;
+  object-fit: cover; /* Maintains the aspect ratio of the image */
+  border-radius: 4px; /* Optional: Adds a slight border radius */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25); /* Light drop shadow */
+}
+
+.book-item strong {
+  display: block;
+  /* margin-bottom: var(--space-xxs); */
+}
+
+/*--------- Scroll down Icon ---------*/
+.scroll-down-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: clamp(7rem, -4.6667rem + 15.5556vw, 14rem) 0;
+  transition:
+    opacity 0.6s ease,
+    transform 0.6s ease;
+}
+
+.scroll-down-container.hidden {
+  opacity: 0;
+  transform: translateY(-20px);
+  pointer-events: none;
+}
+
+.logo-marquee-container {
+  transition: margin-top 1.2s ease;
+}
+
+.logo-marquee-container.shifted-up {
+  margin-top: clamp(
+    -23.4375rem,
+    -2.6042rem + -17.3611vw,
+    -15.625rem
+  ); /* Verschiebe den Inhalt nach oben */
+}
+
+/* Anpassung des SVG-Stils */
+.scroll-down-icon {
+  width: 30px;
+  height: 48px;
+}
+
+/* Mausrad-Animation */
+.scroll-wheel {
+  animation: scroll 1.75s ease-in-out infinite;
+}
+
+/* Text unter dem Icon */
+.scroll-text {
+  margin-top: 0.25rem;
+  text-align: center;
+}
+
+/* Animation keyframes */
+@keyframes scroll {
+  0% {
+    y: 16;
+    opacity: 1;
+    height: 14px;
+  }
+  100% {
+    y: 44;
+    opacity: 0;
+    height: 2px;
+  }
+}
+
+/* Media Query: Verstecke den Scroll-Bereich bei 4K-Auflösung */
+@media screen and (min-width: 1921px) {
+  .scroll-down-container {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 1199px) {
+  .scroll-down-container {
+    display: none;
+  }
+}
+
+/* Container für die gesamte Sektion */
+.contact-container {
+  display: flex;
+  gap: 1rem;
+  width: 100%;
+  max-width: 100%; /* Stelle sicher, dass die Breite auf 100% begrenzt ist */
+  margin: var(--space-md) 0;
+  box-sizing: border-box;
+  overflow: hidden; /* Verhindert das Überlaufen des Containers */
+}
+
+@media (max-width: 767px) {
+  .contact-container {
+    flex-direction: column; /* Wechsle die Richtung der Flexbox auf Spaltenlayout */
+    gap: 1rem;
+    width: 100%;
+  }
+
+  .email-section,
+  .other-links {
+    flex: 1 1 100%; /* Beide Bereiche nehmen den gesamten Platz ein */
+  }
+}
+
+/* Email-Bereich: 2/3 des Platzes */
+.email-section {
+  flex: 2;
+  background-color: var(--card-bg);
+  padding: 1.5rem;
+  border-radius: var(--border-radius);
+  display: flex;
+  align-items: flex-start; /* Button nicht auf volle Breite strecken */
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: var(--box-shadow-md);
+}
+
+.email-section .label {
+  font-size: var(--font-size-s);
+  color: var(--text-muted);
+}
+
+.email-section .email {
+  font-size: var(--font-size-h3);
+  margin-bottom: 1rem;
+}
+
+.other-links {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.link-card {
+  flex-grow: 1; /* Ermöglicht es den Karten, gleichmäßig in der Höhe zu wachsen */
+  display: flex;
+  align-items: center; /* Zentriert den Inhalt vertikal */
+  gap: 0.1rem; /* Etwas mehr Abstand zwischen Icon und Text */
+  background-color: var(--card-bg);
+  padding: 1.5rem;
+  border-radius: var(--border-radius);
+  text-decoration: none;
+  color: var(--text-color);
+  transition:
+    background-color 0.3s ease-in-out,
+    color 0.15s ease-in-out,
+    box-shadow 0.3s ease-in-out;
+  box-shadow: var(--box-shadow-md);
+}
+
+/* Hover-Zustand: Ändert den Hintergrund und die Farbe */
+.link-card:hover {
+  background-color: var(--card-bg-hover);
+  color: var(
+    --highlight
+  ) !important; /* Ändert sowohl den Text als auch das Icon */
+}
+
+/* Icon-Container-Stil */
+.link-card .icon-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  transition:
+    color 0.3s,
+    fill 0.3s;
+}
+
+/* Textstil innerhalb der Karten */
+.link-card p {
+  margin: 0;
+  color: inherit; /* Text übernimmt die Farbe von .link-card */
+  transition: color 0.3s ease;
+  font-weight: 500;
+}
+
+/* Active-Zustand: Gibt Feedback beim Klicken */
+.link-card:active {
+  background-color: var(--card-bg);
+  color: var(--highlight);
+}
+
+/* Besuchete Links */
+.link-card:visited {
+  color: var(
+    --text-color
+  ); /* Gleiche Farbe wie Standard, um Verfärbungen zu vermeiden */
+}
+
+/*--------- Use Case ---------*/
+
+/* Back-Link, Next-Link and Scroll to Top */
+.navigation-links {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 0;
+}
+
+.back-link,
+.next-link {
+  text-decoration: none;
+  color: var(--text-muted);
+  display: inline-flex;
+  align-items: center;
+  transition: color 0.3s ease;
+  padding: 0.75rem 0;
+}
+
+.back-link:hover,
+.next-link:hover {
+  color: var(--highlight);
+}
+
+.arrow-icon-left,
+.arrow-icon-right {
+  display: inline-block;
+  margin-right: 4px; /* Abstand zwischen Pfeil und Text */
+  transition: transform 0.15s ease;
+}
+
+.back-link:hover .arrow-icon-left {
+  transform: translate(-3px, 0); /* Animation des Pfeils nach links */
+}
+
+.next-link:hover .arrow-icon-right {
+  transform: translate(3px, 0); /* Animation des Pfeils nach rechts */
+}
+
+/* Basis-Layout */
+.case-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 100%;
+  height: 100%;
+}
+
+.case-main {
+  max-width: 1000px; /* desktop */
+  width: 90%;
+  margin: 0 auto;
+}
+
+.case-section {
+  margin-bottom: clamp(3rem, 2.4545rem + 2.7273vw, 4.5rem) !important;
+}
+
+.case-text {
+  max-width: 750px;
+  margin: 0 auto;
+}
+
+.case-text h1 {
+  margin-top: var(--space-xs);
+}
+
+.case-subtitle {
+  font-size: var(--font-size-h2) !important;
+  line-height: var(--line-height-h2) !important;
+  font-weight: 300;
+}
+
+/* Bild und Caption */
+.hero-image {
+  width: 100%;
+  max-width: 100%;
+  margin: var(--space-md) 0;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow-lg);
+}
+
+.case-image {
+  width: 100%;
+  max-width: 100%;
+  margin: 1.5rem 0 1rem 0;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow-lg);
+}
+
+figcaption {
+  font-size: var(--font-size-s);
+  color: var(--text-muted);
+  text-align: center;
+  margin-bottom: var(--space-md);
+}
+
+/* case-overview */
+.case-overview {
+  position: relative;
+  width: 100%;
+  background-color: var(--card-bg);
+  padding: 1rem;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow-lg);
+}
+
+.pin {
+  position: absolute;
+  top: 1.75rem;
+  left: 1rem;
+  font-size: 2rem;
+}
+
+.case-overview-content {
+  padding-left: 3.5rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+/* Tablet */
+@media (max-width: 1199px) {
+  .case-main {
+    margin-left: var(--space-md);
+    margin-right: var(--space-md);
+  }
+  figcaption {
+    text-align: left;
+  }
+}

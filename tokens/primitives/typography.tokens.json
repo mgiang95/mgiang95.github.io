@@ -1,0 +1,41 @@
+{
+  "font": {
+    "family": {
+      "$description": "System grotesque stacks for now; final typeface choice is a design decision documented in the /system case study.",
+      "display": {
+        "$value": ["Helvetica Neue", "Helvetica", "Arial", "sans-serif"],
+        "$type": "fontFamily"
+      },
+      "body": {
+        "$value": ["Helvetica Neue", "Helvetica", "Arial", "sans-serif"],
+        "$type": "fontFamily"
+      },
+      "mono": {
+        "$value": ["ui-monospace", "SF Mono", "Menlo", "Consolas", "monospace"],
+        "$type": "fontFamily"
+      }
+    },
+    "size": {
+      "$description": "Type scale with large contrasts between steps (Swiss typography).",
+      "100": { "$value": "0.75rem", "$type": "dimension" },
+      "200": { "$value": "0.875rem", "$type": "dimension" },
+      "300": { "$value": "1rem", "$type": "dimension" },
+      "400": { "$value": "1.125rem", "$type": "dimension" },
+      "500": { "$value": "1.25rem", "$type": "dimension" },
+      "600": { "$value": "1.5rem", "$type": "dimension" },
+      "700": { "$value": "2rem", "$type": "dimension" },
+      "800": { "$value": "3rem", "$type": "dimension" },
+      "900": { "$value": "4.5rem", "$type": "dimension" }
+    },
+    "weight": {
+      "regular": { "$value": 400, "$type": "fontWeight" },
+      "medium": { "$value": 500, "$type": "fontWeight" },
+      "bold": { "$value": 700, "$type": "fontWeight" }
+    },
+    "line-height": {
+      "tight": { "$value": 1.1, "$type": "number" },
+      "base": { "$value": 1.5, "$type": "number" },
+      "relaxed": { "$value": 1.7, "$type": "number" }
+    }
+  }
+}

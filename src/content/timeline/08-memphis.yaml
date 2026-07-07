@@ -1,0 +1,11 @@
+version: "1.1"
+order: 8
+type: education
+title: Semester Abroad
+institution: University of Memphis TN
+location: US
+country: usa
+dateStart: 2018-01-01
+dateEnd: 2018-05-31
+highlights:
+  - "Topics: Marketing and Graphic Design (GPA: 4.0 / 4.0)"

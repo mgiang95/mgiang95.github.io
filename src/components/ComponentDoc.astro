@@ -1,0 +1,147 @@
+---
+/**
+ * ComponentDoc — one /system component entry, rendered from the component's
+ * co-located *.metadata.json. The metadata is the single source of truth:
+ * the same JSON an AI assistant queries before creating or changing
+ * components also produces these human-readable docs, so they cannot drift.
+ */
+import type { FlatToken } from "../lib/tokens";
+import TokenTable from "./TokenTable.astro";
+import Badge from "./Badge.astro";
+
+interface AntiPattern {
+  scenario: string;
+  reason: string;
+  alternative: string;
+}
+
+export interface ComponentMeta {
+  name: string;
+  description: string;
+  renderer: string;
+  jsRequired: boolean;
+  variants: { name: string; use: string }[];
+  usage: {
+    useCases: string[];
+    antiPatterns: AntiPattern[];
+    selectionCriteria?: Record<string, string>;
+  };
+  tokenPrefixes: string[];
+  a11y: string[];
+}
+
+interface Props {
+  meta: ComponentMeta;
+  /** Flattened component tokens; omit for components on semantic tokens only. */
+  tokens?: FlatToken[];
+}
+
+const { meta, tokens } = Astro.props;
+---
+
+<article class="component-doc">
+  <h3>{meta.name}</h3>
+  <p class="component-doc__meta" aria-label="Technical profile">
+    <Badge>{meta.renderer}</Badge>
+    <Badge>{meta.jsRequired ? "requires JS" : "zero JS"}</Badge>
+    <Badge>
+      {meta.tokenPrefixes.length ? `${meta.tokenPrefixes.join(", ")}.*` : "semantic tokens only"}
+    </Badge>
+  </p>
+  <p class="component-doc__description">{meta.description}</p>
+
+  <div class="component-doc__demo">
+    <slot />
+  </div>
+
+  <div class="component-doc__usage">
+    <div class="component-doc__rules">
+      <h4>Use for</h4>
+      <ul>
+        {meta.usage.useCases.map((useCase) => <li>{useCase}</li>)}
+      </ul>
+    </div>
+    {
+      meta.usage.antiPatterns.length > 0 && (
+        <div class="component-doc__rules">
+          <h4>Don&rsquo;t</h4>
+          <ul>
+            {meta.usage.antiPatterns.map((anti) => (
+              <li>
+                <strong>{anti.scenario}.</strong> {anti.reason} Instead:{" "}
+                {anti.alternative}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )
+    }
+  </div>
+
+  {tokens && tokens.length > 0 && (
+    <TokenTable label={`${meta.name} tokens`} tokens={tokens} />
+  )}
+</article>
+
+<style>
+  .component-doc {
+    margin-block-start: var(--space-stack-lg);
+  }
+
+  .component-doc__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-inline-sm);
+    margin-block-start: var(--space-stack-xs);
+  }
+
+  .component-doc__description {
+    max-width: 65ch;
+    margin-block-start: var(--space-stack-xs);
+    color: var(--color-text-secondary);
+  }
+
+  .component-doc__demo {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: var(--space-inline-md);
+    padding: var(--space-inset-lg);
+    margin-block-start: var(--space-stack-sm);
+    margin-block-end: var(--space-stack-sm);
+    border: 1px solid var(--color-border-default);
+    background: var(--color-surface-default);
+  }
+
+  .component-doc__usage {
+    display: grid;
+    gap: var(--space-stack-sm);
+    margin-block-end: var(--space-stack-sm);
+  }
+
+  .component-doc__rules h4 {
+    font-family: var(--typography-label-family);
+    font-size: var(--typography-label-size);
+    font-weight: var(--typography-label-weight);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-text-secondary);
+  }
+
+  .component-doc__rules ul {
+    max-width: 65ch;
+    margin-block-start: var(--space-stack-xs);
+    padding-inline-start: var(--space-inset-lg);
+    display: grid;
+    gap: var(--space-stack-xs);
+  }
+
+  .component-doc__rules li {
+    color: var(--color-text-secondary);
+  }
+
+  .component-doc__rules strong {
+    color: var(--color-text-primary);
+    font-weight: var(--typography-label-weight);
+  }
+</style>

@@ -1,0 +1,11 @@
+{
+  "introduction": "Completed projects for",
+  "clients": [
+    { "name": "BaseNet Informatik AG", "logo": "logo-basenet.svg" },
+    { "name": "Linde Material Handling AG", "logo": "logo-linde_mh.svg" },
+    { "name": "Salzburg AG", "logo": "logo-salzburg_ag.svg" },
+    { "name": "eurofunk KAPPACHER", "logo": "logo-eurofunk_kappacher.svg" },
+    { "name": "BMW Group", "logo": "logo-bmw.svg" },
+    { "name": "Bosch Haushaltsgeräte", "logo": "logo-bsh.svg" }
+  ]
+}

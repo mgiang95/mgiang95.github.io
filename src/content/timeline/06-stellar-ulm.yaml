@@ -1,0 +1,15 @@
+version: "2.0"
+order: 6
+type: work
+title: Interaction Designer
+institution: stellar design und engineering GmbH
+location: Ulm, DE
+country: ger
+dateStart: 2018-08-01
+dateEnd: 2020-08-31
+note: "08.2016 – 12.2017 (intern)"
+highlights:
+  - >-
+    Conceptualized features for the fleet management system
+    [connect:desk](/projects/connect-desk).
+  - Developed interaction concepts for automotive and kitchen appliances.

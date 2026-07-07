@@ -1,0 +1,39 @@
+{
+  "hue": {
+    "$value": 220,
+    "$type": "number",
+    "$description": "Global hue (0-360), runtime-adjustable via the theme panel. All color primitives derive from it."
+  },
+  "color": {
+    "accent": {
+      "$description": "Accent ramp in OKLCH. Lightness and chroma per step are FIXED so contrast between semantic pairs stays constant for every hue.",
+      "50": { "$value": "oklch(0.97 0.015 var(--hue))", "$type": "color" },
+      "100": { "$value": "oklch(0.94 0.03 var(--hue))", "$type": "color" },
+      "200": { "$value": "oklch(0.88 0.06 var(--hue))", "$type": "color" },
+      "300": { "$value": "oklch(0.8 0.09 var(--hue))", "$type": "color" },
+      "400": { "$value": "oklch(0.71 0.12 var(--hue))", "$type": "color" },
+      "500": { "$value": "oklch(0.62 0.14 var(--hue))", "$type": "color" },
+      "600": { "$value": "oklch(0.53 0.13 var(--hue))", "$type": "color" },
+      "700": { "$value": "oklch(0.45 0.11 var(--hue))", "$type": "color" },
+      "800": { "$value": "oklch(0.38 0.08 var(--hue))", "$type": "color" },
+      "900": { "$value": "oklch(0.31 0.06 var(--hue))", "$type": "color" },
+      "950": { "$value": "oklch(0.25 0.04 var(--hue))", "$type": "color" }
+    },
+    "neutral": {
+      "$description": "Desaturated ramp, minimally tinted by the accent hue for harmonic surfaces.",
+      "0": { "$value": "oklch(1 0 var(--hue))", "$type": "color" },
+      "50": { "$value": "oklch(0.985 0.004 var(--hue))", "$type": "color" },
+      "100": { "$value": "oklch(0.965 0.006 var(--hue))", "$type": "color" },
+      "200": { "$value": "oklch(0.92 0.008 var(--hue))", "$type": "color" },
+      "300": { "$value": "oklch(0.86 0.008 var(--hue))", "$type": "color" },
+      "400": { "$value": "oklch(0.71 0.01 var(--hue))", "$type": "color" },
+      "500": { "$value": "oklch(0.57 0.01 var(--hue))", "$type": "color" },
+      "600": { "$value": "oklch(0.47 0.01 var(--hue))", "$type": "color" },
+      "700": { "$value": "oklch(0.39 0.01 var(--hue))", "$type": "color" },
+      "800": { "$value": "oklch(0.3 0.01 var(--hue))", "$type": "color" },
+      "900": { "$value": "oklch(0.22 0.012 var(--hue))", "$type": "color" },
+      "950": { "$value": "oklch(0.16 0.012 var(--hue))", "$type": "color" },
+      "1000": { "$value": "oklch(0.1 0.012 var(--hue))", "$type": "color" }
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "badge": {
+    "background": { "$value": "{color.surface.sunken}", "$type": "color" },
+    "text": { "$value": "{color.text.secondary}", "$type": "color" },
+    "border": { "$value": "{color.border.default}", "$type": "color" },
+    "padding-inline": { "$value": "{space.inline.sm}", "$type": "dimension" },
+    "padding-block": { "$value": "{space.inline.xs}", "$type": "dimension" },
+    "radius": { "$value": "{radius.control}", "$type": "dimension" },
+    "font-size": { "$value": "{typography.label.size}", "$type": "dimension" },
+    "font-family": { "$value": "{typography.label.family}", "$type": "fontFamily" }
+  }
+}

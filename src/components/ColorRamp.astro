@@ -1,0 +1,75 @@
+---
+/**
+ * ColorRamp — swatch strip for one color primitive ramp (accent, neutral).
+ * The swatches render via their custom properties, so they follow the
+ * runtime hue. Consumes semantic tokens only (plus the ramp vars themselves).
+ */
+import type { FlatToken } from "../lib/tokens";
+
+interface Props {
+  tokens: FlatToken[];
+  /** Ramp name shown as caption, e.g. "color.accent". */
+  name: string;
+}
+
+const { tokens, name } = Astro.props;
+---
+
+<figure class="color-ramp">
+  <figcaption class="color-ramp__caption">{name}</figcaption>
+  <ul class="color-ramp__list">
+    {
+      tokens.map((token) => (
+        <li class="color-ramp__step">
+          <span
+            class="color-ramp__swatch"
+            style={`background: var(${token.cssVar})`}
+            aria-hidden="true"
+          />
+          <code class="color-ramp__label">{token.path.split(".").pop()}</code>
+        </li>
+      ))
+    }
+  </ul>
+</figure>
+
+<style>
+  .color-ramp {
+    display: grid;
+    gap: var(--space-stack-xs);
+  }
+
+  .color-ramp__caption {
+    font-family: var(--typography-label-family);
+    font-size: var(--typography-label-size);
+    color: var(--color-text-secondary);
+  }
+
+  .color-ramp__list {
+    display: flex;
+    flex-wrap: wrap;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .color-ramp__step {
+    display: grid;
+    gap: var(--space-stack-xs);
+    justify-items: center;
+  }
+
+  .color-ramp__swatch {
+    display: block;
+    /* content sizing relative to type, not a spacing token */
+    inline-size: 3em;
+    block-size: 3em;
+    border: 1px solid var(--color-border-default);
+    margin-inline-end: -1px;
+  }
+
+  .color-ramp__label {
+    font-size: var(--typography-label-size);
+    color: var(--color-text-muted);
+  }
+</style>

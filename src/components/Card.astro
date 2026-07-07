@@ -1,0 +1,27 @@
+---
+/**
+ * Card — raised surface for project teasers and grouped content.
+ * Consumes only `card.*` component tokens.
+ */
+interface Props {
+  /** Optional element to render as (e.g. "article", "li"). */
+  as?: string;
+}
+
+const { as: Tag = "div" } = Astro.props;
+---
+
+<Tag class="card">
+  <slot />
+</Tag>
+
+<style>
+  .card {
+    display: grid;
+    gap: var(--card-gap);
+    padding: var(--card-padding);
+    background: var(--card-background);
+    border: 1px solid var(--card-border);
+    border-radius: var(--card-radius);
+  }
+</style>

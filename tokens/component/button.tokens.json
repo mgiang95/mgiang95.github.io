@@ -1,0 +1,23 @@
+{
+  "button": {
+    "primary": {
+      "background": { "$value": "{color.interactive.default}", "$type": "color" },
+      "background-hover": { "$value": "{color.interactive.hover}", "$type": "color" },
+      "background-active": { "$value": "{color.interactive.active}", "$type": "color" },
+      "text": { "$value": "{color.text.on-accent}", "$type": "color" }
+    },
+    "secondary": {
+      "text": { "$value": "{color.interactive.default}", "$type": "color" },
+      "border": { "$value": "{color.interactive.default}", "$type": "color" },
+      "background-hover": { "$value": "{color.surface.sunken}", "$type": "color" }
+    },
+    "ghost": {
+      "text": { "$value": "{color.interactive.default}", "$type": "color" },
+      "background-hover": { "$value": "{color.surface.sunken}", "$type": "color" }
+    },
+    "padding-inline": { "$value": "{space.inset.md}", "$type": "dimension" },
+    "padding-block": { "$value": "{space.inset.xs}", "$type": "dimension" },
+    "gap": { "$value": "{space.inline.sm}", "$type": "dimension" },
+    "radius": { "$value": "{radius.control}", "$type": "dimension" }
+  }
+}

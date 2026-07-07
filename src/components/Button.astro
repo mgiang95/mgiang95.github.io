@@ -1,0 +1,73 @@
+---
+/**
+ * Button — primary / secondary / ghost.
+ * Renders a real <a> when `href` is given, otherwise a <button>.
+ * Consumes only `button.*` component tokens.
+ */
+interface Props {
+  variant?: "primary" | "secondary" | "ghost";
+  href?: string;
+  type?: "button" | "submit" | "reset";
+}
+
+const { variant = "primary", href, type = "button" } = Astro.props;
+const Tag = href ? "a" : "button";
+---
+
+<Tag
+  class={`button button--${variant}`}
+  href={href}
+  type={href ? undefined : type}
+>
+  <slot />
+</Tag>
+
+<style>
+  .button {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--button-gap);
+    padding: var(--button-padding-block) var(--button-padding-inline);
+    border: 1px solid transparent;
+    border-radius: var(--button-radius);
+    font: inherit;
+    font-weight: var(--typography-label-weight);
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .button--primary {
+    background: var(--button-primary-background);
+    color: var(--button-primary-text);
+  }
+
+  .button--primary:hover {
+    background: var(--button-primary-background-hover);
+    color: var(--button-primary-text);
+  }
+
+  .button--primary:active {
+    background: var(--button-primary-background-active);
+  }
+
+  .button--secondary {
+    background: transparent;
+    color: var(--button-secondary-text);
+    border-color: var(--button-secondary-border);
+  }
+
+  .button--secondary:hover {
+    background: var(--button-secondary-background-hover);
+    color: var(--button-secondary-text);
+  }
+
+  .button--ghost {
+    background: transparent;
+    color: var(--button-ghost-text);
+  }
+
+  .button--ghost:hover {
+    background: var(--button-ghost-background-hover);
+    color: var(--button-ghost-text);
+  }
+</style>

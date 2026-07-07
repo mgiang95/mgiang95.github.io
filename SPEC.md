@@ -158,9 +158,50 @@ Seiten befüllen (Projekte, About/Timeline, Meta-Case-Study), Token-Inspector, F
 
 **Phase 6 — Deployment & Cutover:** GitHub-Actions-Workflow, Pages-Source auf „GitHub Actions", Links/Assets auf der Live-URL verifizieren, Lighthouse/axe-Check, dann Redirects im alten `me`-Repo einrichten und `me` archivieren, `/legacy` löschen.
 
+**Phase 7 — AI-Ready-Schicht** *(umgesetzt, vorgezogen vor Phase 6)*: Governance-Auditor, Component-Metadata als gemeinsame Quelle für Docs und AI-Tooling, pfad-konfigurierbare Pipeline. Details in §12.
+
 ## 11. Nicht-Ziele
 
 - Kein CMS, keine Datenbank, kein Auth.
 - Keine SPA-Navigation, kein clientseitiges Routing.
 - Keine Effekt-Themes (Retro, Win95 o. ä.).
 - Kein Utility-CSS-Framework.
+
+## 12. AI-Ready-Schicht & Wiederverwendung
+
+Das System ist nicht nur für Menschen dokumentiert, sondern als abfragbare Datenstruktur angelegt (nach dem Muster von C. Morales Achiardis Serie „Building an AI-Ready Design System"), bewusst herunterskaliert auf die Projektgröße: Verträge früh festlegen, Automatisierung an Wachstums-Trigger knüpfen.
+
+### 12.1 Governance als Code
+
+`npm run audit` (`scripts/audit-tokens.mjs`) erzwingt die Architektur-Invarianten maschinell und bricht den Build bei Verstößen ab:
+
+- **T1–T4** Token-Hierarchie: Primitives referenzieren nichts, Semantic nur Primitives, Component nur Semantic; jede Referenz muss existieren.
+- **C1–C5** Autoren-CSS: keine Farb-Literale, kein px außer 1–2px-Haarlinien, jede `var(--*)` existiert im generierten CSS, Komponenten konsumieren keine Primitives, BEM-Block = Dateiname.
+- **M1–M2** Metadata: jede Komponente hat eine `*.metadata.json` mit Pflichtfeldern (und umgekehrt — verwaiste Metadata ist ein Fehler); deklarierte `tokenPrefixes` existieren in `/tokens/component`.
+
+Alle Scripts (Build, Kontrast-Proof, Auditor) lesen ihre Pfade aus `scripts/ds.config.mjs` und laufen unverändert in jedem Projekt, das die Token-Schicht übernimmt.
+
+### 12.2 Component-Metadata als Single Source
+
+Jede Komponente trägt eine co-located `<Name>.metadata.json`: `description`, `renderer`, `jsRequired`, `variants`, `usage.useCases`, `usage.antiPatterns` (`scenario`/`reason`/`alternative`), optional `selectionCriteria`, `tokenPrefixes`, `a11y`. Dieselbe Datei dient zwei Konsumenten: AI-Tooling fragt sie ab, bevor es Komponenten anlegt oder ändert („prefer editing over creating"), und `ComponentDoc.astro` rendert daraus die Komponenten-Docs auf `/system` — menschen- und maschinenlesbare Dokumentation können nicht auseinanderlaufen.
+
+### 12.3 Wiederverwendungs-Architektur (Schichtung)
+
+```
+Tokens        primitives/ + semantic/ + Pipeline + Auditor  → projekt-agnostisch, extrahierbar
+Component-CSS token-basierte Styles (Button, Card …)        → wiederverwendbar über Projekte
+Wrapper       dünne Render-Hüllen je Kontext                → Astro (Portfolio), Lit/Framework (SPAs)
+```
+
+- Die Substanz statischer Komponenten liegt in Tokens + CSS, nicht im Markup — Wrapper sind einzeilig und dürfen je Konsument verschieden sein.
+- **Rolle entscheidet über Technologie:** Struktur/Content = Astro (No-JS-Invariante); verhaltenslastige, projektübergreifende Komponenten = Lit-Kandidaten (Custom Properties durchdringen Shadow DOM, die Kontrast-Garantie gilt automatisch). React bleibt Konsument/Showcase. Astro 5 hat kein offizielles Lit-SSR — Lit deshalb nie für content-kritisches Rendering im Portfolio.
+- Möglicher Pilot vor der Extraktion: TokenInspector als Lit-Komponente — dann zeigt `/system` dasselbe Token-System in drei Renderern (Astro statisch, React-Island, Web Component).
+
+### 12.4 Wachstums-Trigger (nicht vorzeitig bauen)
+
+| Trigger | Dann |
+|---|---|
+| Zweiter Konsument existiert real (erste SPA) | Tokens + Pipeline + Auditor als eigenes Paket/Repo extrahieren; ab da Semver + Changelog (jede Token-Änderung ist potenziell breaking). |
+| ~15–20 Komponenten oder erste „Gibt es X schon?"-Unsicherheit | Auto-generierter Codebase-Index (JSON: Komponenten, `uses`/`usedBy`). Vorher ist der Graph trivial. |
+| Erste verhaltenslastige, projektübergreifende Komponente | Lit-Komponenten-Paket beginnen (Wrapper um bestehende Component-CSS). |
+| CI-Workflow entsteht (Phase 6) | Token-Build + Kontrast-Proof + Audit als Steps im selben GitHub-Actions-Workflow. |
