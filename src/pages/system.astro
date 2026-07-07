@@ -88,12 +88,9 @@ const semanticOther = [
     </p>
     <p>
       <strong>Invariants are enforced, not promised.</strong> An auditor
-      script checks the architecture rules on every build: components never
-      consume primitives or hardcoded values, every custom property exists,
-      token tiers only reference downwards. Each component also ships a
-      machine-readable metadata file — use cases, anti-patterns, consumed
-      tokens — that AI tooling can query and that renders the component docs
-      below. One source, readable by humans and machines.
+      script checks every architecture rule on each build and fails the
+      build on violations. What that means, and what it found in this very
+      codebase: see <a href="#ai-heading">Machine-readable by design</a>.
     </p>
 
     <h2>Outcome</h2>
@@ -195,6 +192,112 @@ const semanticOther = [
       <ThemePanel client:visible />
     </ComponentDoc>
   </section>
+
+  <section class="system__section" aria-labelledby="ai-heading">
+    <h2 id="ai-heading">Machine-readable by design</h2>
+
+    <div class="prose system__case">
+      <h3>Problem</h3>
+      <p>
+        AI-assisted development has a failure mode that code review is bad
+        at catching: an assistant references a token that does not exist.
+        The CSS compiles, the custom property resolves to nothing, and a
+        style silently disappears. The same assistant will hardcode a hex
+        value under deadline pressure, or rebuild a component that already
+        exists two files away. Prose rules — &ldquo;components never consume
+        primitives&rdquo; — prevent none of this. They rely on every
+        contributor, human or machine, reading and remembering them.
+      </p>
+      <p>
+        A nine-component portfolio can absorb that risk. A token system that
+        is meant to be reused across future projects cannot: every drift
+        compounds with each new consumer.
+      </p>
+
+      <h3>Approach</h3>
+      <p>
+        Treat the design system as a data structure that can be queried and
+        checked, not just text to interpret — Cristian Morales
+        Achiardi&rsquo;s{" "}
+        <a
+          href="https://www.designsystemscollective.com/building-an-ai-ready-design-system-35e709f54edf"
+          rel="external"
+        >
+          AI-ready design system
+        </a>{" "}
+        approach, scaled down to a system this size. Three parts:
+      </p>
+      <p>
+        <strong>Executable governance.</strong> An auditor script encodes
+        eleven rules in three groups: token hierarchy (primitives reference
+        nothing, semantic references primitives, component references
+        semantic, every reference resolves), authored CSS (no color
+        literals, no px beyond hairlines, every custom property exists,
+        components never consume primitives, BEM blocks match file names)
+        and metadata (every component carries one, none is orphaned). It
+        runs inside <code>npm run build</code> — a violation is a failed
+        build, not a review comment.
+      </p>
+      <p>
+        <strong>Component metadata.</strong> Every component ships a
+        co-located JSON file holding the decisions that usually live in
+        heads: use cases, anti-patterns with reasons and alternatives,
+        selection criteria, consumed token prefixes, accessibility notes.
+        AI tooling queries these files before creating or changing anything
+        — extending an existing component beats building a new one.
+      </p>
+      <p>
+        <strong>Deliberate restraint.</strong> The larger machinery of
+        AI-ready systems — dependency indexes, adoption reports — is
+        documented as growth triggers, not built ahead of need. At nine
+        components a dependency graph is trivia; maintaining it would be
+        pure staleness risk.
+      </p>
+
+      <h3>Decisions</h3>
+      <p>
+        <strong>One source for humans and machines.</strong> The component
+        docs above are rendered from the same metadata files the tooling
+        queries. There is no second, hand-written documentation that could
+        drift — the docs <em>are</em> the data.
+      </p>
+      <p>
+        <strong>Metadata lives next to the component.</strong> A co-located
+        file moves, renames and dies with its component. The auditor treats
+        an orphaned metadata file as an error, not a leftover.
+      </p>
+      <p>
+        <strong>The pipeline is portable.</strong> Build, contrast proof and
+        auditor read their paths from one config file. When a second project
+        adopts the token layer, the governance moves with it unchanged —
+        the rules are part of the system, not of this site.
+      </p>
+
+      <h3>Outcome</h3>
+      <p>
+        The auditor&rsquo;s first run — against a codebase written under the
+        prose version of these exact rules — found 14 violations: six
+        primitive-token usages across five components, plus the then-missing
+        metadata files.
+      </p>
+      <pre class="system__audit-log" aria-label="Excerpt of the first audit run"><code>Design system audit: 14 violation(s)
+
+src/components/Badge.astro
+  ✘ [C4] var(--font-line-height-base) is a primitive —
+         components consume component/semantic tokens only
+src/components/Button.astro
+  ✘ [C4] var(--font-weight-medium) is a primitive —
+         components consume component/semantic tokens only
+…</code></pre>
+      <p>
+        The rules had existed as prose the whole time; the violations
+        shipped anyway. Two new semantic tokens fixed all six, and since
+        then the invariants hold by construction: every build proves
+        contrast for all 360 hues and all eleven rules before a single page
+        renders.
+      </p>
+    </div>
+  </section>
 </BaseLayout>
 
 <style>
@@ -228,6 +331,13 @@ const semanticOther = [
   .system__ramps {
     display: grid;
     gap: var(--space-stack-md);
+  }
+
+  .system__audit-log {
+    padding: var(--space-inset-lg);
+    border: 1px solid var(--color-border-default);
+    background: var(--color-surface-sunken);
+    overflow-x: auto;
   }
 
   .system__demo-row {
