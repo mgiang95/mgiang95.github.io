@@ -1,0 +1,44 @@
+{
+  "token-inspector": {
+    "$description": "Lit web component: reveals which token custom properties style the hovered/focused element. Panel = raised surface, highlight = interactive accent.",
+    "panel": {
+      "background": {
+        "$value": "{color.surface.raised}",
+        "$type": "color",
+        "$description": "Floating panel surface."
+      },
+      "text": {
+        "$value": "{color.text.primary}",
+        "$type": "color"
+      },
+      "muted": {
+        "$value": "{color.text.muted}",
+        "$type": "color",
+        "$description": "Tier labels and empty-state text."
+      },
+      "border": {
+        "$value": "{color.border.strong}",
+        "$type": "color"
+      },
+      "radius": {
+        "$value": "{radius.surface}",
+        "$type": "dimension"
+      },
+      "padding": {
+        "$value": "{space.inset.sm}",
+        "$type": "dimension"
+      },
+      "gap": {
+        "$value": "{space.stack.xs}",
+        "$type": "dimension"
+      }
+    },
+    "highlight": {
+      "border": {
+        "$value": "{color.interactive.default}",
+        "$type": "color",
+        "$description": "Outline drawn around the inspected element."
+      }
+    }
+  }
+}

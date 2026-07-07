@@ -1,0 +1,31 @@
+{
+  "name": "TokenInspector",
+  "description": "Lit web component — the third renderer next to Astro and React. While active it reads the page's stylesheets live and shows which token custom properties style the element under cursor or keyboard focus, grouped by tier.",
+  "renderer": "lit",
+  "jsRequired": true,
+  "variants": [],
+  "usage": {
+    "useCases": [
+      "Token exploration on /system — hover any element and see its token diet",
+      "Proof that theming crosses the shadow DOM boundary: the inspector styles itself via the same custom properties it reports"
+    ],
+    "antiPatterns": [
+      {
+        "scenario": "Activating the inspector by default",
+        "reason": "It is a debugging lens, not content; permanent overlays compete with the page.",
+        "alternative": "Keep it behind its toggle button."
+      },
+      {
+        "scenario": "Treating the inspector as token documentation",
+        "reason": "It shows what a rule consumes, not what a token means or when to use it.",
+        "alternative": "TokenTable and the component metadata docs."
+      }
+    ]
+  },
+  "tokenPrefixes": ["token-inspector", "button"],
+  "a11y": [
+    "Toggle is a real <button> with aria-pressed; Escape deactivates",
+    "Follows keyboard focus (focusin), not only the pointer",
+    "Overlay and panel are aria-hidden and pointer-transparent — a visual lens, never an interaction target"
+  ]
+}

@@ -11,7 +11,7 @@ Kein Retro-Gimmick, keine Effekt-Show. Anspruch: ruhig, präzise, handwerklich �
 | Bereich | Entscheidung | Begründung |
 |---|---|---|
 | Framework | **Astro** (aktuelle Major-Version) | Statischer Content, Interaktivität nur als React Islands. Architektur-Entscheidung wird im Case Study begründet. |
-| UI-Islands | **React** (Theme-Panel, Token-Inspector, ggf. Kontrast-Badge) | Frisch gelernt, wird hier gezielt eingesetzt statt als SPA-Overkill. |
+| UI-Islands | **React** (Theme-Panel mit Kontrast-Badge) + **Lit** (Token-Inspector als Web-Component-Pilot, §12.3) | React frisch gelernt, gezielt eingesetzt statt als SPA-Overkill; Lit belegt die Framework-Unabhängigkeit des Token-Systems. |
 | Tokens | **DTCG-Format** (`.tokens.json` mit `$value`, `$type`, `$description`, Aliasing via `{pfad.zum.token}`) | Community-Standard, glaubwürdiges Statement. |
 | Token-Build | **Style Dictionary v4** (DTCG-Support) → CSS Custom Properties | Echte Token-Pipeline statt hartcodierter Werte. |
 | Farbe | **OKLCH** für alle Farb-Primitives | Perzeptuell gleichmäßig → Kontraste bleiben beim Hue-Wechsel stabil. |
@@ -87,7 +87,7 @@ Eigene kleine Bibliothek, die Component-Tokens konsumiert:
 4. `TimelineItem` (CV)
 5. `TokenSwatch` / `TokenTable` (für die Docs-Seite)
 6. `ThemePanel` (React Island)
-7. `TokenInspector` (React Island, optional Phase 5): Toggle, der zeigt, welche semantischen Tokens ein Element konsumiert (Overlay/Tooltip).
+7. `TokenInspector` (Lit Web Component — Renderer-Pilot, §12.3): Toggle, der live aus den Stylesheets liest, welche Token-Custom-Properties ein Element konsumieren (Overlay, nach Ebenen gruppiert; folgt Cursor und Tastatur-Fokus).
 
 Mini-"Docs"-Seite im Storybook-Stil: jede Komponente mit Varianten + den konsumierten Tokens.
 
@@ -195,7 +195,7 @@ Wrapper       dünne Render-Hüllen je Kontext                → Astro (Portfol
 
 - Die Substanz statischer Komponenten liegt in Tokens + CSS, nicht im Markup — Wrapper sind einzeilig und dürfen je Konsument verschieden sein.
 - **Rolle entscheidet über Technologie:** Struktur/Content = Astro (No-JS-Invariante); verhaltenslastige, projektübergreifende Komponenten = Lit-Kandidaten (Custom Properties durchdringen Shadow DOM, die Kontrast-Garantie gilt automatisch). React bleibt Konsument/Showcase. Astro 5 hat kein offizielles Lit-SSR — Lit deshalb nie für content-kritisches Rendering im Portfolio.
-- Möglicher Pilot vor der Extraktion: TokenInspector als Lit-Komponente — dann zeigt `/system` dasselbe Token-System in drei Renderern (Astro statisch, React-Island, Web Component).
+- **Pilot umgesetzt:** Der TokenInspector ist eine Lit-Komponente — `/system` zeigt dasselbe Token-System in drei Renderern (Astro statisch, React-Island, Lit Web Component). Sein Toggle konsumiert die `button.*`-Component-Tokens: geteilte Component-CSS-Verträge über Renderer-Grenzen hinweg.
 
 ### 12.4 Wachstums-Trigger (nicht vorzeitig bauen)
 

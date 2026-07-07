@@ -44,7 +44,8 @@ function flatten(node, prefix = [], out = {}) {
     return out;
   }
   for (const [key, child] of Object.entries(node)) {
-    if (key.startsWith("$") || typeof child !== "object" || child === null) continue;
+    if (key.startsWith("$") || typeof child !== "object" || child === null)
+      continue;
     flatten(child, [...prefix, key], out);
   }
   return out;
@@ -82,9 +83,24 @@ const refsIn = (value) =>
     : [];
 
 const REF_RULES = [
-  ["primitives", () => false, "T1", "primitives must not reference other tokens"],
-  ["semantic", (ref) => ref in tiers.primitives, "T2", "semantic tokens may only reference primitives"],
-  ["component", (ref) => ref in tiers.semantic, "T3", "component tokens may only reference semantic tokens"],
+  [
+    "primitives",
+    () => false,
+    "T1",
+    "primitives must not reference other tokens",
+  ],
+  [
+    "semantic",
+    (ref) => ref in tiers.primitives,
+    "T2",
+    "semantic tokens may only reference primitives",
+  ],
+  [
+    "component",
+    (ref) => ref in tiers.semantic,
+    "T3",
+    "component tokens may only reference semantic tokens",
+  ],
 ];
 
 for (const [tierName, allowed, rule, message] of REF_RULES) {
@@ -119,7 +135,10 @@ async function collect(target) {
   return files.flat();
 }
 
-/** Authored CSS of one file: <style> blocks of .astro, whole .css files. */
+/**
+ * Authored CSS of one file: <style> blocks of .astro, whole .css files,
+ * css`` tagged templates of Lit components (.ts).
+ */
 function cssOf(file, text) {
   if (file.endsWith(".css")) return text;
   if (file.endsWith(".astro")) {
@@ -127,22 +146,34 @@ function cssOf(file, text) {
       .map((m) => m[1])
       .join("\n");
   }
+  if (file.endsWith(".ts")) {
+    return [...text.matchAll(/css`([^`]*)`/g)].map((m) => m[1]).join("\n");
+  }
   return "";
 }
 
 const componentFiles = (await collect(config.componentsDir)).sort();
-const appFiles = (await Promise.all(config.appPaths.map(collect))).flat().sort();
+const appFiles = (await Promise.all(config.appPaths.map(collect)))
+  .flat()
+  .sort();
 
 function auditCss(file, css, { isComponentLayer }) {
   // C1 — color literals.
-  for (const m of css.matchAll(/#[0-9a-fA-F]{3,8}\b|\b(?:rgba?|hsla?|oklch|oklab)\(/g)) {
+  for (const m of css.matchAll(
+    /#[0-9a-fA-F]{3,8}\b|\b(?:rgba?|hsla?|oklch|oklab)\(/g,
+  )) {
     fail(file, "C1", `color literal "${m[0]}" — colors must come from tokens`);
   }
 
   // C2 — px lengths beyond hairlines.
   for (const m of css.matchAll(/(\d*\.?\d+)px/g)) {
     const n = Number(m[1]);
-    if (n > 2) fail(file, "C2", `"${m[0]}" — use spacing tokens, px only for 1-2px hairlines`);
+    if (n > 2)
+      fail(
+        file,
+        "C2",
+        `"${m[0]}" — use spacing tokens, px only for 1-2px hairlines`,
+      );
   }
 
   // C3/C4 — custom property usage.
@@ -152,7 +183,11 @@ function auditCss(file, css, { isComponentLayer }) {
     if (!definedVars.has(name) && !localDefs.has(name)) {
       fail(file, "C3", `var(${name}) is not defined in ${config.generatedCss}`);
     } else if (isComponentLayer && primitiveVars.has(name)) {
-      fail(file, "C4", `var(${name}) is a primitive — components consume component/semantic tokens only`);
+      fail(
+        file,
+        "C4",
+        `var(${name}) is a primitive — components consume component/semantic tokens only`,
+      );
     }
   }
 }
@@ -167,17 +202,22 @@ function auditBem(file, css) {
   const selectors = css.replace(/\{[^{}]*\}/g, "{}"); // strip declarations
   for (const m of selectors.matchAll(/\.([a-zA-Z][\w-]*)/g)) {
     if (!bem.test(m[1])) {
-      fail(file, "C5", `class "${m[1]}" does not follow BEM for block "${block}"`);
+      fail(
+        file,
+        "C5",
+        `class "${m[1]}" does not follow BEM for block "${block}"`,
+      );
     }
   }
 }
 
 for (const file of componentFiles) {
-  if (!/\.(astro|css)$/.test(file)) continue;
+  if (!/\.(astro|css|ts)$/.test(file) || file.endsWith(".d.ts")) continue;
   const css = cssOf(file, await readFile(file, "utf8"));
   if (!css) continue;
   auditCss(file, css, { isComponentLayer: true });
-  auditBem(file, css);
+  // BEM applies to light-DOM styles; shadow DOM (Lit, .ts) is exempt.
+  if (!file.endsWith(".ts")) auditBem(file, css);
 }
 
 for (const file of appFiles) {
@@ -193,10 +233,12 @@ for (const file of appFiles) {
 
 const componentNames = new Set(
   componentFiles
-    .filter((f) => /\.(astro|tsx)$/.test(f))
-    .map((f) => path.basename(f).replace(/\.(astro|tsx)$/, "")),
+    .filter((f) => /\.(astro|tsx|ts)$/.test(f) && !f.endsWith(".d.ts"))
+    .map((f) => path.basename(f).replace(/\.(astro|tsx|ts)$/, "")),
 );
-const metadataFiles = componentFiles.filter((f) => f.endsWith(".metadata.json"));
+const metadataFiles = componentFiles.filter((f) =>
+  f.endsWith(".metadata.json"),
+);
 const metadataNames = new Set(
   metadataFiles.map((f) => path.basename(f).replace(".metadata.json", "")),
 );
@@ -235,14 +277,24 @@ for (const file of metadataFiles) {
   const name = path.basename(file).replace(".metadata.json", "");
   if (meta.name !== name) fail(file, "M2", `"name" must be "${name}"`);
   if (!meta.description) fail(file, "M2", `"description" is required`);
-  if (!meta.usage?.useCases?.length) fail(file, "M2", `"usage.useCases" must list at least one use case`);
-  if (!Array.isArray(meta.usage?.antiPatterns)) fail(file, "M2", `"usage.antiPatterns" must be an array (may be empty)`);
+  if (!meta.usage?.useCases?.length)
+    fail(file, "M2", `"usage.useCases" must list at least one use case`);
+  if (!Array.isArray(meta.usage?.antiPatterns))
+    fail(file, "M2", `"usage.antiPatterns" must be an array (may be empty)`);
   if (!Array.isArray(meta.tokenPrefixes)) {
-    fail(file, "M2", `"tokenPrefixes" must be an array ([] = semantic tokens only)`);
+    fail(
+      file,
+      "M2",
+      `"tokenPrefixes" must be an array ([] = semantic tokens only)`,
+    );
   } else {
     for (const prefix of meta.tokenPrefixes) {
       if (!componentTierPrefixes.has(prefix)) {
-        fail(file, "M2", `token prefix "${prefix}" does not exist in ${config.tokensDir}/component`);
+        fail(
+          file,
+          "M2",
+          `token prefix "${prefix}" does not exist in ${config.tokensDir}/component`,
+        );
       }
     }
   }
