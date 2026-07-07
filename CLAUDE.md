@@ -27,8 +27,8 @@ Die Invarianten oben sind kein Prosaversprechen: `npm run audit` (`scripts/audit
 
 ## Tech-Regeln
 
-- Astro-Komponenten als Default; React nur für interaktive Islands (ThemePanel, TokenInspector, Kontrast-Badge) mit möglichst sparsamer `client:*`-Direktive.
-- **Komponenten-Strategie nach Rolle:** Struktur-/Content-Komponenten (Button, Card, Timeline …) bleiben Astro — die No-JS-Invariante verbietet JS-pflichtiges Rendering für Kerninhalt. Verhaltenslastige, projektübergreifend gedachte Komponenten sind Lit-/Web-Component-Kandidaten (Theming via Custom Properties funktioniert durch Shadow DOM hindurch). React bleibt Konsument/Showcase. Details und Trigger: SPEC.md §12.
+- Astro-Komponenten als Default; React nur für interaktive Islands (ThemePanel mit Kontrast-Badge) mit möglichst sparsamer `client:*`-Direktive.
+- **Komponenten-Strategie nach Rolle:** Struktur-/Content-Komponenten (Button, Card, Timeline …) bleiben Astro — die No-JS-Invariante verbietet JS-pflichtiges Rendering für Kerninhalt. Verhaltenslastige, projektübergreifend gedachte Komponenten sind Lit-/Web-Component-Kandidaten (Theming via Custom Properties funktioniert durch Shadow DOM hindurch; umgesetzt: TokenInspector). React bleibt Konsument/Showcase. Details und Trigger: SPEC.md §12.
 - Vanilla CSS auf Token-Basis. Kein Tailwind, kein CSS-in-JS.
 - **CSS-Klassennamen strikt nach BEM** (`block__element--modifier`), Blockname = Komponentenname in kebab-case (z. B. `theme-panel__slider--disabled`). Astros Scoped Styles dürfen genutzt werden, ersetzen aber nicht die BEM-Benennung. Theming-Zustände laufen über die Datenattribute/Custom Properties, nicht über zusätzliche Zustandsklassen. Gilt für Light-DOM-Komponenten; innerhalb künftiger Shadow-DOM-Komponenten (Lit) wird BEM nicht erzwungen.
 - Die Seite muss ohne JavaScript vollständig nutzbar sein (Default-Theme); JS erweitert nur.

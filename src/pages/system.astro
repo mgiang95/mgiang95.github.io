@@ -8,6 +8,9 @@ import TokenTable from "../components/TokenTable.astro";
 import ColorRamp from "../components/ColorRamp.astro";
 import { flattenTokens } from "../lib/tokens";
 import primitiveColors from "../../tokens/primitives/color.tokens.json";
+import primitiveDimension from "../../tokens/primitives/dimension.tokens.json";
+import primitiveTypography from "../../tokens/primitives/typography.tokens.json";
+import primitiveMotion from "../../tokens/primitives/motion.tokens.json";
 import semanticColorsLight from "../../tokens/semantic/color-light.tokens.json";
 import semanticSpace from "../../tokens/semantic/space-normal.tokens.json";
 import semanticShape from "../../tokens/semantic/shape.tokens.json";
@@ -17,6 +20,7 @@ import cardTokens from "../../tokens/component/card.tokens.json";
 import badgeTokens from "../../tokens/component/badge.tokens.json";
 import timelineTokens from "../../tokens/component/timeline.tokens.json";
 import themePanelTokens from "../../tokens/component/theme-panel.tokens.json";
+import tokenInspectorTokens from "../../tokens/component/token-inspector.tokens.json";
 import ThemePanel from "../components/ThemePanel.tsx";
 import ComponentDoc from "../components/ComponentDoc.astro";
 import buttonMeta from "../components/Button.metadata.json";
@@ -24,6 +28,7 @@ import badgeMeta from "../components/Badge.metadata.json";
 import cardMeta from "../components/Card.metadata.json";
 import timelineMeta from "../components/TimelineItem.metadata.json";
 import themePanelMeta from "../components/ThemePanel.metadata.json";
+import tokenInspectorMeta from "../components/TokenInspector.metadata.json";
 
 const primitives = flattenTokens(primitiveColors);
 const accentRamp = primitives.filter((t) => t.path.startsWith("color.accent."));
@@ -35,6 +40,27 @@ const semanticOther = [
   ...flattenTokens(semanticShape),
   ...flattenTokens(semanticTypography),
 ];
+
+// Tier lists for the TokenInspector — same DTCG sources as everything else.
+const tierVars = {
+  primitive: [
+    ...primitives,
+    ...flattenTokens(primitiveDimension),
+    ...flattenTokens(primitiveTypography),
+    ...flattenTokens(primitiveMotion),
+  ].map((t) => t.cssVar),
+  semantic: [...semanticColors, ...semanticSpacing, ...semanticOther].map(
+    (t) => t.cssVar,
+  ),
+  component: [
+    ...flattenTokens(buttonTokens),
+    ...flattenTokens(badgeTokens),
+    ...flattenTokens(cardTokens),
+    ...flattenTokens(timelineTokens),
+    ...flattenTokens(themePanelTokens),
+    ...flattenTokens(tokenInspectorTokens),
+  ].map((t) => t.cssVar),
+};
 ---
 
 <BaseLayout
@@ -76,10 +102,13 @@ const semanticOther = [
       theme panel shows the same math live.
     </p>
     <p>
-      <strong>Astro with one React island.</strong> Static content stays
-      static; JavaScript is reserved for the theme panel. Without JS the site
-      falls back to system color scheme and default density — theming is an
-      enhancement, not a dependency.
+      <strong>Astro, one React island, one web component.</strong> Static
+      content stays static; JavaScript is reserved for the theme panel
+      (React) and the token inspector (Lit). Without JS the site falls back
+      to system color scheme and default density — theming is an
+      enhancement, not a dependency. Three renderers, one token system:
+      custom properties inherit through the shadow DOM boundary, so the
+      contrast guarantee needs no per-framework wiring.
     </p>
     <p>
       <strong>Density switches spacing, never type.</strong>
@@ -191,7 +220,22 @@ const semanticOther = [
     >
       <ThemePanel client:visible />
     </ComponentDoc>
+
+    <ComponentDoc
+      meta={tokenInspectorMeta}
+      tokens={flattenTokens(tokenInspectorTokens)}
+    >
+      <token-inspector tiers={JSON.stringify(tierVars)}></token-inspector>
+      <p class="system__note">
+        Toggle, then move the cursor (or tab) across this page — every
+        element reveals the token custom properties that style it.
+      </p>
+    </ComponentDoc>
   </section>
+
+  <script>
+    import "../components/TokenInspector";
+  </script>
 
   <section class="system__section" aria-labelledby="ai-heading">
     <h2 id="ai-heading">Machine-readable by design</h2>
