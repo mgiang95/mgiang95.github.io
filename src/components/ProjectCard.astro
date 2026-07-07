@@ -9,10 +9,14 @@ import Badge from "./Badge.astro";
 
 interface Props {
   project: CollectionEntry<"projects">;
+  /** 1-based position in the list, rendered as a mono ordinal ("01"). */
+  index?: number;
 }
 
-const { project } = Astro.props;
+const { project, index } = Astro.props;
 const { title, subtitle, period, keywords, heroImage } = project.data;
+const ordinal =
+  typeof index === "number" ? String(index).padStart(2, "0") : undefined;
 ---
 
 <article class="project-card">
@@ -30,7 +34,10 @@ const { title, subtitle, period, keywords, heroImage } = project.data;
     }
     <div class="project-card__body">
       <header class="project-card__header">
-        <h3 class="project-card__title">{title}</h3>
+        <h3 class="project-card__title">
+          {ordinal && <span class="project-card__index" aria-hidden="true">{ordinal}</span>}
+          {title}
+        </h3>
         <p class="project-card__period">{period}</p>
       </header>
       <p class="project-card__subtitle">{subtitle}</p>
@@ -51,8 +58,17 @@ const { title, subtitle, period, keywords, heroImage } = project.data;
   .project-card {
     background: var(--card-background);
     border: 1px solid var(--card-border);
+    /* Top edge doubles as the hover accent — the poster motif. */
+    border-block-start: 2px solid var(--card-border);
     border-radius: var(--card-radius);
     overflow: hidden;
+    transition: border-color var(--motion-state-duration)
+      var(--motion-state-easing);
+  }
+
+  .project-card:hover {
+    border-color: var(--card-border-hover);
+    border-block-start-color: var(--card-edge-hover);
   }
 
   .project-card__link {
@@ -64,6 +80,15 @@ const { title, subtitle, period, keywords, heroImage } = project.data;
 
   .project-card__link:hover .project-card__title {
     color: var(--color-interactive-hover);
+  }
+
+  .project-card__index {
+    display: block;
+    font-family: var(--typography-label-family);
+    font-size: var(--typography-label-size);
+    font-weight: var(--typography-label-weight);
+    color: var(--color-text-muted);
+    margin-block-end: var(--space-stack-xs);
   }
 
   .project-card__image {

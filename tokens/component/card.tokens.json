@@ -2,6 +2,16 @@
   "card": {
     "background": { "$value": "{color.surface.raised}", "$type": "color" },
     "border": { "$value": "{color.border.default}", "$type": "color" },
+    "border-hover": {
+      "$value": "{color.border.strong}",
+      "$type": "color",
+      "$description": "Border of interactive cards on hover — structure sharpens instead of lifting."
+    },
+    "edge-hover": {
+      "$value": "{color.surface.accent}",
+      "$type": "color",
+      "$description": "Top edge of interactive cards on hover — the poster's flat accent field as a component motif."
+    },
     "padding": { "$value": "{space.inset.lg}", "$type": "dimension" },
     "gap": { "$value": "{space.stack.sm}", "$type": "dimension" },
     "radius": { "$value": "{radius.surface}", "$type": "dimension" }

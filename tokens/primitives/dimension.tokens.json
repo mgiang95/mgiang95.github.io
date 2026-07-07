@@ -15,6 +15,7 @@
     "12": { "$value": "128px", "$type": "dimension" }
   },
   "radius": {
+    "none": { "$value": "0px", "$type": "dimension" },
     "sm": { "$value": "2px", "$type": "dimension" },
     "md": { "$value": "4px", "$type": "dimension" },
     "lg": { "$value": "8px", "$type": "dimension" },

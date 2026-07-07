@@ -1,6 +1,6 @@
 {
   "name": "ProjectCard",
-  "description": "Teaser for one case study from the projects content collection: image, title, period, keywords.",
+  "description": "Teaser for one case study from the projects content collection: image, title, period, keywords. Optional index prop renders a mono ordinal (\"01\") — editorial poster detail. Hovering sharpens the border and colors the top edge with the accent (card.edge-hover).",
   "renderer": "astro",
   "jsRequired": false,
   "variants": [],

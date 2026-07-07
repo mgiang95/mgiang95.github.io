@@ -70,7 +70,7 @@ const RAMP_STEPS = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950];
   <section class="teasers" aria-labelledby="teasers-heading">
     <h2 id="teasers-heading">Selected work</h2>
     <div class="teasers__grid">
-      {featured.map((project) => <ProjectCard project={project} />)}
+      {featured.map((project, i) => <ProjectCard project={project} index={i + 1} />)}
     </div>
     <p class="teasers__all">
       <a href="/projects">All projects →</a>

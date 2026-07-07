@@ -82,6 +82,8 @@ video {
 
 a {
   color: var(--color-interactive-default);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
   transition: color var(--motion-state-duration) var(--motion-state-easing);
 }
 

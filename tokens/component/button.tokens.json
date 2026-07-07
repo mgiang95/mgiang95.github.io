@@ -9,6 +9,11 @@
     "secondary": {
       "text": { "$value": "{color.interactive.default}", "$type": "color" },
       "border": { "$value": "{color.interactive.default}", "$type": "color" },
+      "border-hover": {
+        "$value": "{color.interactive.hover}",
+        "$type": "color",
+        "$description": "Outline sharpens with the text on hover."
+      },
       "background-hover": { "$value": "{color.surface.sunken}", "$type": "color" }
     },
     "ghost": {

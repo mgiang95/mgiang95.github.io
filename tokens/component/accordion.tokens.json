@@ -11,6 +11,11 @@
         "$value": "{color.text.primary}",
         "$type": "color"
       },
+      "text-hover": {
+        "$value": "{color.interactive.default}",
+        "$type": "color",
+        "$description": "Summary row on hover — signals the whole row is the control."
+      },
       "padding-block": {
         "$value": "{space.inset.sm}",
         "$type": "dimension"

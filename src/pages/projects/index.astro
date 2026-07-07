@@ -28,7 +28,7 @@ const moreRendered = await Promise.all(
   </p>
 
   <div class="projects__grid">
-    {featured.map((project) => <ProjectCard project={project} />)}
+    {featured.map((project, i) => <ProjectCard project={project} index={i + 1} />)}
   </div>
 
   <section class="projects__more" aria-labelledby="more-projects-heading">
