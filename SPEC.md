@@ -16,7 +16,7 @@ Kein Retro-Gimmick, keine Effekt-Show. Anspruch: ruhig, präzise, handwerklich �
 | Token-Build | **Style Dictionary v4** (DTCG-Support) → CSS Custom Properties | Echte Token-Pipeline statt hartcodierter Werte. |
 | Farbe | **OKLCH** für alle Farb-Primitives | Perzeptuell gleichmäßig → Kontraste bleiben beim Hue-Wechsel stabil. |
 | Styling | Vanilla CSS auf Basis der generierten Custom Properties, Klassennamen nach **BEM** (`block__element--modifier`) | Kein Utility-Framework, das die Token-Story verwässert. BEM macht die Komponentenstruktur im Markup lesbar; Astros Scoped Styles dürfen zusätzlich genutzt werden, ersetzen aber nicht die BEM-Benennung. |
-| Sprache | **Website-Inhalte auf Englisch**, Kommunikation/Kommentare im Entwicklungsprozess auf Deutsch | Internationales Publikum für das Portfolio; Arbeitssprache mit Claude bleibt Deutsch. |
+| Sprache | **Website-Inhalte auf Englisch**, Kommunikation/Kommentare im Entwicklungsprozess auf Deutsch | Internationales Publikum für das Portfolio; Arbeitssprache mit Claude bleibt Deutsch. i18n-Vorbereitung für ein späteres Deutsch: §13. |
 | Deployment | Statischer Build (z. B. Netlify/Vercel/Cloudflare Pages) | — |
 
 ## 3. Token-Architektur (3 Ebenen)
@@ -204,4 +204,15 @@ Wrapper       dünne Render-Hüllen je Kontext                → Astro (Portfol
 | Zweiter Konsument existiert real (erste SPA) | Tokens + Pipeline + Auditor als eigenes Paket/Repo extrahieren; ab da Semver + Changelog (jede Token-Änderung ist potenziell breaking). |
 | ~15–20 Komponenten oder erste „Gibt es X schon?"-Unsicherheit | Auto-generierter Codebase-Index (JSON: Komponenten, `uses`/`usedBy`). Vorher ist der Graph trivial. |
 | Erste verhaltenslastige, projektübergreifende Komponente | Lit-Komponenten-Paket beginnen (Wrapper um bestehende Component-CSS). |
+
+## 13. Internationalisierung (vorbereitet, nicht aktiviert)
+
+Die Seite ist einsprachig englisch (§2); eine deutsche Version ist möglich, aber an einen Trigger gebunden (§12.4), weil jede Übersetzung dauerhafte Pflege kostet und driften kann. Damit die Entscheidung kostenlos vertagbar bleibt, ist das Routing-Modell bereits festgelegt und konfiguriert:
+
+- **Routing (aktiv):** Astros eingebautes i18n-Routing, `defaultLocale: 'en'`, `locales: ['en', 'de']`, `prefixDefaultLocale: false`. Englisch bleibt an der Root — **bestehende URLs ändern sich nie**. Deutsche Seiten erscheinen unter `/de/…`, sobald sie existieren; bis dahin gibt es keine `/de`-Routen. `<html lang>` folgt bereits `Astro.currentLocale`.
+- **Content (bei Aktivierung):** Collections nach Locale-Unterordnern (`src/content/projects/en/…`, `…/de/…`), Filter in `getStaticPaths`. Slugs bleiben sprachübergreifend identisch (saubere `hreflang`-Paare, einfache Redirects).
+- **UI-Strings (bei Aktivierung):** typisiertes Dictionary (`src/i18n/ui.ts`) + kleiner `t(locale)`-Helper nach dem Astro-Docs-Rezept — keine i18n-Library (nur Bundle-Gewicht bei einer statischen Seite). Komponenten mit sichtbaren Strings (ThemePanel, TokenInspector, ComponentDoc) beziehen diese dann als Props/Dictionary statt hartcodiert. Erst bei Aktivierung bauen — vorher wäre es ungenutzte Infrastruktur (Drift-Risiko, vgl. §12.4).
+- **Pflichten bei Aktivierung:** `hreflang`-Alternates im `<head>`, übersetzte Meta-Descriptions und Alt-Texte, Datumsformate über `Intl.DateTimeFormat(locale)`, deutsche Anführungszeichen („…"). Sprachumschalter als einfacher Link auf die Schwester-URL — **kein** clientseitiges Umschalten (No-JS-Invariante, SEO).
+- **`/system` bleibt englisch:** technische System-Dokumentation für ein Fachpublikum; einsprachig ist dort Standard und halbiert den Pflegeaufwand.
 | CI-Workflow entsteht (Phase 6) | Token-Build + Kontrast-Proof + Audit als Steps im selben GitHub-Actions-Workflow. |
+| DACH-Bewerbungsphase beginnt | Deutsche Locale aktivieren (§13): Content-Ordner `de/` befüllen, UI-Dictionary einführen, `hreflang`-Alternates ergänzen. Start mit Home + About, Case Studies inkrementell. |
