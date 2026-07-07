@@ -118,6 +118,18 @@ export default function ThemePanel() {
   );
   const [systemDark, setSystemDark] = useState(false);
 
+  // Follow hue changes from outside the panel (e.g. the poster scrub on
+  // the home hero). Both sides dispatch "hue-change" on user input only,
+  // so there is no feedback loop — React bails out on identical state.
+  useEffect(() => {
+    const onExternalHue = (event: Event) => {
+      const value = (event as CustomEvent<number>).detail;
+      if (Number.isFinite(value)) setHue(Math.round(value));
+    };
+    window.addEventListener("hue-change", onExternalHue);
+    return () => window.removeEventListener("hue-change", onExternalHue);
+  }, []);
+
   // Track the OS scheme for the badge while "system" is selected.
   useEffect(() => {
     const media = window.matchMedia("(prefers-color-scheme: dark)");
@@ -212,7 +224,13 @@ export default function ThemePanel() {
           max={360}
           step={1}
           value={hue}
-          onChange={(event) => setHue(Number(event.target.value))}
+          onChange={(event) => {
+            const value = Number(event.target.value);
+            setHue(value);
+            window.dispatchEvent(
+              new CustomEvent("hue-change", { detail: value }),
+            );
+          }}
         />
       </div>
 
