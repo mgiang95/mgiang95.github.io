@@ -125,7 +125,15 @@ const tierVars = {
     <p>
       <strong>Density switches spacing, never type.</strong>
       <code>data-density</code> resolves semantic spacing tokens to other
-      steps of the 4px scale; readability is untouched.
+      steps of the 4px scale; readability is untouched. Type responds to the
+      viewport instead: the display steps of the scale are fluid
+      <code>clamp()</code> primitives, while body sizes stay fixed.
+    </p>
+    <p>
+      <strong>Motion distinguishes switches from dragging.</strong> Discrete
+      mode changes (scheme, density) animate inside a brief page-wide
+      transition window. The hue slider never does — direct manipulation
+      must not lag behind the pointer.
     </p>
     <p>
       <strong>Invariants are enforced, not promised.</strong> An auditor

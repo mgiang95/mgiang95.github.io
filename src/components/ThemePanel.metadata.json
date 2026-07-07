@@ -25,6 +25,7 @@
   "tokenPrefixes": ["theme-panel"],
   "a11y": [
     "Native range input and radio groups inside labelled fieldsets",
-    "Without JS the panel does not render — the site keeps its defaults"
+    "Without JS the panel does not render — the site keeps its defaults",
+    "Scheme/density switches open a brief page-wide transition window (motion.mode via data-mode-transition); hue dragging stays instant, prefers-reduced-motion disables the window"
   ]
 }

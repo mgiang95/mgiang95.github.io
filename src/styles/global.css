@@ -159,6 +159,22 @@ a:hover {
   transform: none;
 }
 
+/* Discrete mode switches (color scheme, density): the theme panel opens a
+   brief transition window via data-mode-transition on <html>. Scoping the
+   transitions to that window keeps continuous hue dragging instant —
+   direct manipulation must not lag behind the pointer. */
+html[data-mode-transition] *,
+html[data-mode-transition] *::before,
+html[data-mode-transition] *::after {
+  transition:
+    background-color var(--motion-mode-duration) var(--motion-mode-easing),
+    color var(--motion-mode-duration) var(--motion-mode-easing),
+    border-color var(--motion-mode-duration) var(--motion-mode-easing),
+    padding var(--motion-mode-duration) var(--motion-mode-easing),
+    margin var(--motion-mode-duration) var(--motion-mode-easing),
+    gap var(--motion-mode-duration) var(--motion-mode-easing);
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

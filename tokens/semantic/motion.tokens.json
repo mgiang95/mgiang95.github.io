@@ -10,6 +10,11 @@
       "$description": "Disclosure and expand/collapse movement (accordion, future gallery).",
       "duration": { "$value": "{duration.base}", "$type": "duration" },
       "easing": { "$value": "{easing.decelerate}", "$type": "cubicBezier" }
+    },
+    "mode": {
+      "$description": "Discrete mode switches (color scheme, density): the theme panel opens a brief page-wide transition window. Continuous hue dragging stays instant by design — direct manipulation must not lag.",
+      "duration": { "$value": "{duration.base}", "$type": "duration" },
+      "easing": { "$value": "{easing.standard}", "$type": "cubicBezier" }
     }
   }
 }
