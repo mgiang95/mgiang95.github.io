@@ -19,6 +19,7 @@ import semanticColorsLight from "../../tokens/semantic/color-light.tokens.json";
 import semanticSpace from "../../tokens/semantic/space-normal.tokens.json";
 import semanticShape from "../../tokens/semantic/shape.tokens.json";
 import semanticTypography from "../../tokens/semantic/typography.tokens.json";
+import semanticMotion from "../../tokens/semantic/motion.tokens.json";
 import buttonTokens from "../../tokens/component/button.tokens.json";
 import cardTokens from "../../tokens/component/card.tokens.json";
 import badgeTokens from "../../tokens/component/badge.tokens.json";
@@ -47,6 +48,7 @@ const semanticSpacing = flattenTokens(semanticSpace);
 const semanticOther = [
   ...flattenTokens(semanticShape),
   ...flattenTokens(semanticTypography),
+  ...flattenTokens(semanticMotion),
 ];
 
 // Tier lists for the TokenInspector — same DTCG sources as everything else.
@@ -172,8 +174,16 @@ const tierVars = {
         <TokenTable label="Semantic spacing tokens" tokens={semanticSpacing} />
       </Accordion>
 
-      <Accordion heading="h3" summary="Shape & typography">
-        <TokenTable label="Shape and typography tokens" tokens={semanticOther} />
+      <Accordion heading="h3" summary="Shape, typography & motion">
+        <p class="system__note">
+          Motion has exactly two meanings here — state feedback and
+          expand/collapse. Everything sits behind the global
+          <code>prefers-reduced-motion</code> kill switch.
+        </p>
+        <TokenTable
+          label="Shape, typography and motion tokens"
+          tokens={semanticOther}
+        />
       </Accordion>
     </div>
   </section>

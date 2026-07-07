@@ -58,6 +58,7 @@ await run({
     `${TOKENS}/semantic/space-normal.tokens.json`,
     `${TOKENS}/semantic/shape.tokens.json`,
     `${TOKENS}/semantic/typography.tokens.json`,
+    `${TOKENS}/semantic/motion.tokens.json`,
     `${TOKENS}/component/*.tokens.json`,
   ],
   file: "base.css",

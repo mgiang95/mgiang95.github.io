@@ -1,0 +1,15 @@
+{
+  "motion": {
+    "$description": "Functional motion only (design direction: no ambient animation). Two meanings: state feedback and expand/collapse. All transitions sit behind the global prefers-reduced-motion kill switch.",
+    "state": {
+      "$description": "Hover/focus/active feedback on interactive elements — fast enough to feel instant.",
+      "duration": { "$value": "{duration.fast}", "$type": "duration" },
+      "easing": { "$value": "{easing.standard}", "$type": "cubicBezier" }
+    },
+    "expand": {
+      "$description": "Disclosure and expand/collapse movement (accordion, future gallery).",
+      "duration": { "$value": "{duration.base}", "$type": "duration" },
+      "easing": { "$value": "{easing.decelerate}", "$type": "cubicBezier" }
+    }
+  }
+}

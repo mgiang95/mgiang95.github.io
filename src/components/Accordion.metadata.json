@@ -26,6 +26,7 @@
   "a11y": [
     "Native <details>/<summary>: toggle is keyboard-operable (Enter/Space) and exposed as a button with expanded state",
     "Optional heading prop keeps collapsed sections in the document outline",
-    "State marker is a CSS pseudo-element — decorative, never read as content"
+    "State marker is a CSS pseudo-element — decorative, never read as content",
+    "Expand/collapse animates via motion.expand tokens (::details-content); unsupporting browsers toggle instantly, prefers-reduced-motion disables it"
   ]
 }

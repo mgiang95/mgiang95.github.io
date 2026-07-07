@@ -34,6 +34,10 @@ const Tag = href ? "a" : "button";
     font-weight: var(--typography-label-weight);
     text-decoration: none;
     cursor: pointer;
+    transition:
+      background-color var(--motion-state-duration) var(--motion-state-easing),
+      color var(--motion-state-duration) var(--motion-state-easing),
+      border-color var(--motion-state-duration) var(--motion-state-easing);
   }
 
   .button--primary {

@@ -29,6 +29,23 @@ const Heading = heading;
 <style>
   .accordion {
     border-block-end: 1px solid var(--accordion-border);
+    /* Lets block-size animate to/from `auto` in supporting browsers. */
+    interpolate-size: allow-keywords;
+  }
+
+  /* Animated expand/collapse — progressive enhancement: browsers without
+     ::details-content support simply toggle instantly. The global
+     prefers-reduced-motion rule disables the transition. */
+  .accordion::details-content {
+    block-size: 0;
+    overflow: hidden;
+    transition:
+      block-size var(--motion-expand-duration) var(--motion-expand-easing),
+      content-visibility var(--motion-expand-duration) allow-discrete;
+  }
+
+  .accordion[open]::details-content {
+    block-size: auto;
   }
 
   .accordion:first-of-type {
