@@ -39,6 +39,11 @@ const parentEntry = parent ? await getEntry(parent) : undefined;
     <header class="case__header">
       <h1 class="case__title">{title}</h1>
       <p class="case__subtitle">{subtitle}</p>
+      <p class="annotations" aria-hidden="true">
+        <code>case study</code>
+        <code>{period}</code>
+        <code>{keywords.length} focus areas</code>
+      </p>
     </header>
 
     {
@@ -183,6 +188,15 @@ const parentEntry = parent ? await getEntry(parent) : undefined;
 
   .case__body {
     max-width: 65ch;
+  }
+
+  /* Editorial rhythm: text stays at reading width, figures grow to the
+     full content column. */
+  .case__body :global(figure) {
+    inline-size: min(
+      calc(100vw - 2 * var(--space-inset-lg)),
+      calc(72rem - 2 * var(--space-inset-lg))
+    );
   }
 
   .case__gallery {

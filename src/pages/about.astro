@@ -40,6 +40,11 @@ function formatPeriod(start: Date, end: Date | null): string {
   <section class="about__intro">
     <div class="about__bio">
       <h1>About</h1>
+      <p class="annotations" aria-hidden="true">
+        <code>{intro.data.based}</code>
+        <code>{timeline.length} stations</code>
+        <code>{certifications.length} certifications &amp; awards</code>
+      </p>
       <p class="about__tagline">{intro.data.tagline}</p>
       <div class="prose">
         <Bio />

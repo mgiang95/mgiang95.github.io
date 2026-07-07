@@ -2,11 +2,14 @@
 import { getCollection } from "astro:content";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import ThemePanel from "../components/ThemePanel.tsx";
-import ProjectCard from "../components/ProjectCard.astro";
-import Button from "../components/Button.astro";
+import ProjectRow from "../components/ProjectRow.astro";
 
 const featured = (
   await getCollection("projects", ({ data }) => data.featured)
+).sort((a, b) => a.data.order - b.data.order);
+
+const more = (
+  await getCollection("projects", ({ data }) => !data.featured && !data.parent)
 ).sort((a, b) => a.data.order - b.data.order);
 
 /** Accent ramp steps, light to dark — the poster's right-hand color band. */
@@ -22,11 +25,14 @@ const RAMP_STEPS = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950];
       This site is a running design system.
     </h1>
 
-    <p class="poster__annotations" aria-hidden="true">
-      <code>--hue: <span data-hue-readout>220</span></code>
-      <code>color.accent.&lbrace;50…950&rbrace;</code>
-      <code>contrast ≥ 4.5:1 for every hue</code>
-    </p>
+    <div class="poster__annotations">
+      <p class="poster__facts" aria-hidden="true">
+        <code>--hue: <span data-hue-readout>220</span></code>
+        <code>color.accent.&lbrace;50…950&rbrace;</code>
+        <code>contrast ≥ 4.5:1 for every hue</code>
+      </p>
+      <a class="poster__how" href="/system">how this is built →</a>
+    </div>
 
     <div class="poster__canvas" data-hue-scrub>
       <div class="poster__field">
@@ -55,11 +61,6 @@ const RAMP_STEPS = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950];
           Zurich. Everything here resolves from design tokens — try it: change
           hue, scheme and density. Contrast stays AA by construction.
         </p>
-        <p class="poster__cta">
-          <Button href="/system" variant="secondary">
-            Read how this site is built
-          </Button>
-        </p>
       </div>
       <div class="poster__panel">
         <ThemePanel client:idle />
@@ -67,14 +68,50 @@ const RAMP_STEPS = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950];
     </div>
   </section>
 
-  <section class="teasers" aria-labelledby="teasers-heading">
-    <h2 id="teasers-heading">Selected work</h2>
-    <div class="teasers__grid">
-      {featured.map((project, i) => <ProjectCard project={project} index={i + 1} />)}
+  <section class="work" aria-labelledby="work-heading">
+    <h2 id="work-heading">Selected work</h2>
+    <div class="work__rows">
+      {
+        featured.map((project, i) => (
+          <ProjectRow project={project} index={i + 1} />
+        ))
+      }
     </div>
-    <p class="teasers__all">
-      <a href="/projects">All projects →</a>
-    </p>
+
+    <a class="work__system" href="/system">
+      <p class="work__system-meta" aria-hidden="true">meta</p>
+      <h3 class="work__system-title">How this site is built</h3>
+      <p class="work__system-subtitle">
+        The site itself is the case study: a live token pipeline,
+        machine-enforced invariants, one system in three renderers.
+      </p>
+    </a>
+  </section>
+
+  <section class="more" aria-labelledby="more-heading">
+    <h2 id="more-heading">More projects</h2>
+    <div class="more__scroll">
+      <table class="more__table">
+        <thead>
+          <tr>
+            <th scope="col">Period</th>
+            <th scope="col">Project</th>
+            <th scope="col">Focus</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            more.map((entry) => (
+              <tr>
+                <td class="more__period">{entry.data.period}</td>
+                <td class="more__title">{entry.data.title}</td>
+                <td class="more__focus">{entry.data.keywords.join(", ")}</td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
   </section>
 </BaseLayout>
 
@@ -163,9 +200,22 @@ const RAMP_STEPS = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950];
   .poster__annotations {
     display: flex;
     flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: var(--space-inline-lg);
+  }
+
+  .poster__facts {
+    display: flex;
+    flex-wrap: wrap;
     gap: var(--space-inline-lg);
     font-size: var(--typography-label-size);
     color: var(--color-text-muted);
+  }
+
+  .poster__how {
+    font-family: var(--typography-label-family);
+    font-size: var(--typography-label-size);
   }
 
   /* Full-bleed rule-break: the poster escapes the centered content column
@@ -254,37 +304,91 @@ const RAMP_STEPS = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950];
     }
   }
 
-  .poster__copy {
-    display: grid;
-    gap: var(--space-stack-lg);
-  }
-
   .poster__lead {
     max-width: 55ch;
     font-size: var(--typography-lead-size);
     color: var(--color-text-secondary);
   }
 
-  .teasers {
-    padding-block: var(--space-stack-xl);
+  .work {
+    padding-block: var(--space-stack-xl) var(--space-stack-lg);
   }
 
-  .teasers__grid {
-    display: grid;
-    gap: var(--space-stack-lg);
-    margin-block-start: var(--space-stack-lg);
-  }
-
-  @media (min-width: 60rem) {
-    .teasers__grid {
-      grid-template-columns: repeat(3, 1fr);
-      column-gap: var(--space-inline-lg);
-    }
-  }
-
-  .teasers__all {
+  .work__rows {
     margin-block-start: var(--space-stack-md);
+  }
+
+  .work__system {
+    display: grid;
+    gap: var(--space-stack-xs);
+    justify-items: start;
+    padding-block: var(--space-stack-md);
+    border-block-end: 1px solid var(--color-border-default);
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .work__system-meta {
     font-family: var(--typography-label-family);
     font-size: var(--typography-label-size);
+    font-weight: var(--typography-label-weight);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-text-muted);
+  }
+
+  .work__system-title {
+    font-size: var(--typography-heading-sm-size);
+    transition: color var(--motion-state-duration) var(--motion-state-easing);
+  }
+
+  .work__system:hover .work__system-title {
+    color: var(--color-interactive-hover);
+  }
+
+  .work__system-subtitle {
+    max-width: 55ch;
+    color: var(--color-text-secondary);
+  }
+
+  .more {
+    padding-block: var(--space-stack-lg) var(--space-stack-xl);
+  }
+
+  .more__scroll {
+    overflow-x: auto;
+    margin-block-start: var(--space-stack-md);
+  }
+
+  .more__table {
+    border-collapse: collapse;
+    inline-size: 100%;
+  }
+
+  .more__table th {
+    text-align: start;
+    font-family: var(--typography-label-family);
+    font-size: var(--typography-label-size);
+    font-weight: var(--typography-label-weight);
+    color: var(--color-text-secondary);
+  }
+
+  .more__table th,
+  .more__table td {
+    padding: var(--space-inset-xs) var(--space-inline-lg) var(--space-inset-xs)
+      0;
+    border-block-end: 1px solid var(--color-border-default);
+    vertical-align: top;
+  }
+
+  .more__period {
+    font-family: var(--typography-label-family);
+    font-size: var(--typography-label-size);
+    color: var(--color-text-muted);
+    white-space: nowrap;
+  }
+
+  .more__focus {
+    color: var(--color-text-secondary);
   }
 </style>

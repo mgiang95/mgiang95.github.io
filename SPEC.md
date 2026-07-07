@@ -94,12 +94,15 @@ Mini-"Docs"-Seite im Storybook-Stil: jede Komponente mit Varianten + den konsumi
 ## 6. Seitenstruktur & Inhalt
 
 ```
-/               Home: These + Theme-Panel prominent, Projekt-Teaser, Kurz-Intro
-/projects       Übersicht der Case Studies
+/               Work: Plakat-Hero (These + Hue-Scrub) + Projektindex
+                (editoriale Zeilen 01/02/03, System-Zeile, More-Tabelle)
+/projects       Redirect auf / (Index lebt auf der Startseite)
 /projects/[x]   Case Study: Problem → Ansatz → Entscheidung → Ergebnis
-/about          Person + CV-Timeline ("Changelog"-Framing: v1.0 Ausbildung, v2.3 …)
+/about          Person + CV-Timeline mit Work/Education-Filter
 /system         Das Meta-Case-Study: "How this site is built" + Token-Docs + Komponenten-Docs
 ```
+
+Navigation: **Work · System · About**. Jede Seite trägt unter der H1 eine Mono-Annotationszeile mit echten, aus dem Build berechneten Fakten (Plakat: `--hue`/Kontrast; System: Komponenten-/Token-Zahl; About: Stationen); der Footer ist ein Kolophon mit Site-Version und Token-Zahl.
 
 - Hero der Startseite = die These der Seite: das Theme-Panel (oder eine kompakte Variante davon) ist sofort sichtbar und bedienbar — der Besucher *erlebt* das System in den ersten Sekunden.
 - Alle sichtbaren Inhalte (Copy, Navigation, Case Studies, Timeline) auf **Englisch**.

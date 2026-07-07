@@ -15,6 +15,8 @@ export default defineConfig({
     routing: { prefixDefaultLocale: false },
   },
   integrations: [react()],
+  // The former /projects index merged into the home work index.
+  redirects: { "/projects": "/" },
   markdown: {
     // ![image] + *caption* paragraphs become <figure>/<figcaption>.
     rehypePlugins: [rehypeFigure],

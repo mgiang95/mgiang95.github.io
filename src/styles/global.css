@@ -149,6 +149,38 @@ a:hover {
   margin-block-start: var(--space-stack-xs);
 }
 
+/* Mono annotation line under page headings — the system's voice, with real
+   data, on every page (the poster on home carries its own variant). */
+.annotations {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-inline-lg);
+  margin-block-start: var(--space-stack-xs);
+  font-size: var(--typography-label-size);
+  color: var(--color-text-muted);
+}
+
+/* Scroll-linked entrance for markdown figures: opacity plus a small rise,
+   driven by scroll progress — no timers, no JS. Browsers without support
+   simply show the figures; reduced motion resets the timeline below. */
+@supports (animation-timeline: view()) {
+  /* Longhands on purpose: the animation shorthand resets animation-timeline,
+     and the CSS minifier mis-merges the combination. */
+  .prose figure {
+    animation-name: figure-entrance;
+    animation-fill-mode: both;
+    animation-timeline: view();
+    animation-range: entry 0% entry 35%;
+  }
+}
+
+@keyframes figure-entrance {
+  from {
+    opacity: 0;
+    transform: translateY(var(--space-stack-sm));
+  }
+}
+
 .skip-link {
   position: absolute;
   inset-inline-start: var(--space-inline-md);
@@ -186,6 +218,9 @@ html[data-mode-transition] *::after {
   *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
+    /* Scroll-driven animations ignore durations — reset their timeline so
+       the 0.01ms duration applies and they complete instantly. */
+    animation-timeline: auto !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }

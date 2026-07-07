@@ -57,6 +57,11 @@ const semanticOther = [
   ...flattenTokens(semanticMotion),
 ];
 
+// Annotation facts — computed, not written, so they cannot go stale.
+const componentCount = Object.keys(
+  import.meta.glob("../components/*.metadata.json"),
+).length;
+
 // Tier lists for the TokenInspector — same DTCG sources as everything else.
 const tierVars = {
   primitive: [
@@ -80,6 +85,11 @@ const tierVars = {
     ...flattenTokens(galleryTokens),
   ].map((t) => t.cssVar),
 };
+
+const tokenVarCount =
+  tierVars.primitive.length +
+  tierVars.semantic.length +
+  tierVars.component.length;
 ---
 
 <BaseLayout
@@ -87,6 +97,11 @@ const tierVars = {
   description="How this site is built: token architecture, theming mechanics and component docs."
 >
   <h1>How this site is built</h1>
+  <p class="annotations" aria-hidden="true">
+    <code>{componentCount} components</code>
+    <code>{tokenVarCount} custom properties</code>
+    <code>audit passing</code>
+  </p>
   <p class="system__lead">
     The site is its own case study: a live design system with a real token
     pipeline. Below is the reasoning — and the living docs generated from the
@@ -191,8 +206,10 @@ const tierVars = {
 
       <Accordion heading="h3" summary="Shape, typography & motion">
         <p class="system__note">
-          Motion has exactly two meanings here — state feedback and
-          expand/collapse. Everything sits behind the global
+          Motion has exactly three meanings here — state feedback,
+          expand/collapse and discrete mode switches. A fourth, the
+          scroll-linked figure entrance, is progress-driven and needs no
+          duration token. Everything sits behind the global
           <code>prefers-reduced-motion</code> kill switch.
         </p>
         <TokenTable
