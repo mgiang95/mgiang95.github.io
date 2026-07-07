@@ -24,6 +24,16 @@ const projects = defineCollection({
       externalUrl: z.string().url().optional(),
       keywords: z.array(z.string()),
       heroImage: image().optional(),
+      /** Optional screenshot strip, rendered as a scroll-snap Gallery. */
+      gallery: z
+        .array(
+          z.object({
+            image: image(),
+            alt: z.string(),
+            caption: z.string().optional(),
+          }),
+        )
+        .optional(),
       featured: z.boolean().default(false),
       order: z.number(),
       parent: reference("projects").optional(),

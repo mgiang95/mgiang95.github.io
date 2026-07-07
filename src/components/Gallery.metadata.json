@@ -1,0 +1,32 @@
+{
+  "name": "Gallery",
+  "description": "Horizontal scroll-snap strip of captioned figures. Pure CSS overflow + scroll-snap — keyboard and touch scrolling come from the browser, zero JS. The next slide peeks in as the scroll affordance.",
+  "renderer": "astro",
+  "jsRequired": false,
+  "variants": [],
+  "usage": {
+    "useCases": [
+      "Screenshot strips in case studies — via the optional `gallery` field in the projects frontmatter",
+      "Any horizontal series of captioned figures that should not stack vertically"
+    ],
+    "antiPatterns": [
+      {
+        "scenario": "Auto-rotating carousel",
+        "reason": "Moving content without user intent fails WCAG 2.2.2 (pause/stop/hide), steals focus and frustrates on touch.",
+        "alternative": "This component: the user scrolls, nothing moves on its own."
+      },
+      {
+        "scenario": "Putting essential content only inside the gallery",
+        "reason": "Off-screen slides are easy to miss; the gallery is for supporting visuals.",
+        "alternative": "Keep key information in the prose; the gallery illustrates it."
+      }
+    ]
+  },
+  "tokenPrefixes": ["gallery"],
+  "a11y": [
+    "Scroll region with role=region and an aria-label naming the set",
+    "The track is keyboard-focusable (tabindex=0) — arrow keys scroll, CSS snap aligns",
+    "List semantics: slides are <li> with Figure/figcaption inside",
+    "scroll-behavior: smooth sits behind the global prefers-reduced-motion reset"
+  ]
+}
