@@ -1,0 +1,30 @@
+{
+  "name": "Figure",
+  "description": "Image with caption as real <figure>/<figcaption> semantics. The same figure.* tokens style markdown figures produced by the rehype-figure plugin, so authored and markdown content share one contract.",
+  "renderer": "astro",
+  "jsRequired": false,
+  "variants": [],
+  "usage": {
+    "useCases": [
+      "Captioned images in authored pages (/system, /about)",
+      "Markdown case studies use the ![image] + *caption* pattern — rehype-figure converts it to the same markup"
+    ],
+    "antiPatterns": [
+      {
+        "scenario": "Caption as a styled paragraph next to a plain <img>",
+        "reason": "Loses the programmatic image-caption association screen readers rely on.",
+        "alternative": "Figure with the caption prop, or the markdown pattern."
+      },
+      {
+        "scenario": "Meaningful image with empty alt inside a Figure",
+        "reason": "The caption does not replace alt text — they serve different audiences.",
+        "alternative": "Alt text for content, caption for commentary."
+      }
+    ]
+  },
+  "tokenPrefixes": ["figure"],
+  "a11y": [
+    "Real <figure>/<figcaption> association, no ARIA needed",
+    "Caption is supplementary — images keep their own alt text"
+  ]
+}

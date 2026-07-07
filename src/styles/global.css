@@ -123,11 +123,20 @@ a:hover {
   border: 1px solid var(--color-border-default);
 }
 
-/* Italic paragraph directly after an image acts as its caption. */
-.prose p:has(> img) + p:has(> em:only-child) {
-  margin-block-start: var(--space-stack-xs);
-  font-size: var(--typography-label-size);
-  color: var(--color-text-muted);
+/* Markdown figures (rehype-figure) — same contract as the Figure component. */
+.prose figure {
+  display: grid;
+  gap: var(--figure-gap);
+  margin: 0;
+}
+
+.prose figure img {
+  border: 1px solid var(--figure-border);
+}
+
+.prose figcaption {
+  color: var(--figure-caption-text);
+  font-size: var(--figure-caption-size);
 }
 
 .prose--compact > * + * {

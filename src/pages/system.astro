@@ -1,11 +1,15 @@
 ---
+import { Image } from "astro:assets";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Button from "../components/Button.astro";
 import Card from "../components/Card.astro";
 import Badge from "../components/Badge.astro";
 import TimelineItem from "../components/TimelineItem.astro";
+import Accordion from "../components/Accordion.astro";
+import Figure from "../components/Figure.astro";
 import TokenTable from "../components/TokenTable.astro";
 import ColorRamp from "../components/ColorRamp.astro";
+import figureDemoImage from "../assets/projects/BNI_DS-design_system_components.jpg";
 import { flattenTokens } from "../lib/tokens";
 import primitiveColors from "../../tokens/primitives/color.tokens.json";
 import primitiveDimension from "../../tokens/primitives/dimension.tokens.json";
@@ -21,6 +25,8 @@ import badgeTokens from "../../tokens/component/badge.tokens.json";
 import timelineTokens from "../../tokens/component/timeline.tokens.json";
 import themePanelTokens from "../../tokens/component/theme-panel.tokens.json";
 import tokenInspectorTokens from "../../tokens/component/token-inspector.tokens.json";
+import accordionTokens from "../../tokens/component/accordion.tokens.json";
+import figureTokens from "../../tokens/component/figure.tokens.json";
 import ThemePanel from "../components/ThemePanel.tsx";
 import ComponentDoc from "../components/ComponentDoc.astro";
 import buttonMeta from "../components/Button.metadata.json";
@@ -29,6 +35,8 @@ import cardMeta from "../components/Card.metadata.json";
 import timelineMeta from "../components/TimelineItem.metadata.json";
 import themePanelMeta from "../components/ThemePanel.metadata.json";
 import tokenInspectorMeta from "../components/TokenInspector.metadata.json";
+import accordionMeta from "../components/Accordion.metadata.json";
+import figureMeta from "../components/Figure.metadata.json";
 
 const primitives = flattenTokens(primitiveColors);
 const accentRamp = primitives.filter((t) => t.path.startsWith("color.accent."));
@@ -59,6 +67,8 @@ const tierVars = {
     ...flattenTokens(timelineTokens),
     ...flattenTokens(themePanelTokens),
     ...flattenTokens(tokenInspectorTokens),
+    ...flattenTokens(accordionTokens),
+    ...flattenTokens(figureTokens),
   ].map((t) => t.cssVar),
 };
 ---
@@ -145,22 +155,27 @@ const tierVars = {
       <ColorRamp name="color.neutral" tokens={neutralRamp} />
     </div>
 
-    <h3>Semantic colors</h3>
-    <p class="system__note">
-      Light mapping shown — the dark theme resolves the same tokens to other
-      primitives.
-    </p>
-    <TokenTable label="Semantic color tokens" tokens={semanticColors} />
+    <div class="system__token-reference">
+      <Accordion heading="h3" summary="Semantic colors" open>
+        <p class="system__note">
+          Light mapping shown — the dark theme resolves the same tokens to
+          other primitives.
+        </p>
+        <TokenTable label="Semantic color tokens" tokens={semanticColors} />
+      </Accordion>
 
-    <h3>Semantic spacing</h3>
-    <p class="system__note">
-      Normal density shown — tight and comfy resolve the same tokens to other
-      steps of the 4px scale. Font sizes never change with density.
-    </p>
-    <TokenTable label="Semantic spacing tokens" tokens={semanticSpacing} />
+      <Accordion heading="h3" summary="Semantic spacing">
+        <p class="system__note">
+          Normal density shown — tight and comfy resolve the same tokens to
+          other steps of the 4px scale. Font sizes never change with density.
+        </p>
+        <TokenTable label="Semantic spacing tokens" tokens={semanticSpacing} />
+      </Accordion>
 
-    <h3>Shape &amp; typography</h3>
-    <TokenTable label="Shape and typography tokens" tokens={semanticOther} />
+      <Accordion heading="h3" summary="Shape & typography">
+        <TokenTable label="Shape and typography tokens" tokens={semanticOther} />
+      </Accordion>
+    </div>
   </section>
 
   <section class="system__section" aria-labelledby="components-heading">
@@ -212,6 +227,31 @@ const tierVars = {
           period="2018 – 2020"
         />
       </ul>
+    </ComponentDoc>
+
+    <ComponentDoc meta={accordionMeta} tokens={flattenTokens(accordionTokens)}>
+      <div class="system__accordion-demo">
+        <Accordion summary="What is this pattern built on?" open>
+          <p>
+            Native <code>&lt;details&gt;</code>/<code>&lt;summary&gt;</code> —
+            the browser provides keyboard interaction and expanded state.
+          </p>
+        </Accordion>
+        <Accordion summary="Does it need JavaScript?">
+          <p>No. This page ships zero JS for it.</p>
+        </Accordion>
+      </div>
+    </ComponentDoc>
+
+    <ComponentDoc meta={figureMeta} tokens={flattenTokens(figureTokens)}>
+      <Figure caption="A captioned figure — markdown case studies produce the same markup via rehype-figure.">
+        <Image
+          src={figureDemoImage}
+          alt="Design system component overview from the WinCredit case study"
+          widths={[480, 800]}
+          sizes="(min-width: 60rem) 40rem, 100vw"
+        />
+      </Figure>
     </ComponentDoc>
 
     <ComponentDoc
@@ -375,6 +415,14 @@ src/components/Button.astro
   .system__ramps {
     display: grid;
     gap: var(--space-stack-md);
+  }
+
+  .system__token-reference {
+    margin-block-start: var(--space-stack-md);
+  }
+
+  .system__accordion-demo {
+    inline-size: 100%;
   }
 
   .system__audit-log {

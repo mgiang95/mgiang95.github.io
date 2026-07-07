@@ -1,0 +1,72 @@
+---
+/**
+ * Accordion — disclosure built on native <details>/<summary>. Keyboard
+ * interaction, state and semantics come from the browser; no JS is shipped.
+ * Consumes only `accordion.*` component tokens plus semantic typography.
+ */
+interface Props {
+  /** Visible summary text. */
+  summary: string;
+  /** Optional heading level so the summary joins the document outline. */
+  heading?: "h2" | "h3" | "h4";
+  /** Expanded on load. */
+  open?: boolean;
+}
+
+const { summary, heading, open = false } = Astro.props;
+const Heading = heading;
+---
+
+<details class="accordion" open={open}>
+  <summary class="accordion__summary">
+    {Heading ? <Heading class="accordion__heading">{summary}</Heading> : summary}
+  </summary>
+  <div class="accordion__content">
+    <slot />
+  </div>
+</details>
+
+<style>
+  .accordion {
+    border-block-end: 1px solid var(--accordion-border);
+  }
+
+  .accordion:first-of-type {
+    border-block-start: 1px solid var(--accordion-border);
+  }
+
+  .accordion__summary {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--accordion-summary-gap);
+    padding-block: var(--accordion-summary-padding-block);
+    color: var(--accordion-summary-text);
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .accordion__summary::-webkit-details-marker {
+    display: none;
+  }
+
+  /* Plus/minus state marker — text, not icon, per design direction. */
+  .accordion__summary::after {
+    content: "+";
+    font-family: var(--typography-label-family);
+    font-weight: var(--typography-label-weight);
+    color: var(--accordion-marker-color);
+  }
+
+  .accordion[open] > .accordion__summary::after {
+    content: "−";
+  }
+
+  .accordion__heading {
+    font-size: var(--typography-heading-sm-size);
+  }
+
+  .accordion__content {
+    padding-block-end: var(--accordion-content-padding-block-end);
+  }
+</style>
