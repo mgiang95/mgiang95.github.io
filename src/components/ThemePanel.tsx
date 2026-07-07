@@ -108,12 +108,21 @@ export default function ThemePanel() {
   }, []);
 
   useEffect(() => {
+    // Applied on every tick — this is only a style recalc, not I/O.
     document.documentElement.style.setProperty("--hue", String(hue));
-    try {
-      localStorage.setItem("pref-hue", String(hue));
-    } catch {
-      /* storage unavailable */
-    }
+
+    // Persisting is debounced: localStorage.setItem is synchronous, and a
+    // drag fires this effect on every pixel (~60/s). Writing on every tick
+    // would block the main thread repeatedly for no visible benefit — only
+    // the final value after the drag settles needs to survive a reload.
+    const timeout = setTimeout(() => {
+      try {
+        localStorage.setItem("pref-hue", String(hue));
+      } catch {
+        /* storage unavailable */
+      }
+    }, 150);
+    return () => clearTimeout(timeout);
   }, [hue]);
 
   useEffect(() => {
