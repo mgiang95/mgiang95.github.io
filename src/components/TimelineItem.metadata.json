@@ -1,0 +1,25 @@
+{
+  "name": "TimelineItem",
+  "description": "One entry of the changelog-style CV timeline: square accent marker on a vertical line, optional semver label.",
+  "renderer": "astro",
+  "jsRequired": false,
+  "variants": [],
+  "usage": {
+    "useCases": [
+      "CV/changelog timeline on /about",
+      "Any chronological list that should read as release history"
+    ],
+    "antiPatterns": [
+      {
+        "scenario": "Using TimelineItem outside a <ul>/<ol>",
+        "reason": "It renders an <li>; loose list items break document semantics.",
+        "alternative": "Wrap entries in a list element (see /about)."
+      }
+    ]
+  },
+  "tokenPrefixes": ["timeline"],
+  "a11y": [
+    "Marker is aria-hidden; all information is carried by text",
+    "Version, title, meta and period are separate text nodes, readable in order"
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "name": "Button",
+  "description": "Action trigger in three visual weights. Renders a real <a> when href is given, otherwise a <button>.",
+  "renderer": "astro",
+  "jsRequired": false,
+  "variants": [
+    { "name": "primary", "use": "The one main action of a page or section." },
+    { "name": "secondary", "use": "Alternative actions next to a primary one." },
+    { "name": "ghost", "use": "Tertiary actions with minimal visual weight." }
+  ],
+  "usage": {
+    "useCases": [
+      "Call-to-action links (contact, view project) — pass href",
+      "Form submissions and interactive triggers — real <button>"
+    ],
+    "antiPatterns": [
+      {
+        "scenario": "Multiple primary buttons in the same section",
+        "reason": "Competing accents break the poster-like colour logic and the visual hierarchy.",
+        "alternative": "One primary, everything else secondary or ghost."
+      },
+      {
+        "scenario": "Using Button for plain inline navigation",
+        "reason": "Inline links inside copy should look like text, not controls.",
+        "alternative": "A plain <a>, styled by the global link rules."
+      }
+    ],
+    "selectionCriteria": {
+      "usePrimary": "Main action the visitor should take",
+      "useSecondary": "Nearby alternatives, cancel-type actions",
+      "useGhost": "Low-emphasis utility actions"
+    }
+  },
+  "tokenPrefixes": ["button"],
+  "a11y": [
+    "href renders <a>, everything else a real <button> with an explicit type",
+    "Focus ring comes from the global :focus-visible rule"
+  ]
+}

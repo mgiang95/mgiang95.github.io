@@ -1,0 +1,29 @@
+{
+  "name": "Card",
+  "description": "Raised surface for grouped content. Polymorphic via the `as` prop (div, article, li).",
+  "renderer": "astro",
+  "jsRequired": false,
+  "variants": [],
+  "usage": {
+    "useCases": [
+      "Grouped content blocks that need a raised surface",
+      "Simple teasers where ProjectCard would be too specific"
+    ],
+    "antiPatterns": [
+      {
+        "scenario": "Card inside Card",
+        "reason": "Nested raised surfaces flatten the elevation logic — raised on raised means nothing.",
+        "alternative": "Structure the inner content with spacing tokens instead."
+      },
+      {
+        "scenario": "Rebuilding project teasers from raw Card",
+        "reason": "Duplicates ProjectCard's layout decisions (image, keywords, hover).",
+        "alternative": "Use ProjectCard for anything fed by the projects collection."
+      }
+    ]
+  },
+  "tokenPrefixes": ["card"],
+  "a11y": [
+    "Pass as=\"article\"/\"li\" so the DOM role matches the context"
+  ]
+}

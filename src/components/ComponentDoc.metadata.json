@@ -1,0 +1,24 @@
+{
+  "name": "ComponentDoc",
+  "description": "Renders one /system component entry from the component's co-located metadata JSON: profile badges, description, demo slot, usage rules and token table.",
+  "renderer": "astro",
+  "jsRequired": false,
+  "variants": [],
+  "usage": {
+    "useCases": [
+      "Component documentation entries on /system"
+    ],
+    "antiPatterns": [
+      {
+        "scenario": "Writing component docs as free-form markup next to it",
+        "reason": "Splits the docs into a second, driftable source next to the metadata.",
+        "alternative": "Extend the component's *.metadata.json and let ComponentDoc render it."
+      }
+    ]
+  },
+  "tokenPrefixes": [],
+  "a11y": [
+    "One <article> per component with a heading hierarchy (h3/h4)",
+    "The badge row carries an aria-label naming it as the technical profile"
+  ]
+}

@@ -18,6 +18,12 @@ import badgeTokens from "../../tokens/component/badge.tokens.json";
 import timelineTokens from "../../tokens/component/timeline.tokens.json";
 import themePanelTokens from "../../tokens/component/theme-panel.tokens.json";
 import ThemePanel from "../components/ThemePanel.tsx";
+import ComponentDoc from "../components/ComponentDoc.astro";
+import buttonMeta from "../components/Button.metadata.json";
+import badgeMeta from "../components/Badge.metadata.json";
+import cardMeta from "../components/Card.metadata.json";
+import timelineMeta from "../components/TimelineItem.metadata.json";
+import themePanelMeta from "../components/ThemePanel.metadata.json";
 
 const primitives = flattenTokens(primitiveColors);
 const accentRamp = primitives.filter((t) => t.path.startsWith("color.accent."));
@@ -28,13 +34,6 @@ const semanticSpacing = flattenTokens(semanticSpace);
 const semanticOther = [
   ...flattenTokens(semanticShape),
   ...flattenTokens(semanticTypography),
-];
-
-const componentDocs = [
-  { name: "Button", tokens: flattenTokens(buttonTokens) },
-  { name: "Badge", tokens: flattenTokens(badgeTokens) },
-  { name: "Card", tokens: flattenTokens(cardTokens) },
-  { name: "TimelineItem", tokens: flattenTokens(timelineTokens) },
 ];
 ---
 
@@ -87,13 +86,22 @@ const componentDocs = [
       <code>data-density</code> resolves semantic spacing tokens to other
       steps of the 4px scale; readability is untouched.
     </p>
+    <p>
+      <strong>Invariants are enforced, not promised.</strong> An auditor
+      script checks the architecture rules on every build: components never
+      consume primitives or hardcoded values, every custom property exists,
+      token tiers only reference downwards. Each component also ships a
+      machine-readable metadata file — use cases, anti-patterns, consumed
+      tokens — that AI tooling can query and that renders the component docs
+      below. One source, readable by humans and machines.
+    </p>
 
     <h2>Outcome</h2>
     <p>
       A portfolio where the design system claim is verifiable in the browser:
       version 2 of this site, rebuilt from the vanilla HTML/CSS v1 as a
       token-driven system. The docs below are generated from the same token
-      files the site consumes — they cannot drift.
+      and metadata files the site consumes — they cannot drift.
     </p>
   </div>
 
@@ -131,82 +139,61 @@ const componentDocs = [
 
   <section class="system__section" aria-labelledby="components-heading">
     <h2 id="components-heading">Components</h2>
+    <p class="system__note">
+      Every component ships a co-located <code>*.metadata.json</code> —
+      description, use cases, anti-patterns, consumed tokens. The entries
+      below are rendered from those files; the same JSON is what AI tooling
+      queries before creating or changing a component.
+    </p>
 
-    <article class="system__component">
-      <h3>Button</h3>
-      <div class="system__demo">
-        <Button>Primary</Button>
-        <Button variant="secondary">Secondary</Button>
-        <Button variant="ghost">Ghost</Button>
-      </div>
-      <TokenTable label="Button tokens" tokens={componentDocs[0].tokens} />
-    </article>
+    <ComponentDoc meta={buttonMeta} tokens={flattenTokens(buttonTokens)}>
+      <Button>Primary</Button>
+      <Button variant="secondary">Secondary</Button>
+      <Button variant="ghost">Ghost</Button>
+    </ComponentDoc>
 
-    <article class="system__component">
-      <h3>Badge</h3>
-      <div class="system__demo">
-        <Badge>design-tokens</Badge>
-        <Badge>oklch</Badge>
-        <Badge>astro</Badge>
-      </div>
-      <TokenTable label="Badge tokens" tokens={componentDocs[1].tokens} />
-    </article>
+    <ComponentDoc meta={badgeMeta} tokens={flattenTokens(badgeTokens)}>
+      <Badge>design-tokens</Badge>
+      <Badge>oklch</Badge>
+      <Badge>astro</Badge>
+    </ComponentDoc>
 
-    <article class="system__component">
-      <h3>Card</h3>
-      <div class="system__demo">
-        <Card>
-          <h4>Card title</h4>
-          <p>
-            A raised surface for project teasers. Padding, radius and colors
-            come from <code>card.*</code> tokens.
-          </p>
-          <div class="system__demo-row">
-            <Badge>token-driven</Badge>
-          </div>
-        </Card>
-      </div>
-      <TokenTable label="Card tokens" tokens={componentDocs[2].tokens} />
-    </article>
+    <ComponentDoc meta={cardMeta} tokens={flattenTokens(cardTokens)}>
+      <Card>
+        <h4>Card title</h4>
+        <p>
+          A raised surface for project teasers. Padding, radius and colors
+          come from <code>card.*</code> tokens.
+        </p>
+        <div class="system__demo-row">
+          <Badge>token-driven</Badge>
+        </div>
+      </Card>
+    </ComponentDoc>
 
-    <article class="system__component">
-      <h3>TimelineItem</h3>
-      <div class="system__demo">
-        <ul class="system__timeline-demo">
-          <TimelineItem
-            title="Design System Engineer"
-            meta="HIS Engineering AG (Zurich, CH)"
-            period="since 2023"
-          >
-            <p>The square marker is a flat accent zone — move the hue.</p>
-          </TimelineItem>
-          <TimelineItem
-            title="Interaction Designer"
-            meta="stellar design und engineering GmbH (Ulm, DE)"
-            period="2018 – 2020"
-          />
-        </ul>
-      </div>
-      <TokenTable label="Timeline tokens" tokens={componentDocs[3].tokens} />
-    </article>
+    <ComponentDoc meta={timelineMeta} tokens={flattenTokens(timelineTokens)}>
+      <ul class="system__timeline-demo">
+        <TimelineItem
+          title="Design System Engineer"
+          meta="HIS Engineering AG (Zurich, CH)"
+          period="since 2023"
+        >
+          <p>The square marker is a flat accent zone — move the hue.</p>
+        </TimelineItem>
+        <TimelineItem
+          title="Interaction Designer"
+          meta="stellar design und engineering GmbH (Ulm, DE)"
+          period="2018 – 2020"
+        />
+      </ul>
+    </ComponentDoc>
 
-    <article class="system__component">
-      <h3>ThemePanel</h3>
-      <p class="system__note">
-        React island (hydrated when visible). Writes <code>--hue</code>,
-        <code>data-theme</code> and <code>data-density</code> and persists
-        them to <code>localStorage</code>. The badge shows the live WCAG
-        ratio of the weakest semantic pair — same math as the build-time
-        proof.
-      </p>
-      <div class="system__demo">
-        <ThemePanel client:visible />
-      </div>
-      <TokenTable
-        label="ThemePanel tokens"
-        tokens={flattenTokens(themePanelTokens)}
-      />
-    </article>
+    <ComponentDoc
+      meta={themePanelMeta}
+      tokens={flattenTokens(themePanelTokens)}
+    >
+      <ThemePanel client:visible />
+    </ComponentDoc>
   </section>
 </BaseLayout>
 
@@ -241,21 +228,6 @@ const componentDocs = [
   .system__ramps {
     display: grid;
     gap: var(--space-stack-md);
-  }
-
-  .system__component {
-    margin-block-start: var(--space-stack-lg);
-  }
-
-  .system__demo {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: flex-start;
-    gap: var(--space-inline-md);
-    padding: var(--space-inset-lg);
-    margin-block-end: var(--space-stack-sm);
-    border: 1px solid var(--color-border-default);
-    background: var(--color-surface-default);
   }
 
   .system__demo-row {

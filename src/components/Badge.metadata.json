@@ -1,0 +1,29 @@
+{
+  "name": "Badge",
+  "description": "Small technical label in mono type — skills, tech stack, token names, contrast values.",
+  "renderer": "astro",
+  "jsRequired": false,
+  "variants": [],
+  "usage": {
+    "useCases": [
+      "Keyword/tech tags on project cards and case studies",
+      "Token names and technical values in running layout"
+    ],
+    "antiPatterns": [
+      {
+        "scenario": "Badge as an interactive filter or button",
+        "reason": "Badges are static labels; making them clickable hides affordance.",
+        "alternative": "Use Button (ghost) for interactive filtering."
+      },
+      {
+        "scenario": "Full sentences inside a Badge",
+        "reason": "Badges are single terms; long text breaks the label grid.",
+        "alternative": "Plain text with typography.label tokens."
+      }
+    ]
+  },
+  "tokenPrefixes": ["badge"],
+  "a11y": [
+    "Purely presentational <span>; the surrounding list provides semantics (aria-label on the <ul>)"
+  ]
+}

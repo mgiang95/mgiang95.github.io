@@ -1,0 +1,24 @@
+{
+  "name": "TokenTable",
+  "description": "Tabular token documentation for /system: custom property, raw DTCG value (references intact) and a live swatch for colours.",
+  "renderer": "astro",
+  "jsRequired": false,
+  "variants": [],
+  "usage": {
+    "useCases": [
+      "Token documentation sections on /system, fed by flattenTokens()"
+    ],
+    "antiPatterns": [
+      {
+        "scenario": "Hand-writing token rows instead of importing the DTCG JSON",
+        "reason": "Docs that are not generated from the token source can drift from it.",
+        "alternative": "flattenTokens(json) from src/lib/tokens.ts."
+      }
+    ]
+  },
+  "tokenPrefixes": [],
+  "a11y": [
+    "Real <table> with scope=col headers and an aria-label",
+    "Swatches are aria-hidden; the value is always shown as text"
+  ]
+}

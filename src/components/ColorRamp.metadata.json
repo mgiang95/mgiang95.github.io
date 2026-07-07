@@ -1,0 +1,23 @@
+{
+  "name": "ColorRamp",
+  "description": "Swatch strip for one colour primitive ramp (accent, neutral). Swatches render via their custom properties, so they follow the runtime hue.",
+  "renderer": "astro",
+  "jsRequired": false,
+  "variants": [],
+  "usage": {
+    "useCases": [
+      "Primitive ramp documentation on /system"
+    ],
+    "antiPatterns": [
+      {
+        "scenario": "Using ColorRamp to present semantic tokens",
+        "reason": "Ramps show raw scales; semantic tokens need name, value and description.",
+        "alternative": "TokenTable."
+      }
+    ]
+  },
+  "tokenPrefixes": [],
+  "a11y": [
+    "Swatches are aria-hidden; each step is labelled by its token step as text"
+  ]
+}

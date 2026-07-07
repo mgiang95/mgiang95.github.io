@@ -16,12 +16,15 @@ import {
   parseOklch,
   PAIRS,
 } from "../src/lib/color-math.js";
+import config from "./ds.config.mjs";
 
 async function loadJson(path) {
   return JSON.parse(await readFile(path, "utf8"));
 }
 
-const primitives = await loadJson("tokens/primitives/color.tokens.json");
+const primitives = await loadJson(
+  `${config.tokensDir}/primitives/color.tokens.json`,
+);
 
 /** Resolve a reference like "{color.accent.600}" to its L/C step. */
 function rampStep(ref) {
@@ -33,7 +36,7 @@ function rampStep(ref) {
 }
 
 async function semanticColors(file) {
-  const json = await loadJson(`tokens/semantic/${file}`);
+  const json = await loadJson(`${config.tokensDir}/semantic/${file}`);
   const flat = {};
   for (const [group, tokens] of Object.entries(json.color)) {
     for (const [name, token] of Object.entries(tokens)) {

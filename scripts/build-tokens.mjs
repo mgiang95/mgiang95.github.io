@@ -12,9 +12,11 @@
 import StyleDictionary from "style-dictionary";
 import { mkdir, readFile, writeFile, rm } from "node:fs/promises";
 import path from "node:path";
+import config from "./ds.config.mjs";
 
 const BUILD_DIR = ".tokens-build";
-const OUT_FILE = "src/styles/tokens.css";
+const OUT_FILE = config.generatedCss;
+const TOKENS = config.tokensDir;
 
 // Shared transforms: kebab-case names, CSS-ready fontFamily/cubicBezier values.
 const TRANSFORMS = ["name/kebab", "fontFamily/css", "cubicBezier/css"];
@@ -51,36 +53,36 @@ await mkdir(BUILD_DIR, { recursive: true });
 
 await run({
   source: [
-    "tokens/primitives/*.tokens.json",
-    "tokens/semantic/color-light.tokens.json",
-    "tokens/semantic/space-normal.tokens.json",
-    "tokens/semantic/shape.tokens.json",
-    "tokens/semantic/typography.tokens.json",
-    "tokens/component/*.tokens.json",
+    `${TOKENS}/primitives/*.tokens.json`,
+    `${TOKENS}/semantic/color-light.tokens.json`,
+    `${TOKENS}/semantic/space-normal.tokens.json`,
+    `${TOKENS}/semantic/shape.tokens.json`,
+    `${TOKENS}/semantic/typography.tokens.json`,
+    `${TOKENS}/component/*.tokens.json`,
   ],
   file: "base.css",
   selector: ":root",
 });
 
 await run({
-  source: ["tokens/semantic/color-dark.tokens.json"],
-  include: ["tokens/primitives/*.tokens.json"],
+  source: [`${TOKENS}/semantic/color-dark.tokens.json`],
+  include: [`${TOKENS}/primitives/*.tokens.json`],
   file: "dark.css",
   selector: '[data-theme="dark"]',
   filter: overrideOnly("color-dark"),
 });
 
 await run({
-  source: ["tokens/semantic/space-tight.tokens.json"],
-  include: ["tokens/primitives/*.tokens.json"],
+  source: [`${TOKENS}/semantic/space-tight.tokens.json`],
+  include: [`${TOKENS}/primitives/*.tokens.json`],
   file: "tight.css",
   selector: '[data-density="tight"]',
   filter: overrideOnly("space-tight"),
 });
 
 await run({
-  source: ["tokens/semantic/space-comfy.tokens.json"],
-  include: ["tokens/primitives/*.tokens.json"],
+  source: [`${TOKENS}/semantic/space-comfy.tokens.json`],
+  include: [`${TOKENS}/primitives/*.tokens.json`],
   file: "comfy.css",
   selector: '[data-density="comfy"]',
   filter: overrideOnly("space-comfy"),

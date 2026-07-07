@@ -13,7 +13,7 @@
 .theme-panel__heading {
   font-family: var(--typography-label-family);
   font-size: var(--typography-label-size);
-  font-weight: var(--font-weight-medium);
+  font-weight: var(--typography-label-weight);
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--color-text-primary);
@@ -82,7 +82,7 @@
   background: var(--color-surface-accent);
   color: var(--color-text-on-accent);
   border-radius: var(--radius-control);
-  font-weight: var(--font-weight-medium);
+  font-weight: var(--typography-label-weight);
 }
 
 .theme-panel__ratio--fail {

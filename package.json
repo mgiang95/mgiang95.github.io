@@ -6,8 +6,9 @@
   "scripts": {
     "tokens": "node scripts/build-tokens.mjs",
     "check:contrast": "node scripts/check-contrast.mjs",
+    "audit": "node scripts/audit-tokens.mjs",
     "dev": "npm run tokens && astro dev",
-    "build": "npm run tokens && npm run check:contrast && astro build",
+    "build": "npm run tokens && npm run check:contrast && npm run audit && astro build",
     "preview": "astro preview",
     "astro": "astro"
   },

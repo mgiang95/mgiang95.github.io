@@ -1,0 +1,30 @@
+{
+  "name": "ThemePanel",
+  "description": "React island for runtime theming: hue slider, colour scheme toggle, density choice and a live WCAG contrast badge.",
+  "renderer": "react",
+  "jsRequired": true,
+  "variants": [],
+  "usage": {
+    "useCases": [
+      "Hero of the home page — the visitor operates the system in the first seconds",
+      "Live demo inside the /system component docs"
+    ],
+    "antiPatterns": [
+      {
+        "scenario": "Hydrating eagerly with client:load everywhere",
+        "reason": "Theming is an enhancement; eager JS on every page contradicts the islands architecture.",
+        "alternative": "client:visible (docs) or client:load only where it is the hero."
+      },
+      {
+        "scenario": "Adding a second theming mechanism next to it",
+        "reason": "State must stay on --hue, data-theme and data-density plus the pref-* storage keys the head script reads.",
+        "alternative": "Extend ThemePanel; never introduce parallel state."
+      }
+    ]
+  },
+  "tokenPrefixes": ["theme-panel"],
+  "a11y": [
+    "Native range input and radio groups inside labelled fieldsets",
+    "Without JS the panel does not render — the site keeps its defaults"
+  ]
+}
