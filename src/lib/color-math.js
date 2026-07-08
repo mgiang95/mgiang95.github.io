@@ -108,5 +108,10 @@ export const PAIRS = [
   ["text.on-accent", "interactive.active", 4.5],
   ["interactive.default", "surface.default", 4.5],
   ["interactive.default", "surface.raised", 4.5],
+  ["interactive.default", "surface.sunken", 4.5],
+  ["interactive.hover", "surface.default", 4.5],
+  ["interactive.hover", "surface.raised", 4.5],
+  ["interactive.hover", "surface.sunken", 4.5],
   ["border.strong", "surface.default", 3],
+  ["border.strong", "surface.raised", 3],
 ];

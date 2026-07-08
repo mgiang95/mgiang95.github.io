@@ -1,0 +1,38 @@
+---
+/**
+ * Figure — image with caption as real <figure>/<figcaption> semantics.
+ * The same figure.* tokens also style markdown figures: the rehype-figure
+ * plugin converts the ![image] + *caption* authoring pattern, and the
+ * .prose figure rules in global.css apply the identical contract.
+ */
+interface Props {
+  /** Caption text; omit for a plain bordered figure. */
+  caption?: string;
+}
+
+const { caption } = Astro.props;
+---
+
+<figure class="figure">
+  <slot />
+  {caption && <figcaption class="figure__caption">{caption}</figcaption>}
+</figure>
+
+<style>
+  .figure {
+    display: grid;
+    gap: var(--figure-gap);
+    margin: 0;
+  }
+
+  .figure :global(img) {
+    inline-size: 100%;
+    block-size: auto;
+    border: 1px solid var(--figure-border);
+  }
+
+  .figure__caption {
+    color: var(--figure-caption-text);
+    font-size: var(--figure-caption-size);
+  }
+</style>

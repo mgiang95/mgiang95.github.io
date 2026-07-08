@@ -1,0 +1,16 @@
+{
+  "button": {
+    "text": { "$value": "{color.text.primary}", "$type": "color" },
+    "background": { "$value": "{color.surface.default}", "$type": "color" },
+    "bad-primitive-ref": {
+      "$value": "{color.neutral.950}",
+      "$type": "color",
+      "_note": "T3: component referencing a primitive"
+    },
+    "bad-unknown-ref": {
+      "$value": "{color.does.not.exist}",
+      "$type": "color",
+      "_note": "T4: reference to a non-existent token"
+    }
+  }
+}

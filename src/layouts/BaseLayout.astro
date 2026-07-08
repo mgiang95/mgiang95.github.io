@@ -1,6 +1,18 @@
 ---
 import "../styles/tokens.css";
 import "../styles/global.css";
+import { flattenTokens } from "../lib/tokens";
+import pkg from "../../package.json";
+
+// Colophon facts, computed from the same sources everything else uses.
+const tokenModules = import.meta.glob<{
+  default: Parameters<typeof flattenTokens>[0];
+}>("../../tokens/**/*.tokens.json", { eager: true });
+const tokenCount = new Set(
+  Object.values(tokenModules).flatMap((mod) =>
+    flattenTokens(mod.default).map((token) => token.path),
+  ),
+).size;
 
 interface Props {
   /** Page title, appended with the site name. */
@@ -11,18 +23,20 @@ interface Props {
 
 const { title, description } = Astro.props;
 
+// Follows the route locale once /de pages exist; "en" until then.
+const locale = Astro.currentLocale ?? "en";
+
 const navItems = [
-  { href: "/", label: "Home" },
-  { href: "/projects", label: "Projects" },
+  { href: "/", label: "Work" },
+  { href: "/blog", label: "Blog" },
   { href: "/about", label: "About" },
-  { href: "/system", label: "System" },
 ];
 
 const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={locale}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -88,10 +102,12 @@ const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
     </main>
     <footer class="site-footer">
       <p class="site-footer__note">
-        Built with Astro on a live design token pipeline — see
-        <a href="/system">how this site is built</a>.
+        <code>v{pkg.version}</code> · <code>{tokenCount} tokens</code> ·
+        Astro + React + Lit — <a href="/system">how this site is built</a>
       </p>
-      <p class="site-footer__copyright">© 2026 Michael Giang</p>
+      <p class="site-footer__copyright">
+        © 2026 Michael Giang · <a href="/imprint">Imprint</a>
+      </p>
     </footer>
   </body>
 </html>

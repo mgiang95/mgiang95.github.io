@@ -26,6 +26,9 @@ html {
 }
 
 body {
+  /* Full-bleed sections use calc(50% - 50vw); vw includes the scrollbar
+     width, so clip the harmless sliver instead of showing an x-scrollbar. */
+  overflow-x: clip;
   font-family: var(--font-family-body);
   font-size: var(--font-size-300);
   font-weight: var(--font-weight-regular);
@@ -79,6 +82,9 @@ video {
 
 a {
   color: var(--color-interactive-default);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+  transition: color var(--motion-state-duration) var(--motion-state-easing);
 }
 
 a:hover {
@@ -123,15 +129,56 @@ a:hover {
   border: 1px solid var(--color-border-default);
 }
 
-/* Italic paragraph directly after an image acts as its caption. */
-.prose p:has(> img) + p:has(> em:only-child) {
+/* Markdown figures (rehype-figure) — same contract as the Figure component. */
+.prose figure {
+  display: grid;
+  gap: var(--figure-gap);
+  margin: 0;
+}
+
+.prose figure img {
+  border: 1px solid var(--figure-border);
+}
+
+.prose figcaption {
+  color: var(--figure-caption-text);
+  font-size: var(--figure-caption-size);
+}
+
+.prose--compact > * + * {
+  margin-block-start: var(--space-stack-xs);
+}
+
+/* Mono annotation line under page headings — the system's voice, with real
+   data, on every page (the poster on home carries its own variant). */
+.annotations {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-inline-lg);
   margin-block-start: var(--space-stack-xs);
   font-size: var(--typography-label-size);
   color: var(--color-text-muted);
 }
 
-.prose--compact > * + * {
-  margin-block-start: var(--space-stack-xs);
+/* Scroll-linked entrance for markdown figures: opacity plus a small rise,
+   driven by scroll progress — no timers, no JS. Browsers without support
+   simply show the figures; reduced motion resets the timeline below. */
+@supports (animation-timeline: view()) {
+  /* Longhands on purpose: the animation shorthand resets animation-timeline,
+     and the CSS minifier mis-merges the combination. */
+  .prose figure {
+    animation-name: figure-entrance;
+    animation-fill-mode: both;
+    animation-timeline: view();
+    animation-range: entry 0% entry 35%;
+  }
+}
+
+@keyframes figure-entrance {
+  from {
+    opacity: 0;
+    transform: translateY(var(--space-stack-sm));
+  }
 }
 
 .skip-link {
@@ -149,12 +196,31 @@ a:hover {
   transform: none;
 }
 
+/* Discrete mode switches (color scheme, density): the theme panel opens a
+   brief transition window via data-mode-transition on <html>. Scoping the
+   transitions to that window keeps continuous hue dragging instant —
+   direct manipulation must not lag behind the pointer. */
+html[data-mode-transition] *,
+html[data-mode-transition] *::before,
+html[data-mode-transition] *::after {
+  transition:
+    background-color var(--motion-mode-duration) var(--motion-mode-easing),
+    color var(--motion-mode-duration) var(--motion-mode-easing),
+    border-color var(--motion-mode-duration) var(--motion-mode-easing),
+    padding var(--motion-mode-duration) var(--motion-mode-easing),
+    margin var(--motion-mode-duration) var(--motion-mode-easing),
+    gap var(--motion-mode-duration) var(--motion-mode-easing);
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
   *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
+    /* Scroll-driven animations ignore durations — reset their timeline so
+       the 0.01ms duration applies and they complete instantly. */
+    animation-timeline: auto !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }

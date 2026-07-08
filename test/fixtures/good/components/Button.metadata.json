@@ -1,0 +1,13 @@
+{
+  "name": "Button",
+  "description": "Fixture button for auditor tests.",
+  "renderer": "astro",
+  "jsRequired": false,
+  "variants": [],
+  "usage": {
+    "useCases": ["Auditor happy-path fixture"],
+    "antiPatterns": []
+  },
+  "tokenPrefixes": ["button"],
+  "a11y": ["Real button element"]
+}

@@ -6,7 +6,7 @@
  *   pref-theme, pref-density, pref-hue (see BaseLayout.astro).
  * Without JS the panel simply does not render — the site keeps its defaults.
  */
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import "./ThemePanel.css";
 import { oklchToSrgb, contrast, parseOklch, PAIRS } from "../lib/color-math.js";
 import primitiveColors from "../../tokens/primitives/color.tokens.json";
@@ -17,6 +17,27 @@ type Scheme = "system" | "light" | "dark";
 type Density = "normal" | "tight" | "comfy";
 
 const DEFAULT_HUE = 220;
+
+let modeTransitionTimer = 0;
+
+/**
+ * Opens the brief page-wide transition window for discrete mode switches
+ * (scheme, density) — see the data-mode-transition rule in global.css.
+ * Transient animation helper, not theming state: the attribute lives only
+ * for the duration of the switch. Hue dragging never opens it, so direct
+ * manipulation stays instant.
+ */
+function withModeTransition() {
+  const html = document.documentElement;
+  html.setAttribute("data-mode-transition", "");
+  const raw = getComputedStyle(html).getPropertyValue("--motion-mode-duration");
+  const duration = Number.parseFloat(raw) || 200;
+  window.clearTimeout(modeTransitionTimer);
+  modeTransitionTimer = window.setTimeout(
+    () => html.removeAttribute("data-mode-transition"),
+    duration + 50,
+  );
+}
 
 /** Resolves one semantic color file to L/C steps, keyed by "group.name". */
 function resolvePalette(semantic: typeof lightColors) {
@@ -97,6 +118,18 @@ export default function ThemePanel() {
   );
   const [systemDark, setSystemDark] = useState(false);
 
+  // Follow hue changes from outside the panel (e.g. the poster scrub on
+  // the home hero). Both sides dispatch "hue-change" on user input only,
+  // so there is no feedback loop — React bails out on identical state.
+  useEffect(() => {
+    const onExternalHue = (event: Event) => {
+      const value = (event as CustomEvent<number>).detail;
+      if (Number.isFinite(value)) setHue(Math.round(value));
+    };
+    window.addEventListener("hue-change", onExternalHue);
+    return () => window.removeEventListener("hue-change", onExternalHue);
+  }, []);
+
   // Track the OS scheme for the badge while "system" is selected.
   useEffect(() => {
     const media = window.matchMedia("(prefers-color-scheme: dark)");
@@ -125,7 +158,11 @@ export default function ThemePanel() {
     return () => clearTimeout(timeout);
   }, [hue]);
 
+  // Skips the transition window while the mount effects apply initial state.
+  const mounted = useRef(false);
+
   useEffect(() => {
+    if (mounted.current) withModeTransition();
     const html = document.documentElement;
     try {
       if (scheme === "system") {
@@ -141,6 +178,7 @@ export default function ThemePanel() {
   }, [scheme]);
 
   useEffect(() => {
+    if (mounted.current) withModeTransition();
     const html = document.documentElement;
     try {
       if (density === "normal") {
@@ -154,6 +192,10 @@ export default function ThemePanel() {
       /* storage unavailable */
     }
   }, [density]);
+
+  useEffect(() => {
+    mounted.current = true;
+  }, []);
 
   const effectiveTheme: "light" | "dark" =
     scheme === "system" ? (systemDark ? "dark" : "light") : scheme;
@@ -182,7 +224,13 @@ export default function ThemePanel() {
           max={360}
           step={1}
           value={hue}
-          onChange={(event) => setHue(Number(event.target.value))}
+          onChange={(event) => {
+            const value = Number(event.target.value);
+            setHue(value);
+            window.dispatchEvent(
+              new CustomEvent("hue-change", { detail: value }),
+            );
+          }}
         />
       </div>
 

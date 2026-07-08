@@ -1,0 +1,25 @@
+{
+  "figure": {
+    "$description": "Image with caption. Also styles markdown figures produced by the rehype-figure plugin (.prose figure).",
+    "border": {
+      "$value": "{color.border.default}",
+      "$type": "color",
+      "$description": "Hairline around the image."
+    },
+    "gap": {
+      "$value": "{space.stack.xs}",
+      "$type": "dimension",
+      "$description": "Gap between image and caption."
+    },
+    "caption": {
+      "text": {
+        "$value": "{color.text.muted}",
+        "$type": "color"
+      },
+      "size": {
+        "$value": "{typography.label.size}",
+        "$type": "dimension"
+      }
+    }
+  }
+}

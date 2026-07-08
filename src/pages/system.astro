@@ -1,11 +1,19 @@
 ---
+import { Image } from "astro:assets";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Button from "../components/Button.astro";
 import Card from "../components/Card.astro";
 import Badge from "../components/Badge.astro";
 import TimelineItem from "../components/TimelineItem.astro";
+import Accordion from "../components/Accordion.astro";
+import Figure from "../components/Figure.astro";
+import Gallery from "../components/Gallery.astro";
 import TokenTable from "../components/TokenTable.astro";
 import ColorRamp from "../components/ColorRamp.astro";
+import figureDemoImage from "../assets/projects/BNI_DS-design_system_components.jpg";
+import galleryDemoHierarchy from "../assets/projects/BNI_DS-css-hierarchy.jpg";
+import galleryDemoDeprecated from "../assets/projects/BNI_DS-deprecated_mode.jpg";
+import galleryDemoAudit from "../assets/projects/BNI_DS-layout_inconsistencies.jpg";
 import { flattenTokens } from "../lib/tokens";
 import primitiveColors from "../../tokens/primitives/color.tokens.json";
 import primitiveDimension from "../../tokens/primitives/dimension.tokens.json";
@@ -15,12 +23,16 @@ import semanticColorsLight from "../../tokens/semantic/color-light.tokens.json";
 import semanticSpace from "../../tokens/semantic/space-normal.tokens.json";
 import semanticShape from "../../tokens/semantic/shape.tokens.json";
 import semanticTypography from "../../tokens/semantic/typography.tokens.json";
+import semanticMotion from "../../tokens/semantic/motion.tokens.json";
 import buttonTokens from "../../tokens/component/button.tokens.json";
 import cardTokens from "../../tokens/component/card.tokens.json";
 import badgeTokens from "../../tokens/component/badge.tokens.json";
 import timelineTokens from "../../tokens/component/timeline.tokens.json";
 import themePanelTokens from "../../tokens/component/theme-panel.tokens.json";
 import tokenInspectorTokens from "../../tokens/component/token-inspector.tokens.json";
+import accordionTokens from "../../tokens/component/accordion.tokens.json";
+import figureTokens from "../../tokens/component/figure.tokens.json";
+import galleryTokens from "../../tokens/component/gallery.tokens.json";
 import ThemePanel from "../components/ThemePanel.tsx";
 import ComponentDoc from "../components/ComponentDoc.astro";
 import buttonMeta from "../components/Button.metadata.json";
@@ -29,6 +41,9 @@ import cardMeta from "../components/Card.metadata.json";
 import timelineMeta from "../components/TimelineItem.metadata.json";
 import themePanelMeta from "../components/ThemePanel.metadata.json";
 import tokenInspectorMeta from "../components/TokenInspector.metadata.json";
+import accordionMeta from "../components/Accordion.metadata.json";
+import figureMeta from "../components/Figure.metadata.json";
+import galleryMeta from "../components/Gallery.metadata.json";
 
 const primitives = flattenTokens(primitiveColors);
 const accentRamp = primitives.filter((t) => t.path.startsWith("color.accent."));
@@ -39,7 +54,13 @@ const semanticSpacing = flattenTokens(semanticSpace);
 const semanticOther = [
   ...flattenTokens(semanticShape),
   ...flattenTokens(semanticTypography),
+  ...flattenTokens(semanticMotion),
 ];
+
+// Annotation facts — computed, not written, so they cannot go stale.
+const componentCount = Object.keys(
+  import.meta.glob("../components/*.metadata.json"),
+).length;
 
 // Tier lists for the TokenInspector — same DTCG sources as everything else.
 const tierVars = {
@@ -59,8 +80,16 @@ const tierVars = {
     ...flattenTokens(timelineTokens),
     ...flattenTokens(themePanelTokens),
     ...flattenTokens(tokenInspectorTokens),
+    ...flattenTokens(accordionTokens),
+    ...flattenTokens(figureTokens),
+    ...flattenTokens(galleryTokens),
   ].map((t) => t.cssVar),
 };
+
+const tokenVarCount =
+  tierVars.primitive.length +
+  tierVars.semantic.length +
+  tierVars.component.length;
 ---
 
 <BaseLayout
@@ -68,6 +97,11 @@ const tierVars = {
   description="How this site is built: token architecture, theming mechanics and component docs."
 >
   <h1>How this site is built</h1>
+  <p class="annotations" aria-hidden="true">
+    <code>{componentCount} components</code>
+    <code>{tokenVarCount} custom properties</code>
+    <code>audit passing</code>
+  </p>
   <p class="system__lead">
     The site is its own case study: a live design system with a real token
     pipeline. Below is the reasoning — and the living docs generated from the
@@ -113,7 +147,15 @@ const tierVars = {
     <p>
       <strong>Density switches spacing, never type.</strong>
       <code>data-density</code> resolves semantic spacing tokens to other
-      steps of the 4px scale; readability is untouched.
+      steps of the 4px scale; readability is untouched. Type responds to the
+      viewport instead: the display steps of the scale are fluid
+      <code>clamp()</code> primitives, while body sizes stay fixed.
+    </p>
+    <p>
+      <strong>Motion distinguishes switches from dragging.</strong> Discrete
+      mode changes (scheme, density) animate inside a brief page-wide
+      transition window. The hue slider never does — direct manipulation
+      must not lag behind the pointer.
     </p>
     <p>
       <strong>Invariants are enforced, not promised.</strong> An auditor
@@ -145,22 +187,37 @@ const tierVars = {
       <ColorRamp name="color.neutral" tokens={neutralRamp} />
     </div>
 
-    <h3>Semantic colors</h3>
-    <p class="system__note">
-      Light mapping shown — the dark theme resolves the same tokens to other
-      primitives.
-    </p>
-    <TokenTable label="Semantic color tokens" tokens={semanticColors} />
+    <div class="system__token-reference">
+      <Accordion heading="h3" summary="Semantic colors" open>
+        <p class="system__note">
+          Light mapping shown — the dark theme resolves the same tokens to
+          other primitives.
+        </p>
+        <TokenTable label="Semantic color tokens" tokens={semanticColors} />
+      </Accordion>
 
-    <h3>Semantic spacing</h3>
-    <p class="system__note">
-      Normal density shown — tight and comfy resolve the same tokens to other
-      steps of the 4px scale. Font sizes never change with density.
-    </p>
-    <TokenTable label="Semantic spacing tokens" tokens={semanticSpacing} />
+      <Accordion heading="h3" summary="Semantic spacing">
+        <p class="system__note">
+          Normal density shown — tight and comfy resolve the same tokens to
+          other steps of the 4px scale. Font sizes never change with density.
+        </p>
+        <TokenTable label="Semantic spacing tokens" tokens={semanticSpacing} />
+      </Accordion>
 
-    <h3>Shape &amp; typography</h3>
-    <TokenTable label="Shape and typography tokens" tokens={semanticOther} />
+      <Accordion heading="h3" summary="Shape, typography & motion">
+        <p class="system__note">
+          Motion has exactly three meanings here — state feedback,
+          expand/collapse and discrete mode switches. A fourth, the
+          scroll-linked figure entrance, is progress-driven and needs no
+          duration token. Everything sits behind the global
+          <code>prefers-reduced-motion</code> kill switch.
+        </p>
+        <TokenTable
+          label="Shape, typography and motion tokens"
+          tokens={semanticOther}
+        />
+      </Accordion>
+    </div>
   </section>
 
   <section class="system__section" aria-labelledby="components-heading">
@@ -207,11 +264,60 @@ const tierVars = {
           <p>The square marker is a flat accent zone — move the hue.</p>
         </TimelineItem>
         <TimelineItem
-          title="Interaction Designer"
-          meta="stellar design und engineering GmbH (Ulm, DE)"
-          period="2018 – 2020"
+          title="MSc Human-Computer Interaction"
+          meta="PLUS &amp; FH Salzburg (Salzburg, AT)"
+          period="2020 – 2023"
+          type="education"
         />
       </ul>
+    </ComponentDoc>
+
+    <ComponentDoc meta={accordionMeta} tokens={flattenTokens(accordionTokens)}>
+      <div class="system__accordion-demo">
+        <Accordion summary="What is this pattern built on?" open>
+          <p>
+            Native <code>&lt;details&gt;</code>/<code>&lt;summary&gt;</code> —
+            the browser provides keyboard interaction and expanded state.
+          </p>
+        </Accordion>
+        <Accordion summary="Does it need JavaScript?">
+          <p>No. This page ships zero JS for it.</p>
+        </Accordion>
+      </div>
+    </ComponentDoc>
+
+    <ComponentDoc meta={figureMeta} tokens={flattenTokens(figureTokens)}>
+      <Figure caption="A captioned figure — markdown case studies produce the same markup via rehype-figure.">
+        <Image
+          src={figureDemoImage}
+          alt="Design system component overview from the WinCredit case study"
+          widths={[480, 800]}
+          sizes="(min-width: 60rem) 40rem, 100vw"
+        />
+      </Figure>
+    </ComponentDoc>
+
+    <ComponentDoc meta={galleryMeta} tokens={flattenTokens(galleryTokens)}>
+      <Gallery
+        label="Gallery demo — WinCredit design system screenshots"
+        images={[
+          {
+            image: galleryDemoHierarchy,
+            alt: "CSS hierarchy of the WinCredit theming architecture",
+            caption: "Slides snap as you scroll — keyboard and touch, no JS.",
+          },
+          {
+            image: galleryDemoDeprecated,
+            alt: "Deprecated mode of the WinCredit component library",
+            caption: "The next slide peeks in as the scroll affordance.",
+          },
+          {
+            image: galleryDemoAudit,
+            alt: "Layout inconsistencies found in the WinCredit visual audit",
+            caption: "Each slide is a Figure — same tokens, same caption logic.",
+          },
+        ]}
+      />
     </ComponentDoc>
 
     <ComponentDoc
@@ -375,6 +481,14 @@ src/components/Button.astro
   .system__ramps {
     display: grid;
     gap: var(--space-stack-md);
+  }
+
+  .system__token-reference {
+    margin-block-start: var(--space-stack-md);
+  }
+
+  .system__accordion-demo {
+    inline-size: 100%;
   }
 
   .system__audit-log {

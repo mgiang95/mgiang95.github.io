@@ -19,6 +19,11 @@
       "$description": "Compact headings inside components (card titles, timeline entries).",
       "size": { "$value": "{font.size.500}", "$type": "dimension" }
     },
+    "heading-lg": {
+      "$description": "Large editorial headings inside components (project index rows). Fluid via the display steps of the scale.",
+      "size": { "$value": "{font.size.700}", "$type": "dimension" },
+      "line-height": { "$value": "{font.line-height.tight}", "$type": "number" }
+    },
     "lead": {
       "$description": "Intro/lead paragraphs, slightly above body size.",
       "size": { "$value": "{font.size.400}", "$type": "dimension" }

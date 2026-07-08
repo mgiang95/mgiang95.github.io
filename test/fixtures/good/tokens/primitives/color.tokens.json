@@ -1,0 +1,12 @@
+{
+  "color": {
+    "accent": {
+      "600": { "$value": "oklch(0.53 0.13 var(--hue))", "$type": "color" }
+    },
+    "neutral": {
+      "0": { "$value": "oklch(1 0 var(--hue))", "$type": "color" },
+      "50": { "$value": "oklch(0.985 0.004 var(--hue))", "$type": "color" },
+      "950": { "$value": "oklch(0.17 0.01 var(--hue))", "$type": "color" }
+    }
+  }
+}

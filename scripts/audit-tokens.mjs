@@ -16,6 +16,7 @@
  *       nothing
  *   C4  files in the component layer never consume primitive-tier tokens
  *   C5  class names follow BEM with the component file name as block
+ *       (light DOM only; shadow DOM styles in .ts files are exempt)
  *
  * Component metadata rules (src/components/*.metadata.json):
  *   M1  every component has a co-located metadata file, and every metadata
@@ -23,19 +24,18 @@
  *   M2  metadata carries the decision fields (description, useCases,
  *       antiPatterns) and its declared token prefixes exist in /tokens
  *
- * Paths come from ds.config.mjs so the same auditor can run in any project
- * that adopts the token package. Run: npm run audit
+ * Contrast coverage rule:
+ *   P1  every semantic color.text.* / color.interactive.* token appears in
+ *       at least one proven contrast pair (PAIRS in the color-math lib) —
+ *       a new color cannot silently escape the AA-for-every-hue proof
+ *
+ * Paths come from a config object (ds.config.mjs when run as CLI) so the
+ * same auditor runs in any project that adopts the token package — and in
+ * the test suite against violation fixtures. Run: npm run audit
  */
 import { readdir, readFile, stat } from "node:fs/promises";
 import path from "node:path";
-import config from "./ds.config.mjs";
-
-const violations = [];
-const fail = (file, rule, message) => violations.push({ file, rule, message });
-
-/* ------------------------------------------------------------------ */
-/* Token source: tiers, references                                      */
-/* ------------------------------------------------------------------ */
+import { pathToFileURL } from "node:url";
 
 /** Flattens a DTCG tree into { dotPath: rawValue } entries. */
 function flatten(node, prefix = [], out = {}) {
@@ -51,89 +51,11 @@ function flatten(node, prefix = [], out = {}) {
   return out;
 }
 
-async function loadTier(tier) {
-  const dir = path.join(config.tokensDir, tier);
-  const tokens = {};
-  for (const entry of await readdir(dir)) {
-    if (!entry.endsWith(".tokens.json")) continue;
-    const file = path.join(dir, entry);
-    const flat = flatten(JSON.parse(await readFile(file, "utf8")));
-    for (const [dotPath, value] of Object.entries(flat)) {
-      // Density/theme variants re-declare the same paths — same tier, fine.
-      tokens[dotPath] = { value, file };
-    }
-  }
-  return tokens;
-}
-
-const tiers = {
-  primitives: await loadTier("primitives"),
-  semantic: await loadTier("semantic"),
-  component: await loadTier("component"),
-};
-
-const allPaths = new Set(
-  Object.values(tiers).flatMap((tier) => Object.keys(tier)),
-);
-
 /** Extracts "{path.to.token}" references from a raw DTCG value. */
 const refsIn = (value) =>
   typeof value === "string"
     ? [...value.matchAll(/\{([^}]+)\}/g)].map((m) => m[1])
     : [];
-
-const REF_RULES = [
-  [
-    "primitives",
-    () => false,
-    "T1",
-    "primitives must not reference other tokens",
-  ],
-  [
-    "semantic",
-    (ref) => ref in tiers.primitives,
-    "T2",
-    "semantic tokens may only reference primitives",
-  ],
-  [
-    "component",
-    (ref) => ref in tiers.semantic,
-    "T3",
-    "component tokens may only reference semantic tokens",
-  ],
-];
-
-for (const [tierName, allowed, rule, message] of REF_RULES) {
-  for (const [dotPath, { value, file }] of Object.entries(tiers[tierName])) {
-    for (const ref of refsIn(value)) {
-      if (!allPaths.has(ref)) {
-        fail(file, "T4", `${dotPath} references unknown token {${ref}}`);
-      } else if (!allowed(ref)) {
-        fail(file, rule, `${dotPath} -> {${ref}}: ${message}`);
-      }
-    }
-  }
-}
-
-/* ------------------------------------------------------------------ */
-/* Authored CSS                                                         */
-/* ------------------------------------------------------------------ */
-
-const toCssVar = (dotPath) => `--${dotPath.replaceAll(".", "-")}`;
-const primitiveVars = new Set(Object.keys(tiers.primitives).map(toCssVar));
-
-const generated = await readFile(config.generatedCss, "utf8");
-const definedVars = new Set(generated.match(/--[a-z0-9-]+(?=\s*:)/g) ?? []);
-
-/** Recursively collects files below a path (or the file itself). */
-async function collect(target) {
-  if ((await stat(target)).isFile()) return [target];
-  const entries = await readdir(target, { withFileTypes: true });
-  const files = await Promise.all(
-    entries.map((e) => collect(path.join(target, e.name))),
-  );
-  return files.flat();
-}
 
 /**
  * Authored CSS of one file: <style> blocks of .astro, whole .css files,
@@ -152,168 +74,304 @@ function cssOf(file, text) {
   return "";
 }
 
-const componentFiles = (await collect(config.componentsDir)).sort();
-const appFiles = (await Promise.all(config.appPaths.map(collect)))
-  .flat()
-  .sort();
+/**
+ * Runs all audit rules against the project described by `config`
+ * (see ds.config.mjs for the shape).
+ * @returns {Promise<{violations: {file: string, rule: string, message: string}[], stats: {components: number, tokens: number}}>}
+ */
+export async function runAudit(config) {
+  const violations = [];
+  const fail = (file, rule, message) =>
+    violations.push({ file, rule, message });
 
-function auditCss(file, css, { isComponentLayer }) {
-  // C1 — color literals.
-  for (const m of css.matchAll(
-    /#[0-9a-fA-F]{3,8}\b|\b(?:rgba?|hsla?|oklch|oklab)\(/g,
-  )) {
-    fail(file, "C1", `color literal "${m[0]}" — colors must come from tokens`);
-  }
+  /* ---------------------------------------------------------------- */
+  /* Token source: tiers, references                                    */
+  /* ---------------------------------------------------------------- */
 
-  // C2 — px lengths beyond hairlines.
-  for (const m of css.matchAll(/(\d*\.?\d+)px/g)) {
-    const n = Number(m[1]);
-    if (n > 2)
-      fail(
-        file,
-        "C2",
-        `"${m[0]}" — use spacing tokens, px only for 1-2px hairlines`,
-      );
-  }
-
-  // C3/C4 — custom property usage.
-  const localDefs = new Set(css.match(/--[a-z0-9-]+(?=\s*:)/g) ?? []);
-  for (const m of css.matchAll(/var\(\s*(--[a-zA-Z0-9-]+)/g)) {
-    const name = m[1];
-    if (!definedVars.has(name) && !localDefs.has(name)) {
-      fail(file, "C3", `var(${name}) is not defined in ${config.generatedCss}`);
-    } else if (isComponentLayer && primitiveVars.has(name)) {
-      fail(
-        file,
-        "C4",
-        `var(${name}) is a primitive — components consume component/semantic tokens only`,
-      );
+  async function loadTier(tier) {
+    const dir = path.join(config.tokensDir, tier);
+    const tokens = {};
+    for (const entry of await readdir(dir)) {
+      if (!entry.endsWith(".tokens.json")) continue;
+      const file = path.join(dir, entry);
+      const flat = flatten(JSON.parse(await readFile(file, "utf8")));
+      for (const [dotPath, value] of Object.entries(flat)) {
+        // Density/theme variants re-declare the same paths — same tier, fine.
+        tokens[dotPath] = { value, file };
+      }
     }
+    return tokens;
   }
-}
 
-// C5 — BEM block check for component styles.
-function auditBem(file, css) {
-  const base = path.basename(file).replace(/\.(astro|css|tsx)$/, "");
-  const block = base.replace(/([a-z0-9])([A-Z])/g, "$1-$2").toLowerCase();
-  const bem = new RegExp(
-    `^${block}(__[a-z0-9]+(-[a-z0-9]+)*)?(--[a-z0-9]+(-[a-z0-9]+)*)?$`,
+  const tiers = {
+    primitives: await loadTier("primitives"),
+    semantic: await loadTier("semantic"),
+    component: await loadTier("component"),
+  };
+
+  const allPaths = new Set(
+    Object.values(tiers).flatMap((tier) => Object.keys(tier)),
   );
-  const selectors = css.replace(/\{[^{}]*\}/g, "{}"); // strip declarations
-  for (const m of selectors.matchAll(/\.([a-zA-Z][\w-]*)/g)) {
-    if (!bem.test(m[1])) {
-      fail(
-        file,
-        "C5",
-        `class "${m[1]}" does not follow BEM for block "${block}"`,
-      );
+
+  const REF_RULES = [
+    [
+      "primitives",
+      () => false,
+      "T1",
+      "primitives must not reference other tokens",
+    ],
+    [
+      "semantic",
+      (ref) => ref in tiers.primitives,
+      "T2",
+      "semantic tokens may only reference primitives",
+    ],
+    [
+      "component",
+      (ref) => ref in tiers.semantic,
+      "T3",
+      "component tokens may only reference semantic tokens",
+    ],
+  ];
+
+  for (const [tierName, allowed, rule, message] of REF_RULES) {
+    for (const [dotPath, { value, file }] of Object.entries(tiers[tierName])) {
+      for (const ref of refsIn(value)) {
+        if (!allPaths.has(ref)) {
+          fail(file, "T4", `${dotPath} references unknown token {${ref}}`);
+        } else if (!allowed(ref)) {
+          fail(file, rule, `${dotPath} -> {${ref}}: ${message}`);
+        }
+      }
     }
   }
-}
 
-for (const file of componentFiles) {
-  if (!/\.(astro|css|ts)$/.test(file) || file.endsWith(".d.ts")) continue;
-  const css = cssOf(file, await readFile(file, "utf8"));
-  if (!css) continue;
-  auditCss(file, css, { isComponentLayer: true });
-  // BEM applies to light-DOM styles; shadow DOM (Lit, .ts) is exempt.
-  if (!file.endsWith(".ts")) auditBem(file, css);
-}
+  /* ---------------------------------------------------------------- */
+  /* Authored CSS                                                       */
+  /* ---------------------------------------------------------------- */
 
-for (const file of appFiles) {
-  if (!/\.(astro|css)$/.test(file)) continue;
-  const css = cssOf(file, await readFile(file, "utf8"));
-  if (!css) continue;
-  auditCss(file, css, { isComponentLayer: false });
-}
+  const toCssVar = (dotPath) => `--${dotPath.replaceAll(".", "-")}`;
+  const primitiveVars = new Set(Object.keys(tiers.primitives).map(toCssVar));
 
-/* ------------------------------------------------------------------ */
-/* Component metadata                                                   */
-/* ------------------------------------------------------------------ */
+  const generated = await readFile(config.generatedCss, "utf8");
+  const definedVars = new Set(generated.match(/--[a-z0-9-]+(?=\s*:)/g) ?? []);
 
-const componentNames = new Set(
-  componentFiles
-    .filter((f) => /\.(astro|tsx|ts)$/.test(f) && !f.endsWith(".d.ts"))
-    .map((f) => path.basename(f).replace(/\.(astro|tsx|ts)$/, "")),
-);
-const metadataFiles = componentFiles.filter((f) =>
-  f.endsWith(".metadata.json"),
-);
-const metadataNames = new Set(
-  metadataFiles.map((f) => path.basename(f).replace(".metadata.json", "")),
-);
-
-for (const name of componentNames) {
-  if (!metadataNames.has(name)) {
-    fail(
-      path.join(config.componentsDir, `${name}.metadata.json`),
-      "M1",
-      `missing metadata for component ${name}`,
+  /** Recursively collects files below a path (or the file itself). */
+  async function collect(target) {
+    if ((await stat(target)).isFile()) return [target];
+    const entries = await readdir(target, { withFileTypes: true });
+    const files = await Promise.all(
+      entries.map((e) => collect(path.join(target, e.name))),
     );
+    return files.flat();
   }
-}
-for (const name of metadataNames) {
-  if (!componentNames.has(name)) {
-    fail(
-      path.join(config.componentsDir, `${name}.metadata.json`),
-      "M1",
-      `metadata without a component — delete or restore ${name}`,
-    );
-  }
-}
 
-const componentTierPrefixes = new Set(
-  Object.keys(tiers.component).map((p) => p.split(".")[0]),
-);
+  const componentFiles = (await collect(config.componentsDir)).sort();
+  const appFiles = (await Promise.all(config.appPaths.map(collect)))
+    .flat()
+    .sort();
 
-for (const file of metadataFiles) {
-  let meta;
-  try {
-    meta = JSON.parse(await readFile(file, "utf8"));
-  } catch (error) {
-    fail(file, "M2", `invalid JSON: ${error.message}`);
-    continue;
-  }
-  const name = path.basename(file).replace(".metadata.json", "");
-  if (meta.name !== name) fail(file, "M2", `"name" must be "${name}"`);
-  if (!meta.description) fail(file, "M2", `"description" is required`);
-  if (!meta.usage?.useCases?.length)
-    fail(file, "M2", `"usage.useCases" must list at least one use case`);
-  if (!Array.isArray(meta.usage?.antiPatterns))
-    fail(file, "M2", `"usage.antiPatterns" must be an array (may be empty)`);
-  if (!Array.isArray(meta.tokenPrefixes)) {
-    fail(
-      file,
-      "M2",
-      `"tokenPrefixes" must be an array ([] = semantic tokens only)`,
-    );
-  } else {
-    for (const prefix of meta.tokenPrefixes) {
-      if (!componentTierPrefixes.has(prefix)) {
+  function auditCss(file, css, { isComponentLayer }) {
+    // C1 — color literals.
+    for (const m of css.matchAll(
+      /#[0-9a-fA-F]{3,8}\b|\b(?:rgba?|hsla?|oklch|oklab)\(/g,
+    )) {
+      fail(
+        file,
+        "C1",
+        `color literal "${m[0]}" — colors must come from tokens`,
+      );
+    }
+
+    // C2 — px lengths beyond hairlines.
+    for (const m of css.matchAll(/(\d*\.?\d+)px/g)) {
+      const n = Number(m[1]);
+      if (n > 2)
         fail(
           file,
-          "M2",
-          `token prefix "${prefix}" does not exist in ${config.tokensDir}/component`,
+          "C2",
+          `"${m[0]}" — use spacing tokens, px only for 1-2px hairlines`,
+        );
+    }
+
+    // C3/C4 — custom property usage.
+    const localDefs = new Set(css.match(/--[a-z0-9-]+(?=\s*:)/g) ?? []);
+    for (const m of css.matchAll(/var\(\s*(--[a-zA-Z0-9-]+)/g)) {
+      const name = m[1];
+      if (!definedVars.has(name) && !localDefs.has(name)) {
+        fail(
+          file,
+          "C3",
+          `var(${name}) is not defined in ${config.generatedCss}`,
+        );
+      } else if (isComponentLayer && primitiveVars.has(name)) {
+        fail(
+          file,
+          "C4",
+          `var(${name}) is a primitive — components consume component/semantic tokens only`,
         );
       }
     }
   }
-}
 
-/* ------------------------------------------------------------------ */
-/* Report                                                               */
-/* ------------------------------------------------------------------ */
-
-if (violations.length) {
-  console.error(`Design system audit: ${violations.length} violation(s)\n`);
-  let current;
-  for (const v of violations.sort((a, b) => a.file.localeCompare(b.file))) {
-    if (v.file !== current) console.error(`${(current = v.file)}`);
-    console.error(`  ✘ [${v.rule}] ${v.message}`);
+  // C5 — BEM block check for component styles.
+  function auditBem(file, css) {
+    const base = path.basename(file).replace(/\.(astro|css|tsx)$/, "");
+    const block = base.replace(/([a-z0-9])([A-Z])/g, "$1-$2").toLowerCase();
+    const bem = new RegExp(
+      `^${block}(__[a-z0-9]+(-[a-z0-9]+)*)?(--[a-z0-9]+(-[a-z0-9]+)*)?$`,
+    );
+    const selectors = css.replace(/\{[^{}]*\}/g, "{}"); // strip declarations
+    for (const m of selectors.matchAll(/\.([a-zA-Z][\w-]*)/g)) {
+      if (!bem.test(m[1])) {
+        fail(
+          file,
+          "C5",
+          `class "${m[1]}" does not follow BEM for block "${block}"`,
+        );
+      }
+    }
   }
-  process.exit(1);
+
+  for (const file of componentFiles) {
+    if (!/\.(astro|css|ts)$/.test(file) || file.endsWith(".d.ts")) continue;
+    const css = cssOf(file, await readFile(file, "utf8"));
+    if (!css) continue;
+    auditCss(file, css, { isComponentLayer: true });
+    // BEM applies to light-DOM styles; shadow DOM (Lit, .ts) is exempt.
+    if (!file.endsWith(".ts")) auditBem(file, css);
+  }
+
+  for (const file of appFiles) {
+    if (!/\.(astro|css)$/.test(file)) continue;
+    const css = cssOf(file, await readFile(file, "utf8"));
+    if (!css) continue;
+    auditCss(file, css, { isComponentLayer: false });
+  }
+
+  /* ---------------------------------------------------------------- */
+  /* Component metadata                                                 */
+  /* ---------------------------------------------------------------- */
+
+  const componentNames = new Set(
+    componentFiles
+      .filter((f) => /\.(astro|tsx|ts)$/.test(f) && !f.endsWith(".d.ts"))
+      .map((f) => path.basename(f).replace(/\.(astro|tsx|ts)$/, "")),
+  );
+  const metadataFiles = componentFiles.filter((f) =>
+    f.endsWith(".metadata.json"),
+  );
+  const metadataNames = new Set(
+    metadataFiles.map((f) => path.basename(f).replace(".metadata.json", "")),
+  );
+
+  for (const name of componentNames) {
+    if (!metadataNames.has(name)) {
+      fail(
+        path.join(config.componentsDir, `${name}.metadata.json`),
+        "M1",
+        `missing metadata for component ${name}`,
+      );
+    }
+  }
+  for (const name of metadataNames) {
+    if (!componentNames.has(name)) {
+      fail(
+        path.join(config.componentsDir, `${name}.metadata.json`),
+        "M1",
+        `metadata without a component — delete or restore ${name}`,
+      );
+    }
+  }
+
+  const componentTierPrefixes = new Set(
+    Object.keys(tiers.component).map((p) => p.split(".")[0]),
+  );
+
+  for (const file of metadataFiles) {
+    let meta;
+    try {
+      meta = JSON.parse(await readFile(file, "utf8"));
+    } catch (error) {
+      fail(file, "M2", `invalid JSON: ${error.message}`);
+      continue;
+    }
+    const name = path.basename(file).replace(".metadata.json", "");
+    if (meta.name !== name) fail(file, "M2", `"name" must be "${name}"`);
+    if (!meta.description) fail(file, "M2", `"description" is required`);
+    if (!meta.usage?.useCases?.length)
+      fail(file, "M2", `"usage.useCases" must list at least one use case`);
+    if (!Array.isArray(meta.usage?.antiPatterns))
+      fail(file, "M2", `"usage.antiPatterns" must be an array (may be empty)`);
+    if (!Array.isArray(meta.tokenPrefixes)) {
+      fail(
+        file,
+        "M2",
+        `"tokenPrefixes" must be an array ([] = semantic tokens only)`,
+      );
+    } else {
+      for (const prefix of meta.tokenPrefixes) {
+        if (!componentTierPrefixes.has(prefix)) {
+          fail(
+            file,
+            "M2",
+            `token prefix "${prefix}" does not exist in ${config.tokensDir}/component`,
+          );
+        }
+      }
+    }
+  }
+
+  /* ---------------------------------------------------------------- */
+  /* Contrast coverage                                                  */
+  /* ---------------------------------------------------------------- */
+
+  if (config.colorMathLib) {
+    const { PAIRS } = await import(
+      pathToFileURL(path.resolve(config.colorMathLib)).href
+    );
+    const proven = new Set(PAIRS.flatMap(([fg, bg]) => [fg, bg]));
+    for (const [dotPath, { file }] of Object.entries(tiers.semantic)) {
+      const m = dotPath.match(/^color\.((?:text|interactive)\..+)$/);
+      if (m && !proven.has(m[1])) {
+        fail(
+          file,
+          "P1",
+          `${dotPath} is not covered by any contrast-proof pair — add it to PAIRS in ${config.colorMathLib}`,
+        );
+      }
+    }
+  }
+
+  return {
+    violations,
+    stats: { components: componentNames.size, tokens: allPaths.size },
+  };
 }
-console.log(
-  `✔ audit passed — ${componentNames.size} components, ` +
-    `${allPaths.size} tokens, invariants hold.`,
-);
+
+/* -------------------------------------------------------------------- */
+/* CLI                                                                    */
+/* -------------------------------------------------------------------- */
+
+const isMain =
+  process.argv[1] &&
+  import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href;
+
+if (isMain) {
+  const config = (await import("./ds.config.mjs")).default;
+  const { violations, stats } = await runAudit(config);
+
+  if (violations.length) {
+    console.error(`Design system audit: ${violations.length} violation(s)\n`);
+    let current;
+    for (const v of violations.sort((a, b) => a.file.localeCompare(b.file))) {
+      if (v.file !== current) console.error(`${(current = v.file)}`);
+      console.error(`  ✘ [${v.rule}] ${v.message}`);
+    }
+    process.exit(1);
+  }
+  console.log(
+    `✔ audit passed — ${stats.components} components, ` +
+      `${stats.tokens} tokens, invariants hold.`,
+  );
+}

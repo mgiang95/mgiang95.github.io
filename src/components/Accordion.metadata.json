@@ -1,0 +1,32 @@
+{
+  "name": "Accordion",
+  "description": "Disclosure on native <details>/<summary> — keyboard, state and semantics come from the browser, zero JS shipped. Plus/minus text marker, hairline separators.",
+  "renderer": "astro",
+  "jsRequired": false,
+  "variants": [],
+  "usage": {
+    "useCases": [
+      "Long reference sections that would otherwise dominate the page (token tables on /system)",
+      "Progressive disclosure of secondary detail in authored pages"
+    ],
+    "antiPatterns": [
+      {
+        "scenario": "Hiding primary content behind an accordion",
+        "reason": "Core content must be visible without interaction; disclosure is for depth, not for the main thread.",
+        "alternative": "Keep primary content in the flow; collapse only reference material."
+      },
+      {
+        "scenario": "Rebuilding the disclosure with divs, ARIA and JS",
+        "reason": "Reimplements what <details> provides natively and adds a JS dependency the page must not have.",
+        "alternative": "This component — or plain <details> where no tokens are needed."
+      }
+    ]
+  },
+  "tokenPrefixes": ["accordion"],
+  "a11y": [
+    "Native <details>/<summary>: toggle is keyboard-operable (Enter/Space) and exposed as a button with expanded state",
+    "Optional heading prop keeps collapsed sections in the document outline",
+    "State marker is a CSS pseudo-element — decorative, never read as content",
+    "Expand/collapse animates via motion.expand tokens (::details-content); unsupporting browsers toggle instantly, prefers-reduced-motion disables it"
+  ]
+}

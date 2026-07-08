@@ -1,0 +1,17 @@
+{
+  "gallery": {
+    "$description": "Horizontal scroll-snap strip of captioned figures. Pure CSS scrolling — the deliberate accessible alternative to an auto-rotating carousel.",
+    "gap": {
+      "$value": "{space.inline.md}",
+      "$type": "dimension",
+      "$description": "Gap between slides."
+    },
+    "track": {
+      "padding-block-end": {
+        "$value": "{space.stack.sm}",
+        "$type": "dimension",
+        "$description": "Breathing room between slides and the scrollbar."
+      }
+    }
+  }
+}

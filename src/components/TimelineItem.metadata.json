@@ -1,9 +1,12 @@
 {
   "name": "TimelineItem",
-  "description": "One entry of the changelog-style CV timeline: square accent marker on a vertical line, optional semver label.",
+  "description": "One entry of the CV timeline. The square marker on the vertical line encodes the entry type: filled = work, outlined = education — system-coded, not decorative.",
   "renderer": "astro",
   "jsRequired": false,
-  "variants": [],
+  "variants": [
+    { "name": "work", "use": "Employment stations — filled accent square." },
+    { "name": "education", "use": "Degrees and studies — outlined accent square." }
+  ],
   "usage": {
     "useCases": [
       "CV/changelog timeline on /about",

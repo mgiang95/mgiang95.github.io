@@ -16,16 +16,16 @@
       }
     },
     "size": {
-      "$description": "Type scale with large contrasts between steps (Swiss typography).",
+      "$description": "Type scale with large contrasts between steps (Swiss typography). Display steps 700-900 are fluid: clamp() interpolates between ~375px and ~1280px viewports; the rem term keeps browser zoom working (WCAG 1.4.4). Body and label sizes stay static for readability.",
       "100": { "$value": "0.75rem", "$type": "dimension" },
       "200": { "$value": "0.875rem", "$type": "dimension" },
       "300": { "$value": "1rem", "$type": "dimension" },
       "400": { "$value": "1.125rem", "$type": "dimension" },
       "500": { "$value": "1.25rem", "$type": "dimension" },
       "600": { "$value": "1.5rem", "$type": "dimension" },
-      "700": { "$value": "2rem", "$type": "dimension" },
-      "800": { "$value": "3rem", "$type": "dimension" },
-      "900": { "$value": "4.5rem", "$type": "dimension" }
+      "700": { "$value": "clamp(1.5rem, 1.29rem + 0.88vw, 2rem)", "$type": "dimension" },
+      "800": { "$value": "clamp(2rem, 1.59rem + 1.77vw, 3rem)", "$type": "dimension" },
+      "900": { "$value": "clamp(2.75rem, 2.03rem + 3.09vw, 4.5rem)", "$type": "dimension" }
     },
     "weight": {
       "regular": { "$value": 400, "$type": "fontWeight" },

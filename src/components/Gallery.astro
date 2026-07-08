@@ -1,0 +1,70 @@
+---
+/**
+ * Gallery — horizontal scroll-snap strip of captioned figures. Pure CSS
+ * (overflow + scroll-snap): keyboard and touch scrolling come from the
+ * browser, no JS is shipped. Deliberately not an auto-rotating carousel —
+ * see the anti-patterns in Gallery.metadata.json.
+ */
+import type { ImageMetadata } from "astro";
+import { Image } from "astro:assets";
+import Figure from "./Figure.astro";
+
+interface GalleryImage {
+  image: ImageMetadata;
+  alt: string;
+  caption?: string;
+}
+
+interface Props {
+  /** Accessible name of the scroll region. */
+  label: string;
+  images: GalleryImage[];
+}
+
+const { label, images } = Astro.props;
+---
+
+<div class="gallery" role="region" aria-label={label}>
+  <ul class="gallery__track" tabindex="0">
+    {
+      images.map((item) => (
+        <li class="gallery__item">
+          <Figure caption={item.caption}>
+            <Image
+              src={item.image}
+              alt={item.alt}
+              widths={[480, 800, 1200]}
+              sizes="(min-width: 60rem) 48rem, 85vw"
+            />
+          </Figure>
+        </li>
+      ))
+    }
+  </ul>
+</div>
+
+<style>
+  .gallery {
+    inline-size: 100%;
+  }
+
+  .gallery__track {
+    display: grid;
+    grid-auto-flow: column;
+    /* 85% leaves the next slide peeking in — the scroll affordance. */
+    grid-auto-columns: 85%;
+    gap: var(--gallery-gap);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    /* Smooth keyboard scrolling; the global reduced-motion rule resets it. */
+    scroll-behavior: smooth;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    padding-block-end: var(--gallery-track-padding-block-end);
+  }
+
+  .gallery__item {
+    scroll-snap-align: start;
+  }
+</style>

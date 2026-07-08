@@ -1,0 +1,10 @@
+{
+  "color": {
+    "text": {
+      "primary": { "$value": "{color.neutral.950}", "$type": "color" }
+    },
+    "surface": {
+      "default": { "$value": "{color.neutral.50}", "$type": "color" }
+    }
+  }
+}

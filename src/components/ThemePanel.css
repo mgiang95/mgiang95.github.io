@@ -17,6 +17,8 @@
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--color-text-primary);
+  padding-block-end: var(--space-stack-xs);
+  border-block-end: 1px solid var(--color-border-default);
 }
 
 .theme-panel__label {

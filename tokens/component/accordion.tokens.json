@@ -1,0 +1,43 @@
+{
+  "accordion": {
+    "$description": "Native details/summary disclosure. Hairline-separated rows, plus/minus marker in the interactive color.",
+    "border": {
+      "$value": "{color.border.default}",
+      "$type": "color",
+      "$description": "Top/bottom hairline separating stacked accordions."
+    },
+    "summary": {
+      "text": {
+        "$value": "{color.text.primary}",
+        "$type": "color"
+      },
+      "text-hover": {
+        "$value": "{color.interactive.default}",
+        "$type": "color",
+        "$description": "Summary row on hover — signals the whole row is the control."
+      },
+      "padding-block": {
+        "$value": "{space.inset.sm}",
+        "$type": "dimension"
+      },
+      "gap": {
+        "$value": "{space.inline.md}",
+        "$type": "dimension",
+        "$description": "Gap between summary text and the marker."
+      }
+    },
+    "marker": {
+      "color": {
+        "$value": "{color.interactive.default}",
+        "$type": "color",
+        "$description": "The +/− state marker."
+      }
+    },
+    "content": {
+      "padding-block-end": {
+        "$value": "{space.stack.md}",
+        "$type": "dimension"
+      }
+    }
+  }
+}

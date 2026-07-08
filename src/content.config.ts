@@ -24,6 +24,16 @@ const projects = defineCollection({
       externalUrl: z.string().url().optional(),
       keywords: z.array(z.string()),
       heroImage: image().optional(),
+      /** Optional screenshot strip, rendered as a scroll-snap Gallery. */
+      gallery: z
+        .array(
+          z.object({
+            image: image(),
+            alt: z.string(),
+            caption: z.string().optional(),
+          }),
+        )
+        .optional(),
       featured: z.boolean().default(false),
       order: z.number(),
       parent: reference("projects").optional(),
@@ -66,6 +76,17 @@ const certifications = defineCollection({
   }),
 });
 
+/** Blog — collected notes from the journey; loose cadence, no promises. */
+const blog = defineCollection({
+  loader: glob({ pattern: "**/*.md", base: "./src/content/blog" }),
+  schema: z.object({
+    title: z.string(),
+    description: z.string(),
+    date: z.coerce.date(),
+    draft: z.boolean().default(false),
+  }),
+});
+
 /** Prose snippets about the person (intro/bio). */
 const about = defineCollection({
   loader: glob({ pattern: "**/*.md", base: "./src/content/about" }),
@@ -80,4 +101,4 @@ const about = defineCollection({
     }),
 });
 
-export const collections = { projects, timeline, certifications, about };
+export const collections = { projects, timeline, certifications, about, blog };

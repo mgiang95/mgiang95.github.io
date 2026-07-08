@@ -1,14 +1,14 @@
 {
   "radius": {
     "control": {
-      "$value": "{radius.sm}",
+      "$value": "{radius.none}",
       "$type": "dimension",
-      "$description": "Corner radius for interactive controls (buttons, inputs)."
+      "$description": "Corner radius for interactive controls (buttons, inputs). Square: poster geometry — rectangles, not pills."
     },
     "surface": {
-      "$value": "{radius.md}",
+      "$value": "{radius.none}",
       "$type": "dimension",
-      "$description": "Corner radius for container surfaces (cards, panels)."
+      "$description": "Corner radius for container surfaces (cards, panels). Square: poster geometry, flat color fields with sharp edges."
     }
   }
 }

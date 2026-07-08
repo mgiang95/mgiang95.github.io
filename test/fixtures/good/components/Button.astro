@@ -1,0 +1,12 @@
+---
+interface Props { label: string }
+const { label } = Astro.props;
+---
+<button class="button button--primary">{label}</button>
+<style>
+  .button {
+    color: var(--button-text);
+    background: var(--button-background);
+    border: 1px solid var(--color-text-primary);
+  }
+</style>

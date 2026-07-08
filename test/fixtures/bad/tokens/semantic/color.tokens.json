@@ -1,0 +1,15 @@
+{
+  "color": {
+    "text": {
+      "primary": { "$value": "{color.neutral.950}", "$type": "color" },
+      "uncovered": {
+        "$value": "{color.neutral.950}",
+        "$type": "color",
+        "_note": "P1 violation: a text token absent from PAIRS"
+      }
+    },
+    "surface": {
+      "default": { "$value": "{color.neutral.50}", "$type": "color" }
+    }
+  }
+}

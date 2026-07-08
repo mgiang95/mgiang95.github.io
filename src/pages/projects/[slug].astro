@@ -3,6 +3,7 @@ import { getCollection, getEntry, render } from "astro:content";
 import { Image } from "astro:assets";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import Badge from "../../components/Badge.astro";
+import Gallery from "../../components/Gallery.astro";
 
 export async function getStaticPaths() {
   // Featured cases and their sub-cases get pages; short "more projects"
@@ -18,7 +19,7 @@ export async function getStaticPaths() {
 }
 
 const { entry } = Astro.props;
-const { title, subtitle, description, period, role, client, externalUrl, keywords, heroImage, achievements, parent } =
+const { title, subtitle, description, period, role, client, externalUrl, keywords, heroImage, gallery, achievements, parent } =
   entry.data;
 const { Content } = await render(entry);
 const parentEntry = parent ? await getEntry(parent) : undefined;
@@ -38,6 +39,11 @@ const parentEntry = parent ? await getEntry(parent) : undefined;
     <header class="case__header">
       <h1 class="case__title">{title}</h1>
       <p class="case__subtitle">{subtitle}</p>
+      <p class="annotations" aria-hidden="true">
+        <code>case study</code>
+        <code>{period}</code>
+        <code>{keywords.length} focus areas</code>
+      </p>
     </header>
 
     {
@@ -90,6 +96,17 @@ const parentEntry = parent ? await getEntry(parent) : undefined;
     <div class="prose case__body">
       <Content />
     </div>
+
+    {
+      gallery && gallery.length > 0 && (
+        <section class="case__gallery" aria-labelledby="gallery-heading">
+          <h2 class="case__gallery-heading" id="gallery-heading">
+            Gallery
+          </h2>
+          <Gallery label={`${title} screenshots`} images={gallery} />
+        </section>
+      )
+    }
 
     {
       achievements && (
@@ -171,6 +188,24 @@ const parentEntry = parent ? await getEntry(parent) : undefined;
 
   .case__body {
     max-width: 65ch;
+  }
+
+  /* Editorial rhythm: text stays at reading width, figures grow to the
+     full content column. */
+  .case__body :global(figure) {
+    inline-size: min(
+      calc(100vw - 2 * var(--space-inset-lg)),
+      calc(72rem - 2 * var(--space-inset-lg))
+    );
+  }
+
+  .case__gallery {
+    margin-block-start: var(--space-stack-lg);
+  }
+
+  .case__gallery-heading {
+    font-size: var(--typography-heading-sm-size);
+    margin-block-end: var(--space-stack-sm);
   }
 
   .case__achievements {

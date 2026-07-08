@@ -1,0 +1,139 @@
+---
+/**
+ * ProjectRow — editorial index row for one case study: full-width,
+ * hairline-separated, image beside large type. Replaces the card grid;
+ * reads like a magazine table of contents. Consumes semantic tokens only;
+ * the hover top edge reuses the poster's flat accent motif.
+ */
+import { Image } from "astro:assets";
+import type { CollectionEntry } from "astro:content";
+import Badge from "./Badge.astro";
+
+interface Props {
+  project: CollectionEntry<"projects">;
+  /** 1-based position in the index, rendered as a mono ordinal ("01"). */
+  index?: number;
+}
+
+const { project, index } = Astro.props;
+const { title, subtitle, period, keywords, heroImage } = project.data;
+const ordinal =
+  typeof index === "number" ? String(index).padStart(2, "0") : undefined;
+---
+
+<article class="project-row">
+  <a class="project-row__link" href={`/projects/${project.id}`}>
+    {
+      heroImage && (
+        <Image
+          class="project-row__image"
+          src={heroImage}
+          alt=""
+          widths={[480, 800, 1200]}
+          sizes="(min-width: 60rem) 28rem, 100vw"
+        />
+      )
+    }
+    <div class="project-row__content">
+      <p class="project-row__meta">
+        {ordinal && (
+          <span class="project-row__index" aria-hidden="true">
+            {ordinal}
+          </span>
+        )}
+        <span class="project-row__period">{period}</span>
+      </p>
+      <h3 class="project-row__title">{title}</h3>
+      <p class="project-row__subtitle">{subtitle}</p>
+      <ul class="project-row__keywords" aria-label="Key areas">
+        {
+          keywords.map((keyword) => (
+            <li>
+              <Badge>{keyword}</Badge>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </a>
+</article>
+
+<style>
+  .project-row {
+    border-block-start: 2px solid var(--color-border-default);
+    transition: border-color var(--motion-state-duration)
+      var(--motion-state-easing);
+  }
+
+  .project-row:last-of-type {
+    border-block-end: 1px solid var(--color-border-default);
+  }
+
+  .project-row:hover {
+    border-block-start-color: var(--color-surface-accent);
+  }
+
+  .project-row__link {
+    display: grid;
+    gap: var(--space-stack-md);
+    padding-block: var(--space-stack-lg);
+    color: inherit;
+    text-decoration: none;
+  }
+
+  @media (min-width: 60rem) {
+    .project-row__link {
+      grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+      column-gap: var(--space-inline-xl);
+      align-items: start;
+    }
+  }
+
+  .project-row__image {
+    inline-size: 100%;
+    block-size: auto;
+    border: 1px solid var(--color-border-default);
+  }
+
+  .project-row__content {
+    display: grid;
+    gap: var(--space-stack-sm);
+    justify-items: start;
+  }
+
+  .project-row__meta {
+    display: flex;
+    gap: var(--space-inline-lg);
+    font-family: var(--typography-label-family);
+    font-size: var(--typography-label-size);
+    color: var(--color-text-muted);
+  }
+
+  .project-row__index {
+    font-weight: var(--typography-label-weight);
+  }
+
+  .project-row__title {
+    font-size: var(--typography-heading-lg-size);
+    line-height: var(--typography-heading-lg-line-height);
+    transition: color var(--motion-state-duration) var(--motion-state-easing);
+  }
+
+  .project-row__link:hover .project-row__title {
+    color: var(--color-interactive-hover);
+  }
+
+  .project-row__subtitle {
+    max-width: 45ch;
+    color: var(--color-text-secondary);
+  }
+
+  .project-row__keywords {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-inline-sm);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+</style>

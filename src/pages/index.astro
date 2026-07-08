@@ -2,98 +2,393 @@
 import { getCollection } from "astro:content";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import ThemePanel from "../components/ThemePanel.tsx";
-import ProjectCard from "../components/ProjectCard.astro";
-import Button from "../components/Button.astro";
+import ProjectRow from "../components/ProjectRow.astro";
 
 const featured = (
   await getCollection("projects", ({ data }) => data.featured)
 ).sort((a, b) => a.data.order - b.data.order);
+
+const more = (
+  await getCollection("projects", ({ data }) => !data.featured && !data.parent)
+).sort((a, b) => a.data.order - b.data.order);
+
+/** Accent ramp steps, light to dark — the poster's right-hand color band. */
+const RAMP_STEPS = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950];
 ---
 
 <BaseLayout
   title="Design System Engineer"
   description="Portfolio of Michael Giang, Design System Engineer and UX Designer in Zurich. This site runs on a live design token pipeline — adjust hue, color scheme and density yourself."
 >
-  <section class="hero">
-    <div class="hero__copy">
-      <h1 class="hero__headline">This site is a running design system.</h1>
-      <p class="hero__lead">
-        I'm Michael Giang, a Design System Engineer and UX Designer based in
-        Zurich. Everything here resolves from design tokens — try it: change
-        hue, scheme and density. Contrast stays AA by construction.
+  <section class="poster" aria-labelledby="poster-headline">
+    <h1 class="poster__headline" id="poster-headline">
+      This site is a running design system.
+    </h1>
+
+    <div class="poster__annotations">
+      <p class="poster__facts" aria-hidden="true">
+        <code>--hue: <span data-hue-readout>220</span></code>
+        <code>color.accent.&lbrace;50…950&rbrace;</code>
+        <code>contrast ≥ 4.5:1 for every hue</code>
       </p>
-      <p class="hero__cta">
-        <Button href="/system" variant="secondary">
-          Read how this site is built
-        </Button>
-      </p>
+      <a class="poster__how" href="/system">how this is built →</a>
     </div>
-    <div class="hero__panel">
-      <ThemePanel client:idle />
+
+    <div class="poster__canvas" data-hue-scrub>
+      <div class="poster__field">
+        <p class="poster__claim">Drag the color. Nothing&nbsp;breaks.</p>
+        <p class="poster__hint" aria-hidden="true">⟷ drag to shift the hue</p>
+        <code class="poster__field-label" aria-hidden="true">
+          --color-surface-accent
+        </code>
+      </div>
+      <div class="poster__ramp" aria-hidden="true">
+        {
+          RAMP_STEPS.map((step) => (
+            <span
+              class="poster__step"
+              style={`background: var(--color-accent-${step})`}
+            />
+          ))
+        }
+      </div>
+    </div>
+
+    <div class="poster__meta">
+      <div class="poster__copy">
+        <p class="poster__lead">
+          I'm Michael Giang, a Design System Engineer and UX Designer based in
+          Zurich. Everything here resolves from design tokens — try it: change
+          hue, scheme and density. Contrast stays AA by construction.
+        </p>
+      </div>
+      <div class="poster__panel">
+        <ThemePanel client:idle />
+      </div>
     </div>
   </section>
 
-  <section class="teasers" aria-labelledby="teasers-heading">
-    <h2 id="teasers-heading">Selected work</h2>
-    <div class="teasers__grid">
-      {featured.map((project) => <ProjectCard project={project} />)}
+  <section class="work" aria-labelledby="work-heading">
+    <h2 id="work-heading">Selected work</h2>
+    <div class="work__rows">
+      {
+        featured.map((project, i) => (
+          <ProjectRow project={project} index={i + 1} />
+        ))
+      }
     </div>
-    <p class="teasers__all">
-      <a href="/projects">All projects →</a>
-    </p>
+
+    <a class="work__system" href="/system">
+      <p class="work__system-meta" aria-hidden="true">meta</p>
+      <h3 class="work__system-title">How this site is built</h3>
+      <p class="work__system-subtitle">
+        The site itself is the case study: a live token pipeline,
+        machine-enforced invariants, one system in three renderers.
+      </p>
+    </a>
+  </section>
+
+  <section class="more" aria-labelledby="more-heading">
+    <h2 id="more-heading">More projects</h2>
+    <div class="more__scroll">
+      <table class="more__table">
+        <thead>
+          <tr>
+            <th scope="col">Period</th>
+            <th scope="col">Project</th>
+            <th scope="col">Focus</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            more.map((entry) => (
+              <tr>
+                <td class="more__period">{entry.data.period}</td>
+                <td class="more__title">{entry.data.title}</td>
+                <td class="more__focus">{entry.data.keywords.join(", ")}</td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
   </section>
 </BaseLayout>
 
+<script>
+  // Hue scrubbing on the poster canvas: horizontal dragging maps the full
+  // canvas width to 360 degrees. Pointer-only enhancement — the accessible
+  // hue control remains the ThemePanel slider below; both stay in sync via
+  // the "hue-change" event (dispatched on user input only, so no loop).
+  const canvas = document.querySelector<HTMLElement>("[data-hue-scrub]");
+  const readout = document.querySelector("[data-hue-readout]");
+
+  if (canvas) {
+    const html = document.documentElement;
+    const currentHue = () =>
+      Number.parseFloat(getComputedStyle(html).getPropertyValue("--hue")) ||
+      220;
+
+    if (readout) readout.textContent = String(Math.round(currentHue()));
+
+    let dragging = false;
+    let startX = 0;
+    let startHue = 220;
+    let saveTimer = 0;
+
+    const apply = (hue: number) => {
+      html.style.setProperty("--hue", String(hue));
+      if (readout) readout.textContent = String(hue);
+      window.dispatchEvent(new CustomEvent("hue-change", { detail: hue }));
+      // Persist debounced — same key and cadence as the ThemePanel.
+      window.clearTimeout(saveTimer);
+      saveTimer = window.setTimeout(() => {
+        try {
+          localStorage.setItem("pref-hue", String(hue));
+        } catch {
+          /* storage unavailable */
+        }
+      }, 150);
+    };
+
+    canvas.addEventListener("pointerdown", (event) => {
+      dragging = true;
+      startX = event.clientX;
+      startHue = currentHue();
+      try {
+        canvas.setPointerCapture(event.pointerId);
+      } catch {
+        /* capture unavailable — dragging still works inside the canvas */
+      }
+    });
+
+    canvas.addEventListener("pointermove", (event) => {
+      if (!dragging) return;
+      const delta = ((event.clientX - startX) / canvas.clientWidth) * 360;
+      const hue = Math.round((((startHue + delta) % 360) + 360) % 360);
+      apply(hue);
+    });
+
+    const endDrag = () => {
+      dragging = false;
+    };
+    canvas.addEventListener("pointerup", endDrag);
+    canvas.addEventListener("pointercancel", endDrag);
+
+    // Keep the annotation readout live when the panel slider is the source.
+    window.addEventListener("hue-change", (event) => {
+      const value = (event as CustomEvent<number>).detail;
+      if (readout && Number.isFinite(value)) {
+        readout.textContent = String(Math.round(value));
+      }
+    });
+  }
+</script>
+
 <style>
-  .hero {
+  .poster {
     display: grid;
-    gap: var(--space-stack-lg);
-    padding-block: var(--space-stack-xl);
-    align-items: start;
+    gap: var(--space-stack-md);
+    padding-block: var(--space-stack-lg) var(--space-stack-xl);
+  }
+
+  .poster__headline {
+    font-size: var(--font-size-900);
+    max-width: 14ch;
+  }
+
+  .poster__annotations {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: var(--space-inline-lg);
+  }
+
+  .poster__facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-inline-lg);
+    font-size: var(--typography-label-size);
+    color: var(--color-text-muted);
+  }
+
+  .poster__how {
+    font-family: var(--typography-label-family);
+    font-size: var(--typography-label-size);
+  }
+
+  /* Full-bleed rule-break: the poster escapes the centered content column
+     and runs edge to edge — the one deliberate grid violation (SPEC §7). */
+  .poster__canvas {
+    margin-inline: calc(50% - 50vw);
+    display: grid;
+    min-block-size: clamp(18rem, 55svh, 34rem);
+    cursor: ew-resize;
+    touch-action: pan-y;
+    user-select: none;
+    -webkit-user-select: none;
   }
 
   @media (min-width: 60rem) {
-    .hero {
-      grid-template-columns: 3fr 2fr;
-      column-gap: var(--space-inline-xl);
+    .poster__canvas {
+      grid-template-columns: 1fr clamp(6rem, 14vw, 11rem);
     }
   }
 
-  .hero__copy {
+  .poster__field {
+    position: relative;
+    display: grid;
+    align-content: center;
+    gap: var(--space-stack-md);
+    background: var(--color-surface-accent);
+    color: var(--color-text-on-accent);
+    padding-block: var(--space-inset-xl);
+    /* Re-align the inner text with the 72rem content column. */
+    padding-inline: max(var(--space-inset-lg), calc(50vw - 36rem));
+  }
+
+  .poster__claim {
+    font-family: var(--font-family-display);
+    font-weight: var(--font-weight-bold);
+    font-size: var(--font-size-700);
+    line-height: var(--font-line-height-tight);
+    max-width: 16ch;
+  }
+
+  .poster__hint {
+    font-family: var(--typography-label-family);
+    font-size: var(--typography-label-size);
+  }
+
+  .poster__field-label {
+    position: absolute;
+    inset-block-start: var(--space-inset-md);
+    inset-inline-end: var(--space-inset-md);
+    font-size: var(--typography-label-size);
+  }
+
+  .poster__ramp {
+    display: grid;
+    grid-auto-flow: row;
+    block-size: var(--space-stack-xl);
+  }
+
+  @media (min-width: 60rem) {
+    .poster__ramp {
+      block-size: auto;
+    }
+  }
+
+  @media (max-width: 59.9rem) {
+    .poster__ramp {
+      grid-auto-flow: column;
+    }
+  }
+
+  .poster__step {
+    display: block;
+  }
+
+  .poster__meta {
     display: grid;
     gap: var(--space-stack-lg);
+    margin-block-start: var(--space-stack-sm);
   }
 
-  .hero__headline {
-    max-width: 20ch;
+  @media (min-width: 60rem) {
+    .poster__meta {
+      grid-template-columns: 3fr 2fr;
+      column-gap: var(--space-inline-xl);
+      align-items: start;
+    }
   }
 
-  .hero__lead {
+  .poster__lead {
     max-width: 55ch;
     font-size: var(--typography-lead-size);
     color: var(--color-text-secondary);
   }
 
-  .teasers {
-    padding-block: var(--space-stack-xl);
+  .work {
+    padding-block: var(--space-stack-xl) var(--space-stack-lg);
   }
 
-  .teasers__grid {
-    display: grid;
-    gap: var(--space-stack-lg);
-    margin-block-start: var(--space-stack-lg);
-  }
-
-  @media (min-width: 60rem) {
-    .teasers__grid {
-      grid-template-columns: repeat(3, 1fr);
-      column-gap: var(--space-inline-lg);
-    }
-  }
-
-  .teasers__all {
+  .work__rows {
     margin-block-start: var(--space-stack-md);
+  }
+
+  .work__system {
+    display: grid;
+    gap: var(--space-stack-xs);
+    justify-items: start;
+    padding-block: var(--space-stack-md);
+    border-block-end: 1px solid var(--color-border-default);
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .work__system-meta {
     font-family: var(--typography-label-family);
     font-size: var(--typography-label-size);
+    font-weight: var(--typography-label-weight);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-text-muted);
+  }
+
+  .work__system-title {
+    font-size: var(--typography-heading-sm-size);
+    transition: color var(--motion-state-duration) var(--motion-state-easing);
+  }
+
+  .work__system:hover .work__system-title {
+    color: var(--color-interactive-hover);
+  }
+
+  .work__system-subtitle {
+    max-width: 55ch;
+    color: var(--color-text-secondary);
+  }
+
+  .more {
+    padding-block: var(--space-stack-lg) var(--space-stack-xl);
+  }
+
+  .more__scroll {
+    overflow-x: auto;
+    margin-block-start: var(--space-stack-md);
+  }
+
+  .more__table {
+    border-collapse: collapse;
+    inline-size: 100%;
+  }
+
+  .more__table th {
+    text-align: start;
+    font-family: var(--typography-label-family);
+    font-size: var(--typography-label-size);
+    font-weight: var(--typography-label-weight);
+    color: var(--color-text-secondary);
+  }
+
+  .more__table th,
+  .more__table td {
+    padding: var(--space-inset-xs) var(--space-inline-lg) var(--space-inset-xs)
+      0;
+    border-block-end: 1px solid var(--color-border-default);
+    vertical-align: top;
+  }
+
+  .more__period {
+    font-family: var(--typography-label-family);
+    font-size: var(--typography-label-size);
+    color: var(--color-text-muted);
+    white-space: nowrap;
+  }
+
+  .more__focus {
+    color: var(--color-text-secondary);
   }
 </style>
