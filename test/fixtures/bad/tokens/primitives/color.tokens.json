@@ -1,0 +1,16 @@
+{
+  "color": {
+    "accent": {
+      "600": {
+        "$value": "oklch(0.53 0.13 var(--hue))",
+        "$type": "color",
+        "_note": "T1 violation below: a primitive that references another token"
+      }
+    },
+    "neutral": {
+      "50": { "$value": "oklch(0.985 0.004 var(--hue))", "$type": "color" },
+      "950": { "$value": "oklch(0.17 0.01 var(--hue))", "$type": "color" }
+    },
+    "bad-primitive": { "$value": "{color.neutral.50}", "$type": "color" }
+  }
+}

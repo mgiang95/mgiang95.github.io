@@ -1,0 +1,13 @@
+---
+// Fixture: every CSS declaration below breaks a rule. Also: no metadata
+// file exists for this component (M1), and one class breaks BEM (C5).
+---
+<div class="notBemBlock">bad</div>
+<style>
+  .notBemBlock {
+    color: #ff0000;
+    padding: 24px;
+    background: var(--does-not-exist);
+    font-size: var(--color-accent-600);
+  }
+</style>

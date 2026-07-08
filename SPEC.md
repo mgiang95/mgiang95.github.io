@@ -186,7 +186,9 @@ Das System ist nicht nur für Menschen dokumentiert, sondern als abfragbare Date
 - **C1–C5** Autoren-CSS: keine Farb-Literale, kein px außer 1–2px-Haarlinien, jede `var(--*)` existiert im generierten CSS, Komponenten konsumieren keine Primitives, BEM-Block = Dateiname.
 - **M1–M2** Metadata: jede Komponente hat eine `*.metadata.json` mit Pflichtfeldern (und umgekehrt — verwaiste Metadata ist ein Fehler); deklarierte `tokenPrefixes` existieren in `/tokens/component`.
 
-Alle Scripts (Build, Kontrast-Proof, Auditor) lesen ihre Pfade aus `scripts/ds.config.mjs` und laufen unverändert in jedem Projekt, das die Token-Schicht übernimmt.
+Alle Scripts (Build, Kontrast-Proof, Auditor) lesen ihre Pfade aus `scripts/ds.config.mjs` und laufen unverändert in jedem Projekt, das die Token-Schicht übernimmt. Zusätzlich **P1** (Kontrast-Abdeckung): Jedes `color.text.*`/`color.interactive.*`-Semantic-Token muss in mindestens einem bewiesenen `PAIRS`-Paar vorkommen — so kann keine neue Farbe am AA-Beweis vorbei entstehen.
+
+**Die Prüfwerkzeuge sind selbst getestet** (`npm test`, `node:test`, kein Framework, in `npm run build`): `color-math.js` (Kontrast-Grundlage) gegen Referenzwerte, `runAudit` gegen Fixture-Projekte (`test/fixtures/good` = null Verstöße, `test/fixtures/bad` = jede Regel feuert), rehype-figure gegen beide Autorenmuster, Blog-Metadaten. Der Auditor exportiert dafür `runAudit(config)` und ist als CLI *und* als Bibliothek nutzbar. Mutations-getestet: ein absichtlich verfälschter Wächter macht die Tests rot.
 
 ### 12.2 Component-Metadata als Single Source
 

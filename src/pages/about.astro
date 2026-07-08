@@ -26,9 +26,11 @@ function formatDate(date: string): string {
   });
 }
 
+// UTC: yaml dates parse as UTC midnight, so a time zone west of UTC would
+// otherwise pull the first of a month back into the previous one.
 function formatPeriod(start: Date, end: Date | null): string {
   const fmt = (d: Date) =>
-    d.toLocaleString("en", { month: "short", year: "numeric" });
+    d.toLocaleString("en", { timeZone: "UTC", month: "short", year: "numeric" });
   return end ? `${fmt(start)} – ${fmt(end)}` : `since ${fmt(start)}`;
 }
 ---

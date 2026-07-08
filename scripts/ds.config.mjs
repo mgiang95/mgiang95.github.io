@@ -28,4 +28,11 @@ export default {
    * the base layer is where raw scales legitimately get applied.
    */
   appPaths: ["src/pages", "src/layouts", "src/styles/global.css"],
+
+  /**
+   * Shared color math exporting PAIRS — the contrast-proof pair list. The
+   * auditor's P1 rule checks that every text/interactive semantic color
+   * participates in at least one proven pair.
+   */
+  colorMathLib: "src/lib/color-math.js",
 };

@@ -1,0 +1,7 @@
+/* Minimal generated-CSS stand-in: only the custom properties the fixture
+   components consume need to be declared for rule C3. */
+:root {
+  --button-text: oklch(0.17 0.01 var(--hue));
+  --button-background: oklch(0.985 0.004 var(--hue));
+  --color-text-primary: oklch(0.17 0.01 var(--hue));
+}

@@ -9,9 +9,14 @@ export function readingTime(body: string): number {
   return Math.max(1, Math.round(words / 200));
 }
 
-/** "2026-07-08" -> "Jul 8, 2026" for display. */
+/**
+ * "2026-07-08" -> "Jul 8, 2026". Formatted in UTC: authored dates are
+ * parsed as UTC midnight, so a local time zone west of UTC would otherwise
+ * render the previous day.
+ */
 export function formatDate(date: Date): string {
   return date.toLocaleDateString("en", {
+    timeZone: "UTC",
     month: "short",
     day: "numeric",
     year: "numeric",

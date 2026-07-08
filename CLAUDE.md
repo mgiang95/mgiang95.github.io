@@ -19,7 +19,9 @@ Portfolio eines Design System Engineers. Astro + React Islands. Die Website ist 
 
 ## Governance — maschinell erzwungen
 
-Die Invarianten oben sind kein Prosaversprechen: `npm run audit` (`scripts/audit-tokens.mjs`) prüft sie und bricht den Build bei Verstößen ab (Regeln T1–T4 Token-Hierarchie, C1–C5 CSS/BEM, M1–M2 Metadata). Läuft automatisch in `npm run build`; vor jedem Commit ausführen. Pfade liest die gesamte Pipeline aus `scripts/ds.config.mjs` — dort ändern, nie in den Scripts.
+Die Invarianten oben sind kein Prosaversprechen: `npm run audit` (`scripts/audit-tokens.mjs`) prüft sie und bricht den Build bei Verstößen ab (Regeln T1–T4 Token-Hierarchie, C1–C5 CSS/BEM, M1–M2 Metadata, P1 Kontrast-Abdeckung: jedes `text.*`/`interactive.*`-Semantic-Token muss in `PAIRS` bewiesen sein). Läuft automatisch in `npm run build`; vor jedem Commit ausführen. Pfade liest die gesamte Pipeline aus `scripts/ds.config.mjs` — dort ändern, nie in den Scripts.
+
+- **Die Wächter selbst sind getestet** (`npm test`, `node:test` in `/test`, kein Framework): Farb-Mathematik gegen Referenzwerte, der Auditor gegen `good`/`bad`-Fixtures (jede Regel muss feuern), rehype-figure gegen beide Autorenmuster, Blog-Helfer. Läuft in `npm run build` vor dem Astro-Build. Wer den Auditor oder `color-math.js` ändert, hält die Tests grün (Mutations-getestet: ein verfälschter Wächter macht Tests rot).
 
 - **Jede Komponente hat eine co-located `<Name>.metadata.json`** (Felder: `name`, `description`, `renderer`, `jsRequired`, `variants`, `usage.useCases`, `usage.antiPatterns` mit `scenario`/`reason`/`alternative`, `tokenPrefixes`, `a11y`). Der Auditor erzwingt Existenz und Pflichtfelder; die inhaltliche Aktualität ist Teil jeder Komponentenänderung.
 - **Vor dem Erstellen einer neuen Komponente** die Metadata der bestehenden lesen — erweitern statt neu bauen (Variante/Prop ergänzen schlägt Neuanlage).
