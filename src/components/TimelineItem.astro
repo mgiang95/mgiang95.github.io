@@ -1,8 +1,9 @@
 ---
 /**
- * TimelineItem — one entry of the changelog-style CV timeline.
- * Square accent marker (reacts to the hue slider) on a vertical line.
- * Consumes only `timeline.*` component tokens plus semantic text colors.
+ * TimelineItem — one entry of the CV timeline. The square marker on the
+ * vertical line encodes the entry type: filled = work, outlined = education
+ * (system-coded, not decorative). Consumes only `timeline.*` component
+ * tokens plus semantic text colors.
  */
 interface Props {
   /** Role or degree, e.g. "Design System Engineer". */
@@ -11,17 +12,16 @@ interface Props {
   meta: string;
   /** Human-readable period, e.g. "2018 – 2020". */
   period: string;
-  /** Changelog framing: semver label, e.g. "4.0". */
-  version?: string;
+  /** Entry type; drives the marker coding and the page-level filter. */
+  type?: "work" | "education";
 }
 
-const { title, meta, period, version } = Astro.props;
+const { title, meta, period, type = "work" } = Astro.props;
 ---
 
-<li class="timeline-item">
+<li class={`timeline-item timeline-item--${type}`}>
   <span class="timeline-item__marker" aria-hidden="true"></span>
   <div class="timeline-item__content">
-    {version && <p class="timeline-item__version">v{version}</p>}
     <h3 class="timeline-item__title">{title}</h3>
     <p class="timeline-item__meta">{meta}</p>
     <p class="timeline-item__period">{period}</p>
@@ -63,11 +63,10 @@ const { title, meta, period, version } = Astro.props;
     background: var(--timeline-marker-background);
   }
 
-  .timeline-item__version {
-    font-family: var(--typography-label-family);
-    font-size: var(--typography-label-size);
-    font-weight: var(--typography-label-weight);
-    color: var(--color-interactive-default);
+  /* Education: outlined square — same color, different fill. */
+  .timeline-item--education .timeline-item__marker {
+    background: var(--color-surface-default);
+    border: 2px solid var(--timeline-marker-background);
   }
 
   .timeline-item__meta {

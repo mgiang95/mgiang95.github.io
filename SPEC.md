@@ -98,11 +98,15 @@ Mini-"Docs"-Seite im Storybook-Stil: jede Komponente mit Varianten + den konsumi
                 (editoriale Zeilen 01/02/03, System-Zeile, More-Tabelle)
 /projects       Redirect auf / (Index lebt auf der Startseite)
 /projects/[x]   Case Study: Problem → Ansatz → Entscheidung → Ergebnis
-/about          Person + CV-Timeline mit Work/Education-Filter
-/system         Das Meta-Case-Study: "How this site is built" + Token-Docs + Komponenten-Docs
+/blog           Notizen aus der Journey (Content Collection, lose Kadenz)
+/blog/[x]       Blogeintrag mit berechneten Metadaten (Nr., Datum, Lesezeit)
+/about          Person + CV-Timeline mit Work/Education-Filter (CSS-only)
+/system         Das Meta-Case-Study — nicht in der Nav, erreichbar über die
+                System-Zeile im Work-Index, Plakat-Link und Kolophon
+/imprint        Impressum + Privacy-Notiz (statisch, kein Tracking)
 ```
 
-Navigation: **Work · System · About**. Jede Seite trägt unter der H1 eine Mono-Annotationszeile mit echten, aus dem Build berechneten Fakten (Plakat: `--hue`/Kontrast; System: Komponenten-/Token-Zahl; About: Stationen); der Footer ist ein Kolophon mit Site-Version und Token-Zahl.
+Navigation: **Work · Blog · About**. Jede Seite trägt unter der H1 eine Mono-Annotationszeile mit echten, aus dem Build berechneten Fakten (Plakat: `--hue`/Kontrast; System: Komponenten-/Token-Zahl; About: Stationen; Blog: Eintragszahl); der Footer ist ein Kolophon mit Site-Version, Token-Zahl und Imprint-Link. Blog-Metadaten werden ausschließlich aus dem Content berechnet (Lesezeit, Nummer) — keine Zugriffszählung, kein Tracking (Impressums-/Privacy-Versprechen).
 
 - Hero der Startseite = die These der Seite: das Theme-Panel (oder eine kompakte Variante davon) ist sofort sichtbar und bedienbar — der Besucher *erlebt* das System in den ersten Sekunden.
 - Alle sichtbaren Inhalte (Copy, Navigation, Case Studies, Timeline) auf **Englisch**.

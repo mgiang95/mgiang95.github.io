@@ -1,0 +1,56 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import contact from "../data/contact.json";
+---
+
+<BaseLayout
+  title="Imprint"
+  description="Imprint and privacy note for michael-giang portfolio — responsible person, contact and how this static site handles data."
+>
+  <h1>Imprint</h1>
+
+  <div class="prose imprint">
+    <h2>Responsible for this website</h2>
+    <p>
+      Michael Giang<br />
+      Zurich, Switzerland<br />
+      <a href={`mailto:${contact.email}`}>{contact.email}</a>
+    </p>
+    <p>
+      This is a personal, non-commercial portfolio. Source code:
+      <a href="https://github.com/mgiang95/mgiang95.github.io"
+        >github.com/mgiang95</a
+      >
+    </p>
+
+    <h2>Privacy</h2>
+    <p>
+      This site is intentionally boring about data: it is a static website
+      with <strong>no cookies, no analytics and no tracking</strong> of any
+      kind.
+    </p>
+    <p>
+      Your theme preferences (hue, color scheme, density) are stored in your
+      browser's <code>localStorage</code> — they never leave your device and
+      you can remove them at any time by clearing site data.
+    </p>
+    <p>
+      The site is hosted on GitHub Pages. GitHub may process technical
+      server logs (such as IP addresses) to operate the service; see the
+      <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement"
+        >GitHub Privacy Statement</a
+      >. No log data is available to or used by me.
+    </p>
+    <p>
+      External links (GitHub, LinkedIn, linked articles) lead to services
+      with their own privacy policies.
+    </p>
+  </div>
+</BaseLayout>
+
+<style>
+  .imprint {
+    margin-block-start: var(--space-stack-lg);
+    max-width: 65ch;
+  }
+</style>

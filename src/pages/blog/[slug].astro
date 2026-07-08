@@ -1,0 +1,60 @@
+---
+import { getCollection, render } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { readingTime, formatDate } from "../../lib/blog";
+
+export async function getStaticPaths() {
+  const posts = await getCollection("blog", ({ data }) => !data.draft);
+  const chronological = [...posts].sort(
+    (a, b) => a.data.date.valueOf() - b.data.date.valueOf(),
+  );
+  return posts.map((entry) => ({
+    params: { slug: entry.id },
+    props: {
+      entry,
+      // Stable entry number: position in chronological order.
+      number: chronological.findIndex((post) => post.id === entry.id) + 1,
+    },
+  }));
+}
+
+const { entry, number } = Astro.props;
+const { Content } = await render(entry);
+---
+
+<BaseLayout title={entry.data.title} description={entry.data.description}>
+  <article class="post">
+    <header class="post__header">
+      <h1>{entry.data.title}</h1>
+      <p class="annotations" aria-hidden="true">
+        <code>entry {String(number).padStart(3, "0")}</code>
+        <code>{formatDate(entry.data.date)}</code>
+        <code>{readingTime(entry.body ?? "")} min read</code>
+      </p>
+    </header>
+    <div class="prose post__body">
+      <Content />
+    </div>
+    <nav class="post__footer-nav" aria-label="Blog navigation">
+      <a href="/blog">← All entries</a>
+    </nav>
+  </article>
+</BaseLayout>
+
+<style>
+  .post__header {
+    display: grid;
+    gap: var(--space-stack-sm);
+    margin-block-end: var(--space-stack-lg);
+  }
+
+  .post__body {
+    max-width: 65ch;
+  }
+
+  .post__footer-nav {
+    margin-block-start: var(--space-stack-xl);
+    font-family: var(--typography-label-family);
+    font-size: var(--typography-label-size);
+  }
+</style>

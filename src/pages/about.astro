@@ -63,20 +63,44 @@ function formatPeriod(start: Date, end: Date | null): string {
     }
   </section>
 
-  <section class="about__changelog" aria-labelledby="changelog-heading">
-    <h2 id="changelog-heading">Changelog</h2>
+  <section class="about__journey" aria-labelledby="journey-heading">
+    <h2 id="journey-heading">Journey</h2>
     <p class="about__note">
-      My journey, versioned: majors are new chapters, minors what happened
-      inside them.
+      Work and education on one line — the marker tells them apart: filled
+      squares are roles, outlined squares are studies.
     </p>
+    <fieldset class="about__filter">
+      <legend class="about__filter-legend">Show</legend>
+      <label class="about__filter-option">
+        <input
+          type="radio"
+          name="timeline-filter"
+          id="timeline-filter-all"
+          checked
+        />
+        All
+      </label>
+      <label class="about__filter-option about__filter-option--work">
+        <input type="radio" name="timeline-filter" id="timeline-filter-work" />
+        Work
+      </label>
+      <label class="about__filter-option about__filter-option--education">
+        <input
+          type="radio"
+          name="timeline-filter"
+          id="timeline-filter-education"
+        />
+        Education
+      </label>
+    </fieldset>
     <ul class="about__timeline">
       {
         timeline.map((entry) => (
           <TimelineItem
-            version={entry.data.version}
             title={entry.data.title}
             meta={`${entry.data.institution} (${entry.data.location})`}
             period={formatPeriod(entry.data.dateStart, entry.data.dateEnd)}
+            type={entry.data.type}
           >
             {entry.data.highlights.length > 0 && (
               <ul class="about__highlights">
@@ -98,9 +122,6 @@ function formatPeriod(start: Date, end: Date | null): string {
         certifications.map(({ data }) => (
           <li class="about__cert">
             <p class="about__cert-title">
-              {data.emoji && (
-                <span aria-hidden="true">{data.emoji} </span>
-              )}
               {data.url ? <a href={data.url}>{data.title}</a> : data.title}
             </p>
             <p class="about__cert-meta">
@@ -148,14 +169,70 @@ function formatPeriod(start: Date, end: Date | null): string {
     border: 1px solid var(--color-border-default);
   }
 
-  .about__changelog,
+  .about__journey,
   .about__certs {
     margin-block-start: var(--space-stack-xl);
   }
 
   .about__note {
-    margin-block: var(--space-stack-xs) var(--space-stack-lg);
+    margin-block: var(--space-stack-xs) var(--space-stack-md);
+    max-width: 65ch;
     color: var(--color-text-secondary);
+  }
+
+  .about__filter {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-inline-md);
+    margin: 0 0 var(--space-stack-lg);
+    padding: 0;
+    border: none;
+    font-family: var(--typography-label-family);
+    font-size: var(--typography-label-size);
+  }
+
+  .about__filter-legend {
+    padding: 0;
+    margin-inline-end: var(--space-inline-sm);
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .about__filter-option {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-inline-xs);
+  }
+
+  .about__filter-option input {
+    accent-color: var(--color-interactive-default);
+  }
+
+  /* Marker legend: the same squares the timeline uses. */
+  .about__filter-option--work::after,
+  .about__filter-option--education::after {
+    content: "";
+    display: inline-block;
+    inline-size: 0.6em;
+    block-size: 0.6em;
+  }
+
+  .about__filter-option--work::after {
+    background: var(--color-surface-accent);
+  }
+
+  .about__filter-option--education::after {
+    border: 2px solid var(--color-surface-accent);
+  }
+
+  /* CSS-only filter: radios + :has(), no JavaScript involved. */
+  .about__journey:has(#timeline-filter-work:checked)
+    :global(.timeline-item--education),
+  .about__journey:has(#timeline-filter-education:checked)
+    :global(.timeline-item--work) {
+    display: none;
   }
 
   .about__timeline {
