@@ -1,4 +1,9 @@
 ---
+// Self-hosted fonts (imprint promises no third-party requests). Archivo
+// ships the wdth+wght axes — the width axis is used on the poster headline.
+// Browsers fetch only the latin subset via unicode-range.
+import "@fontsource-variable/archivo/wdth.css";
+import "@fontsource/fragment-mono";
 import "../styles/tokens.css";
 import "../styles/global.css";
 import { flattenTokens } from "../lib/tokens";
