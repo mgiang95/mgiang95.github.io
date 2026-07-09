@@ -5,6 +5,7 @@
   "private": true,
   "scripts": {
     "tokens": "node scripts/build-tokens.mjs",
+    "tokens:figma": "node scripts/build-figma-tokens.mjs",
     "check:contrast": "node scripts/check-contrast.mjs",
     "audit": "node scripts/audit-tokens.mjs",
     "test": "node --experimental-strip-types --test",

@@ -15,6 +15,17 @@ export default {
   generatedCss: "src/styles/tokens.css",
 
   /**
+   * Generated Figma plugin (never edited by hand): creates the variables via
+   * the Plugin API from the same token graph as the CSS, with the runtime hue
+   * baked to a fixed value and OKLCH/rem/clamp resolved — Figma variables
+   * cannot express those. Rebuild with `npm run tokens:figma`.
+   */
+  figmaPluginDir: "figma/plugin",
+
+  /** Hue the Figma export bakes into the color primitives (code default). */
+  figmaBakedHue: 220,
+
+  /**
    * Component layer: strictest rules. Components may only consume
    * component- or semantic-tier tokens, never primitives; every component
    * needs a co-located *.metadata.json; class names follow BEM with the
