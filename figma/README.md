@@ -43,6 +43,21 @@ canonical `color-light` / `space-normal` variants ship. The live hue slider
 stays a code-only capability — change `figmaBakedHue` in `scripts/ds.config.mjs`
 to snapshot a different hue.
 
+## What is excluded
+
+Token files are globbed per tier, so new files ship automatically — except an
+explicit exclusion list (`EXCLUDE` in the build script):
+
+- **Motion tokens** (`primitives/motion`, `semantic/motion`) — Figma variables
+  cannot drive durations or easings, so exporting them would only add noise.
+  Nothing references them from the exported tiers, so no aliases dangle.
+- **Non-canonical mode variants** (`color-dark`, `space-tight`, `space-comfy`)
+  — see "no modes" above.
+
+The build fails loud if a variable path ever appears in two collections
+(aliases resolve through one global name map, so a collision would bind
+silently to the wrong variable).
+
 ## Run it (Figma desktop app)
 
 1. Open the target file in the **desktop app** (dev plugins can't be imported in

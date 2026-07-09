@@ -22,8 +22,9 @@
  *
  * Re-runnable, no hand-editing of the output. Paths come from ds.config.
  */
-import { readFile, mkdir, writeFile, rm } from "node:fs/promises";
+import { readFile, readdir, mkdir, writeFile, rm } from "node:fs/promises";
 import path from "node:path";
+import { pathToFileURL } from "node:url";
 import config from "./ds.config.mjs";
 import { oklchToSrgb, parseOklch } from "../src/lib/color-math.js";
 
@@ -32,34 +33,28 @@ const PLUGIN_DIR = config.figmaPluginDir;
 const HUE = config.figmaBakedHue;
 
 /**
- * Source files grouped into the three Figma collections (= the three token
- * tiers). Modes are intentionally dropped: only the canonical light/normal
- * semantic variants ship, so aliases resolve unambiguously.
+ * Deliberately excluded from the export (documented in figma/README.md):
+ * motion tokens (Figma variables cannot drive durations/easings) and the
+ * non-canonical mode variants — no modes in Figma, only light/normal ship.
+ * Everything else is globbed per tier, so new token files are picked up
+ * automatically instead of silently missing from Figma.
  */
-const COLLECTIONS = {
-  primitives: [
-    "primitives/color.tokens.json",
-    "primitives/dimension.tokens.json",
-    "primitives/typography.tokens.json",
-  ],
-  semantic: [
-    "semantic/color-light.tokens.json",
-    "semantic/space-normal.tokens.json",
-    "semantic/shape.tokens.json",
-    "semantic/typography.tokens.json",
-  ],
-  component: [
-    "component/button.tokens.json",
-    "component/badge.tokens.json",
-    "component/card.tokens.json",
-    "component/accordion.tokens.json",
-    "component/figure.tokens.json",
-    "component/gallery.tokens.json",
-    "component/theme-panel.tokens.json",
-    "component/timeline.tokens.json",
-    "component/token-inspector.tokens.json",
-  ],
-};
+const EXCLUDE = new Set([
+  "primitives/motion.tokens.json",
+  "semantic/motion.tokens.json",
+  "semantic/color-dark.tokens.json",
+  "semantic/space-tight.tokens.json",
+  "semantic/space-comfy.tokens.json",
+]);
+
+/** All .tokens.json files of one tier, minus the documented exclusions. */
+async function tierFiles(tier) {
+  return (await readdir(path.join(TOKENS, tier)))
+    .filter((f) => f.endsWith(".tokens.json"))
+    .map((f) => `${tier}/${f}`)
+    .filter((f) => !EXCLUDE.has(f))
+    .sort();
+}
 
 /** sRGB transfer function: linear-light channel -> gamma-encoded [0,1]. */
 const encode = (c) =>
@@ -72,14 +67,17 @@ const hex2 = (n) => Math.round(n * 255).toString(16).padStart(2, "0");
 const REM_PX = 16;
 
 /**
- * Bakes an OKLCH primitive value at the fixed hue into an sRGB hex string.
+ * Bakes an OKLCH primitive value at a fixed hue into an sRGB hex string
+ * (gamma-encoded, gamut-mapped like the browser — same math as the
+ * contrast proof).
  * @param {string} value e.g. "oklch(0.62 0.14 var(--hue))"
+ * @param {number} [hue]
  * @returns {string|null} "#rrggbb" or null if it is not a hue-based OKLCH
  */
-function bakeOklch(value) {
+export function bakeOklch(value, hue = HUE) {
   const parsed = parseOklch(value);
   if (!parsed) return null;
-  const [r, g, b] = oklchToSrgb(parsed.L, parsed.C, HUE).map(encode);
+  const [r, g, b] = oklchToSrgb(parsed.L, parsed.C, hue).map(encode);
   return `#${hex2(r)}${hex2(g)}${hex2(b)}`;
 }
 
@@ -89,7 +87,7 @@ function bakeOklch(value) {
  * @param {string} value
  * @returns {string|null}
  */
-function bakeDimension(value) {
+export function bakeDimension(value) {
   let v = value.trim();
   const clamp = v.match(/^clamp\(.+,\s*([^)]+)\)$/);
   if (clamp) v = clamp[1].trim();
@@ -102,20 +100,23 @@ function bakeDimension(value) {
  * Walks a DTCG subtree, baking the values Figma cannot express. Aliases,
  * plain px and numbers pass through untouched.
  * @param {any} node
+ * @param {number} [hue]
  */
-function transform(node) {
+export function transform(node, hue = HUE) {
   if (node === null || typeof node !== "object") return node;
   if ("$value" in node) {
     const out = { ...node };
     if (Array.isArray(node.$value)) {
       out.$value = node.$value.join(", ");
     } else if (typeof node.$value === "string") {
-      out.$value = bakeOklch(node.$value) ?? bakeDimension(node.$value) ?? node.$value;
+      out.$value =
+        bakeOklch(node.$value, hue) ?? bakeDimension(node.$value) ?? node.$value;
     }
     return out;
   }
   const out = {};
-  for (const [key, child] of Object.entries(node)) out[key] = transform(child);
+  for (const [key, child] of Object.entries(node))
+    out[key] = transform(child, hue);
   return out;
 }
 
@@ -131,21 +132,58 @@ function merge(target, src) {
   return target;
 }
 
-// Build the three collections.
-const data = {};
-for (const [name, files] of Object.entries(COLLECTIONS)) {
-  data[name] = {};
-  for (const file of files) {
-    const raw = JSON.parse(await readFile(path.join(TOKENS, file), "utf8"));
-    merge(data[name], transform(raw));
+/** Slash-joined paths of all token leaves in a tree. */
+export function leafPaths(node, segs = [], out = []) {
+  for (const [key, child] of Object.entries(node)) {
+    if (child && typeof child === "object" && "$value" in child) {
+      out.push([...segs, key].join("/"));
+    } else if (child && typeof child === "object") {
+      leafPaths(child, [...segs, key], out);
+    }
   }
+  return out;
 }
 
-// Drop `hue`: the runtime slider input, meaningless as a static variable.
-delete data.primitives?.hue;
+/**
+ * Fails loud if a variable path exists in more than one collection: the
+ * plugin resolves aliases through one global name map, so a collision
+ * would silently bind aliases to the wrong variable.
+ * @param {Record<string, object>} data collection name -> token tree
+ */
+export function assertUniquePaths(data) {
+  const seen = new Map();
+  for (const [collection, tree] of Object.entries(data)) {
+    for (const p of leafPaths(tree)) {
+      if (seen.has(p)) {
+        throw new Error(
+          `variable path collision: "${p}" exists in both "${seen.get(p)}" ` +
+            `and "${collection}" — aliases would bind to the wrong variable`,
+        );
+      }
+      seen.set(p, collection);
+    }
+  }
+  return seen.size;
+}
 
-// The plugin logic (static). The token data above is injected as `DATA`.
-const pluginCode = `/**
+/** Builds the three collections and writes the plugin to PLUGIN_DIR. */
+async function build() {
+  const data = {};
+  for (const name of ["primitives", "semantic", "component"]) {
+    data[name] = {};
+    for (const file of await tierFiles(name)) {
+      const raw = JSON.parse(await readFile(path.join(TOKENS, file), "utf8"));
+      merge(data[name], transform(raw));
+    }
+  }
+
+  // Drop `hue`: the runtime slider input, meaningless as a static variable.
+  delete data.primitives?.hue;
+
+  const total = assertUniquePaths(data);
+
+  // The plugin logic (static). The token data above is injected as `DATA`.
+  const pluginCode = `/**
  * GENERATED by scripts/build-figma-tokens.mjs — do not edit by hand.
  * Rebuild: npm run tokens:figma. Source of truth: /tokens.
  *
@@ -273,29 +311,29 @@ function hexToRgba(hex) {
 })();
 `;
 
-const manifest = {
-  name: "Portfolio Tokens Import",
-  id: "mgiang-portfolio-tokens-import",
-  api: "1.0.0",
-  main: "code.js",
-  editorType: ["figma"],
-};
+  const manifest = {
+    name: "Portfolio Tokens Import",
+    id: "mgiang-portfolio-tokens-import",
+    api: "1.0.0",
+    main: "code.js",
+    editorType: ["figma"],
+  };
 
-await rm(PLUGIN_DIR, { recursive: true, force: true });
-await mkdir(PLUGIN_DIR, { recursive: true });
-await writeFile(path.join(PLUGIN_DIR, "code.js"), pluginCode);
-await writeFile(
-  path.join(PLUGIN_DIR, "manifest.json"),
-  JSON.stringify(manifest, null, 2) + "\n",
-);
+  await rm(PLUGIN_DIR, { recursive: true, force: true });
+  await mkdir(PLUGIN_DIR, { recursive: true });
+  await writeFile(path.join(PLUGIN_DIR, "code.js"), pluginCode);
+  await writeFile(
+    path.join(PLUGIN_DIR, "manifest.json"),
+    JSON.stringify(manifest, null, 2) + "\n",
+  );
 
-const countLeaves = (node) => {
-  let n = 0;
-  for (const v of Object.values(node)) {
-    if (v && typeof v === "object" && "$value" in v) n++;
-    else if (v && typeof v === "object") n += countLeaves(v);
-  }
-  return n;
-};
-const total = Object.values(data).reduce((n, tree) => n + countLeaves(tree), 0);
-console.log(`✔ figma plugin built (hue ${HUE}) -> ${PLUGIN_DIR}/ — ${total} variables`);
+  console.log(
+    `✔ figma plugin built (hue ${HUE}) -> ${PLUGIN_DIR}/ — ${total} variables`,
+  );
+}
+
+const isMain =
+  process.argv[1] &&
+  import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href;
+
+if (isMain) await build();
