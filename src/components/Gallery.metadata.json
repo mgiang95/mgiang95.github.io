@@ -3,7 +3,10 @@
   "description": "Horizontal scroll-snap strip of captioned figures. Pure CSS overflow + scroll-snap — keyboard and touch scrolling come from the browser, zero JS. The next slide peeks in as the scroll affordance.",
   "renderer": "astro",
   "jsRequired": false,
-  "variants": [],
+  "variants": [
+    { "name": "default", "use": "Uniform slide width (85%) — screenshot strips in case studies." },
+    { "name": "filmstrip", "use": "Uniform height, natural widths — editorial photo band, meant for a full-bleed wrapper (About: Off screen)." }
+  ],
   "usage": {
     "useCases": [
       "Screenshot strips in case studies — via the optional `gallery` field in the projects frontmatter",

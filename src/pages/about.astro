@@ -76,13 +76,18 @@ function formatPeriod(start: Date, end: Date | null): string {
     </div>
     {
       intro.data.profileImage && (
-        <Image
-          class="about__portrait"
-          src={intro.data.profileImage}
-          alt={`Portrait of ${intro.data.name}`}
-          widths={[320, 640]}
-          sizes="(min-width: 60rem) 20rem, 60vw"
-        />
+        <figure class="about__portrait-figure">
+          <Image
+            class="about__portrait"
+            src={intro.data.profileImage}
+            alt={`Portrait of ${intro.data.name}`}
+            widths={[320, 640]}
+            sizes="(min-width: 60rem) 20rem, 60vw"
+          />
+          <figcaption class="about__portrait-note">
+            {intro.data.name} · {intro.data.based}
+          </figcaption>
+        </figure>
       )
     }
   </section>
@@ -172,6 +177,14 @@ function formatPeriod(start: Date, end: Date | null): string {
     </div>
   </section>
 
+  <section class="about__offscreen" aria-labelledby="offscreen-heading">
+    <h2 id="offscreen-heading">Off screen</h2>
+    <p class="about__note">{activities.introduction}</p>
+    <div class="about__offscreen-band">
+      <Gallery label="Personal photos" images={offScreen} filmstrip />
+    </div>
+  </section>
+
   <section class="about__reading" aria-labelledby="reading-heading">
     <h2 id="reading-heading">Reading</h2>
     <p class="about__note">
@@ -217,12 +230,6 @@ function formatPeriod(start: Date, end: Date | null): string {
       ))
     }
   </section>
-
-  <section class="about__offscreen" aria-labelledby="offscreen-heading">
-    <h2 id="offscreen-heading">Off screen</h2>
-    <p class="about__note">{activities.introduction}</p>
-    <Gallery label="Personal photos" images={offScreen} />
-  </section>
 </BaseLayout>
 
 <style>
@@ -246,9 +253,19 @@ function formatPeriod(start: Date, end: Date | null): string {
     max-width: 65ch;
   }
 
+  /* The tagline is the page's poster statement, not a subtitle. */
   .about__tagline {
-    font-size: var(--typography-lead-size);
-    color: var(--color-text-secondary);
+    font-family: var(--font-family-display);
+    font-weight: var(--font-weight-bold);
+    font-size: var(--typography-heading-lg-size);
+    line-height: var(--typography-heading-lg-line-height);
+    max-width: 24ch;
+  }
+
+  .about__portrait-figure {
+    display: grid;
+    gap: var(--space-stack-xs);
+    margin: 0;
   }
 
   .about__portrait {
@@ -258,6 +275,12 @@ function formatPeriod(start: Date, end: Date | null): string {
     /* The poster's accent edge, echoed on the portrait (after the
        shorthand — it would reset the longhand otherwise). */
     border-block-start: 2px solid var(--color-surface-accent);
+  }
+
+  .about__portrait-note {
+    font-family: var(--typography-label-family);
+    font-size: var(--typography-label-size);
+    color: var(--color-text-muted);
   }
 
   .about__journey,
@@ -396,14 +419,25 @@ function formatPeriod(start: Date, end: Date | null): string {
     margin-block-start: var(--space-stack-xl);
   }
 
+  /* Off-screen photo band: escapes the column and runs to the viewport
+     edge — the poster's rule-break, reused as the page's visual pause.
+     The first slide stays on the text axis. */
+  .about__offscreen-band {
+    margin-block-start: var(--space-stack-md);
+    margin-inline: calc(50% - 50vw);
+    padding-inline-start: calc(max(0px, 50vw - 36rem) + var(--space-inset-lg));
+  }
+
   .about__shelf {
     margin-block-start: var(--space-stack-lg);
   }
 
   .about__shelf-year {
     font-family: var(--typography-label-family);
-    font-size: var(--typography-heading-lg-size);
+    /* Fluid display size — the shelves carry the page's large numerals. */
+    font-size: var(--font-size-800);
     font-weight: var(--typography-label-weight);
+    line-height: var(--font-line-height-tight);
     color: var(--color-text-muted);
     padding-block-end: var(--space-stack-xs);
     border-block-end: 1px solid var(--color-border-default);
