@@ -8,6 +8,8 @@ import "../styles/tokens.css";
 import "../styles/global.css";
 import { flattenTokens } from "../lib/tokens";
 import pkg from "../../package.json";
+import contact from "../data/contact.json";
+import ThemePanel from "../components/ThemePanel.tsx";
 
 // Colophon facts, computed from the same sources everything else uses.
 const tokenModules = import.meta.glob<{
@@ -82,16 +84,18 @@ const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
   </head>
   <body>
     <a href="#main" class="skip-link">Skip to main content</a>
-    <header class="site-header">
-      <a href="/" class="site-header__wordmark">Michael Giang</a>
-      <nav class="site-header__nav" aria-label="Main navigation">
-        <ul class="site-header__list">
+    <header class="site-bar">
+      <a href="/" class="site-bar__monogram" aria-label="Michael Giang — home">
+        MG
+      </a>
+      <nav class="site-bar__nav" aria-label="Main navigation">
+        <ul class="site-bar__list">
           {
             navItems.map((item) => (
-              <li class="site-header__item">
+              <li>
                 <a
                   href={item.href}
-                  class="site-header__link"
+                  class="site-bar__link"
                   aria-current={currentPath === item.href ? "page" : undefined}
                 >
                   {item.label}
@@ -101,7 +105,32 @@ const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
           }
         </ul>
       </nav>
+      <button
+        class="site-bar__hue"
+        popovertarget="theme-popover"
+        aria-label="Theme settings"
+      >
+        <span class="site-bar__swatch" aria-hidden="true"></span>
+      </button>
+      <a
+        class="site-bar__contact"
+        href={`mailto:${contact.email}`}
+        data-copy-email={contact.email}
+      >
+        <span data-contact-label>Contact</span>
+      </a>
     </header>
+    <div id="theme-popover" class="theme-popover" popover>
+      <ThemePanel client:idle />
+    </div>
+    <noscript>
+      <style>
+        /* Theming is a JS enhancement; without it the popover would be empty. */
+        .site-bar__hue {
+          display: none;
+        }
+      </style>
+    </noscript>
     <main id="main" class="site-main">
       <slot />
     </main>
@@ -117,43 +146,155 @@ const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
   </body>
 </html>
 
+<script>
+  // Contact: on precise pointers, copy the address instead of launching a
+  // mail client that is often unconfigured on desktops. The plain mailto
+  // stays the no-JS and touch fallback (mail apps work well there).
+  const contactLink = document.querySelector<HTMLAnchorElement>("[data-copy-email]");
+  const contactLabel = contactLink?.querySelector<HTMLElement>("[data-contact-label]");
+  if (
+    contactLink &&
+    contactLabel &&
+    navigator.clipboard &&
+    matchMedia("(pointer: fine)").matches
+  ) {
+    let resetTimer = 0;
+    contactLink.addEventListener("click", (event) => {
+      event.preventDefault();
+      navigator.clipboard
+        .writeText(contactLink.dataset.copyEmail ?? "")
+        .then(() => {
+          contactLabel.textContent = "copied ✓";
+          window.clearTimeout(resetTimer);
+          resetTimer = window.setTimeout(() => {
+            contactLabel.textContent = "Contact";
+          }, 1600);
+        })
+        .catch(() => {
+          // Clipboard blocked — fall back to the mail client after all.
+          window.location.href = contactLink.href;
+        });
+    });
+  }
+</script>
+
 <style>
-  .site-header {
+  /* Instrument bar: sticky, content-axis aligned, deliberately not full
+     width — flat surface and hairline instead of blur/shadow. */
+  .site-bar {
+    position: sticky;
+    inset-block-start: var(--space-stack-xs);
+    z-index: 50;
     display: flex;
-    align-items: baseline;
-    justify-content: space-between;
+    flex-wrap: wrap;
+    align-items: center;
     gap: var(--space-inline-lg);
-    padding: var(--space-inset-md) var(--space-inset-lg);
-    border-block-end: 1px solid var(--color-border-default);
+    inline-size: fit-content;
+    max-inline-size: calc(100vw - 2 * var(--space-inset-md));
+    margin-block-start: var(--space-stack-sm);
+    /* Exact text axis of the 72rem content column (incl. its inset).
+       Percent instead of vw: vw includes the scrollbar, layout does not. */
+    margin-inline-start: calc(max(0px, (100% - 72rem) / 2) + var(--space-inset-lg));
+    padding: var(--space-inset-xs) var(--space-inset-md);
+    background: var(--color-surface-raised);
+    border: 1px solid var(--color-border-default);
   }
 
-  .site-header__wordmark {
+  .site-bar__monogram {
     font-family: var(--font-family-display);
     font-weight: var(--font-weight-bold);
+    /* The poster's expanded cut, reused as the mark. */
+    font-stretch: 115%;
     font-size: var(--font-size-400);
     color: var(--color-text-primary);
     text-decoration: none;
   }
 
-  .site-header__list {
+  .site-bar__list {
     display: flex;
-    gap: var(--space-inline-lg);
+    gap: var(--space-inline-md);
     list-style: none;
+    margin: 0;
     padding: 0;
   }
 
-  .site-header__link {
+  .site-bar__link {
     color: var(--color-text-secondary);
     text-decoration: none;
   }
 
-  .site-header__link:hover {
+  .site-bar__link:hover {
     color: var(--color-interactive-hover);
   }
 
-  .site-header__link[aria-current="page"] {
+  .site-bar__link[aria-current="page"] {
     color: var(--color-text-primary);
     font-weight: var(--font-weight-medium);
+  }
+
+  .site-bar__hue {
+    display: grid;
+    place-items: center;
+    padding: var(--space-inset-xs);
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+
+  /* Live accent swatch — the filled square motif, showing the current hue. */
+  .site-bar__swatch {
+    display: block;
+    inline-size: 1em;
+    block-size: 1em;
+    background: var(--color-surface-accent);
+    border: 1px solid var(--color-border-strong);
+  }
+
+  .site-bar__contact {
+    font-family: var(--typography-label-family);
+    font-size: var(--typography-label-size);
+    padding: var(--space-inset-xs) var(--space-inset-md);
+    background: var(--button-primary-background);
+    color: var(--button-primary-text);
+    text-decoration: none;
+    transition: background-color var(--motion-state-duration)
+      var(--motion-state-easing);
+  }
+
+  .site-bar__contact:hover {
+    background: var(--button-primary-background-hover);
+    color: var(--button-primary-text);
+  }
+
+  /* Narrow screens: tighter rhythm so the bar stays a single line.
+     After the base rules — equal specificity, source order decides. */
+  @media (max-width: 30rem) {
+    .site-bar {
+      gap: var(--space-inline-sm);
+      padding-inline: var(--space-inset-sm);
+    }
+
+    .site-bar__list {
+      gap: var(--space-inline-sm);
+    }
+
+    .site-bar__contact {
+      padding-inline: var(--space-inset-sm);
+    }
+  }
+
+  /* Theme popover: top layer, anchored under the bar on the same axis.
+     The panel inside brings its own surface. */
+  .theme-popover {
+    position: fixed;
+    inset: unset;
+    inset-block-start: calc(var(--space-stack-sm) + var(--space-stack-xl));
+    inset-inline-start: calc(max(0px, 50vw - 36rem) + var(--space-inset-lg));
+    margin: 0;
+    padding: 0;
+    border: none;
+    background: none;
+    overflow: visible;
   }
 
   .site-main {

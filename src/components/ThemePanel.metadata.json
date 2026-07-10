@@ -7,6 +7,7 @@
   "usage": {
     "useCases": [
       "Hero of the home page — the visitor operates the system in the first seconds",
+      "Theme popover in the instrument bar — theming available on every page",
       "Live demo inside the /system component docs"
     ],
     "antiPatterns": [
@@ -18,7 +19,7 @@
       {
         "scenario": "Adding a second theming mechanism next to it",
         "reason": "State must stay on --hue, data-theme and data-density plus the pref-* storage keys the head script reads.",
-        "alternative": "Extend ThemePanel; never introduce parallel state."
+        "alternative": "Extend ThemePanel; never introduce parallel state. Multiple instances are fine — they sync via the hue-change/pref-change events and use per-instance ids (useId)."
       }
     ]
   },

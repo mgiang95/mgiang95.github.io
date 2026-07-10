@@ -6,7 +6,7 @@
  *   pref-theme, pref-density, pref-hue (see BaseLayout.astro).
  * Without JS the panel simply does not render — the site keeps its defaults.
  */
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useId, useMemo, useRef, useState } from "react";
 import "./ThemePanel.css";
 import { oklchToSrgb, contrast, parseOklch, PAIRS } from "../lib/color-math.js";
 import primitiveColors from "../../tokens/primitives/color.tokens.json";
@@ -96,6 +96,11 @@ function readInitial<T>(read: () => T, fallback: T): T {
 }
 
 export default function ThemePanel() {
+  // Several instances can coexist (hero, nav popover, /system docs) — ids
+  // and radio-group names must be unique per instance or the native radio
+  // grouping couples them across panels.
+  const uid = useId();
+
   const [hue, setHue] = useState<number>(() =>
     readInitial(() => {
       const v = Number(
@@ -128,6 +133,25 @@ export default function ThemePanel() {
     };
     window.addEventListener("hue-change", onExternalHue);
     return () => window.removeEventListener("hue-change", onExternalHue);
+  }, []);
+
+  // Same contract for scheme/density: with the panel also living in the
+  // nav popover there can be several instances per page — user input in
+  // one dispatches "pref-change", the others follow. Dispatch happens in
+  // the input handlers only, so there is no feedback loop.
+  useEffect(() => {
+    const onExternalPref = (event: Event) => {
+      const { kind, value } =
+        (event as CustomEvent<{ kind: string; value: string }>).detail ?? {};
+      if (kind === "scheme" && (value === "system" || value === "light" || value === "dark")) {
+        setScheme(value);
+      }
+      if (kind === "density" && (value === "tight" || value === "normal" || value === "comfy")) {
+        setDensity(value);
+      }
+    };
+    window.addEventListener("pref-change", onExternalPref);
+    return () => window.removeEventListener("pref-change", onExternalPref);
   }, []);
 
   // Track the OS scheme for the badge while "system" is selected.
@@ -207,18 +231,18 @@ export default function ThemePanel() {
   const passes = worst.margin >= 1;
 
   return (
-    <section className="theme-panel" aria-labelledby="theme-panel-heading">
-      <h2 className="theme-panel__heading" id="theme-panel-heading">
+    <section className="theme-panel" aria-labelledby={`theme-panel-heading-${uid}`}>
+      <h2 className="theme-panel__heading" id={`theme-panel-heading-${uid}`}>
         Theme
       </h2>
 
       <div className="theme-panel__control">
-        <label className="theme-panel__label" htmlFor="theme-panel-hue">
+        <label className="theme-panel__label" htmlFor={`theme-panel-hue-${uid}`}>
           Hue <code className="theme-panel__token">--hue: {hue}</code>
         </label>
         <input
           className="theme-panel__slider"
-          id="theme-panel-hue"
+          id={`theme-panel-hue-${uid}`}
           type="range"
           min={0}
           max={360}
@@ -240,10 +264,17 @@ export default function ThemePanel() {
           <label className="theme-panel__option" key={value}>
             <input
               type="radio"
-              name="theme-panel-scheme"
+              name={`theme-panel-scheme-${uid}`}
               value={value}
               checked={scheme === value}
-              onChange={() => setScheme(value)}
+              onChange={() => {
+                setScheme(value);
+                window.dispatchEvent(
+                  new CustomEvent("pref-change", {
+                    detail: { kind: "scheme", value },
+                  }),
+                );
+              }}
             />
             {value}
           </label>
@@ -256,10 +287,17 @@ export default function ThemePanel() {
           <label className="theme-panel__option" key={value}>
             <input
               type="radio"
-              name="theme-panel-density"
+              name={`theme-panel-density-${uid}`}
               value={value}
               checked={density === value}
-              onChange={() => setDensity(value)}
+              onChange={() => {
+                setDensity(value);
+                window.dispatchEvent(
+                  new CustomEvent("pref-change", {
+                    detail: { kind: "density", value },
+                  }),
+                );
+              }}
             />
             {value}
           </label>

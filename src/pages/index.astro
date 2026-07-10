@@ -247,8 +247,9 @@ const RAMP_STEPS = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950];
     background: var(--color-surface-accent);
     color: var(--color-text-on-accent);
     padding-block: var(--space-inset-xl);
-    /* Re-align the inner text with the 72rem content column. */
-    padding-inline: max(var(--space-inset-lg), calc(50vw - 36rem));
+    /* Re-align the inner text with the exact text axis of the 72rem
+       content column (incl. its inset). */
+    padding-inline: calc(max(0px, 50vw - 36rem) + var(--space-inset-lg));
   }
 
   .poster__claim {
