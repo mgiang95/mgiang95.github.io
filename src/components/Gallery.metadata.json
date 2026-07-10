@@ -5,7 +5,7 @@
   "jsRequired": false,
   "variants": [
     { "name": "default", "use": "Uniform slide width (85%) — screenshot strips in case studies." },
-    { "name": "filmstrip", "use": "Uniform height, natural widths — editorial photo band, meant for a full-bleed wrapper (About: Off screen)." }
+    { "name": "filmstrip", "use": "Uniform height, natural widths, proximity snapping (browsing, not paging) — editorial photo band for a full-bleed wrapper (About: Off screen). Captions wrap at the photo's edge." }
   ],
   "usage": {
     "useCases": [

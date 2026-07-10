@@ -81,14 +81,26 @@ const { label, images, filmstrip = false } = Astro.props;
      mixed portrait/landscape photos form one calm band. */
   .gallery--filmstrip .gallery__track {
     grid-auto-columns: max-content;
-  }
-
-  .gallery--filmstrip .gallery__item :global(img) {
-    inline-size: auto;
-    block-size: clamp(16rem, 40vh, 24rem);
+    /* Browsing, not paging: only settle on an edge when already close —
+       mandatory would yank mid-scroll with these mixed widths. */
+    scroll-snap-type: x proximity;
   }
 
   .gallery--filmstrip .gallery__item {
     max-inline-size: 85vw;
+  }
+
+  .gallery--filmstrip .gallery__item :global(img) {
+    inline-size: auto;
+    max-inline-size: 100%;
+    block-size: clamp(16rem, 40vh, 24rem);
+    object-fit: cover;
+  }
+
+  /* The caption must not widen the column: zero intrinsic width, then
+     stretch to the image — text wraps exactly at the photo's edge. */
+  .gallery--filmstrip .gallery__item :global(figcaption) {
+    inline-size: 0;
+    min-inline-size: 100%;
   }
 </style>
