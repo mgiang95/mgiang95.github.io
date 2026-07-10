@@ -87,6 +87,23 @@ const blog = defineCollection({
   }),
 });
 
+/**
+ * Reading log — an ongoing collection, maintained like the blog: one JSON
+ * file per book. `year` (when read) is the shelf grouping on /about;
+ * `cover` is optional — books without one get a generated typographic cover.
+ */
+const books = defineCollection({
+  loader: glob({ pattern: "**/*.json", base: "./src/content/books" }),
+  schema: ({ image }) =>
+    z.object({
+      title: z.string(),
+      author: z.string(),
+      year: z.number().int(),
+      cover: image().optional(),
+      takeaway: z.string().optional(),
+    }),
+});
+
 /** Prose snippets about the person (intro/bio). */
 const about = defineCollection({
   loader: glob({ pattern: "**/*.md", base: "./src/content/about" }),
@@ -101,4 +118,11 @@ const about = defineCollection({
     }),
 });
 
-export const collections = { projects, timeline, certifications, about, blog };
+export const collections = {
+  projects,
+  timeline,
+  certifications,
+  about,
+  blog,
+  books,
+};

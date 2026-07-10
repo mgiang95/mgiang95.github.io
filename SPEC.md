@@ -100,7 +100,10 @@ Mini-"Docs"-Seite im Storybook-Stil: jede Komponente mit Varianten + den konsumi
 /projects/[x]   Case Study: Problem → Ansatz → Entscheidung → Ergebnis
 /blog           Notizen aus der Journey (Content Collection, lose Kadenz)
 /blog/[x]       Blogeintrag mit berechneten Metadaten (Nr., Datum, Lesezeit)
-/about          Person + CV-Timeline mit Work/Education-Filter (CSS-only)
+/about          Person: Bio + Portrait, CV-Timeline mit Work/Education-Filter
+                (CSS-only), Zertifikats-Tabelle, Reading-Log (Books-Collection,
+                Jahr als Regal-Überschrift, generierte Typo-Cover als Fallback),
+                Off-screen-Foto-Galerie
 /system         Das Meta-Case-Study — nicht in der Nav, erreichbar über die
                 System-Zeile im Work-Index, Plakat-Link und Kolophon
 /imprint        Impressum + Privacy-Notiz (statisch, kein Tracking)
