@@ -38,11 +38,14 @@ const PANEL_OFFSET = 12;
 export class TokenInspector extends LitElement {
   static properties = {
     tiers: { type: Object },
+    compact: { type: Boolean },
     active: { state: true },
     inspection: { state: true },
   };
 
   declare tiers: TierLists;
+  /** Square icon trigger for the instrument bar instead of the text button. */
+  declare compact: boolean;
   declare active: boolean;
   declare inspection: Inspection | null;
 
@@ -51,14 +54,15 @@ export class TokenInspector extends LitElement {
   constructor() {
     super();
     this.tiers = { primitive: [], semantic: [], component: [] };
+    this.compact = false;
     this.active = false;
     this.inspection = null;
   }
 
   static styles = css`
-    /* Toggle reuses the shared button component tokens (secondary variant):
-       one component CSS contract, rendered here by a third renderer. */
-    button {
+    /* Label trigger reuses the shared button component tokens (secondary
+       variant): one component CSS contract, rendered by a third renderer. */
+    .trigger--label {
       display: inline-flex;
       align-items: center;
       gap: var(--button-gap);
@@ -72,8 +76,33 @@ export class TokenInspector extends LitElement {
       cursor: pointer;
     }
 
-    button:hover {
+    .trigger--label:hover {
       background: var(--button-secondary-background-hover);
+    }
+
+    /* Compact trigger: the outlined square — counterpart to the filled
+       theme swatch in the instrument bar. Fills while inspecting. */
+    .trigger--compact {
+      display: grid;
+      place-items: center;
+      padding: var(--space-inset-xs);
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+
+    .trigger--compact .trigger__square {
+      display: block;
+      inline-size: 1em;
+      block-size: 1em;
+      border: 2px solid var(--token-inspector-highlight-border);
+      background: transparent;
+      transition: background-color var(--motion-state-duration)
+        var(--motion-state-easing);
+    }
+
+    .trigger--compact[aria-pressed="true"] .trigger__square {
+      background: var(--token-inspector-highlight-border);
     }
 
     .highlight {
@@ -120,14 +149,31 @@ export class TokenInspector extends LitElement {
 
   render() {
     const { inspection } = this;
+    const trigger = this.compact
+      ? html`
+          <button
+            type="button"
+            class="trigger--compact"
+            aria-pressed=${this.active ? "true" : "false"}
+            aria-label="Inspect tokens"
+            title="Inspect tokens"
+            @click=${this.toggle}
+          >
+            <span class="trigger__square" aria-hidden="true"></span>
+          </button>
+        `
+      : html`
+          <button
+            type="button"
+            class="trigger--label"
+            aria-pressed=${this.active ? "true" : "false"}
+            @click=${this.toggle}
+          >
+            ${this.active ? "Stop inspecting" : "Inspect tokens"}
+          </button>
+        `;
     return html`
-      <button
-        type="button"
-        aria-pressed=${this.active ? "true" : "false"}
-        @click=${this.toggle}
-      >
-        ${this.active ? "Stop inspecting" : "Inspect tokens"}
-      </button>
+      ${trigger}
       ${this.active && inspection
         ? html`
             <div

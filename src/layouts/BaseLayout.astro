@@ -10,6 +10,9 @@ import { flattenTokens } from "../lib/tokens";
 import pkg from "../../package.json";
 import contact from "../data/contact.json";
 import ThemePanel from "../components/ThemePanel.tsx";
+import { tokenTiers } from "../lib/token-tiers";
+
+const tiers = tokenTiers();
 
 // Colophon facts, computed from the same sources everything else uses.
 const tokenModules = import.meta.glob<{
@@ -112,6 +115,10 @@ const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
       >
         <span class="site-bar__swatch" aria-hidden="true"></span>
       </button>
+      <token-inspector
+        compact
+        class="site-bar__inspector"
+        tiers={JSON.stringify(tiers)}></token-inspector>
       <a
         class="site-bar__contact"
         href={`mailto:${contact.email}`}
@@ -125,8 +132,10 @@ const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
     </div>
     <noscript>
       <style>
-        /* Theming is a JS enhancement; without it the popover would be empty. */
-        .site-bar__hue {
+        /* Theming and the inspector are JS enhancements; without JS the
+           popover would be empty and the custom element never upgrades. */
+        .site-bar__hue,
+        .site-bar__inspector {
           display: none;
         }
       </style>
@@ -147,6 +156,9 @@ const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
 </html>
 
 <script>
+  // Registers <token-inspector> for the instrument bar (site-wide).
+  import "../components/TokenInspector";
+
   // Contact: on precise pointers, copy the address instead of launching a
   // mail client that is often unconfigured on desktops. The plain mailto
   // stays the no-JS and touch fallback (mail apps work well there).
@@ -192,9 +204,7 @@ const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
     inline-size: fit-content;
     max-inline-size: calc(100vw - 2 * var(--space-inset-md));
     margin-block-start: var(--space-stack-sm);
-    /* Exact text axis of the 72rem content column (incl. its inset).
-       Percent instead of vw: vw includes the scrollbar, layout does not. */
-    margin-inline-start: calc(max(0px, (100% - 72rem) / 2) + var(--space-inset-lg));
+    margin-inline: auto;
     padding: var(--space-inset-xs) var(--space-inset-md);
     background: var(--color-surface-raised);
     border: 1px solid var(--color-border-default);
@@ -281,16 +291,24 @@ const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
     .site-bar__contact {
       padding-inline: var(--space-inset-sm);
     }
+
+    /* The inspector is a hover/focus lens — pointless on touch, and the
+       square would cost the single-line budget. */
+    .site-bar__inspector {
+      display: none;
+    }
   }
 
-  /* Theme popover: top layer, anchored under the bar on the same axis.
+  /* Theme popover: top layer, centered under the bar like the bar itself.
      The panel inside brings its own surface. */
   .theme-popover {
     position: fixed;
     inset: unset;
     inset-block-start: calc(var(--space-stack-sm) + var(--space-stack-xl));
-    inset-inline-start: calc(max(0px, 50vw - 36rem) + var(--space-inset-lg));
-    margin: 0;
+    inset-inline: 0;
+    inline-size: fit-content;
+    margin-block: 0;
+    margin-inline: auto;
     padding: 0;
     border: none;
     background: none;
