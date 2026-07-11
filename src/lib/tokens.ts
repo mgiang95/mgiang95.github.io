@@ -53,3 +53,40 @@ export const ACCENT_RAMP_STEPS = [
 export function referenceToCssVar(value: string): string {
   return value.replace(/\{([^}]+)\}/g, (_, path: string) => `var(--${path.replace(/\./g, "-")})`);
 }
+
+export interface TokenTiers {
+  primitive: string[];
+  semantic: string[];
+  component: string[];
+}
+
+/** Token tier of a file, by its path inside /tokens. */
+export function classifyTier(filePath: string): keyof TokenTiers {
+  if (filePath.includes("/primitives/")) return "primitive";
+  if (filePath.includes("/semantic/")) return "semantic";
+  return "component";
+}
+
+/**
+ * Tier lists of custom-property names from [filePath, DTCG tree] entries.
+ * Theme/density variants re-declare the same names and dedupe via the
+ * sets. Pure — the import.meta.glob wiring lives in token-tiers.ts.
+ */
+export function buildTiers(
+  entries: ReadonlyArray<readonly [string, DtcgNode]>,
+): TokenTiers {
+  const sets: Record<keyof TokenTiers, Set<string>> = {
+    primitive: new Set(),
+    semantic: new Set(),
+    component: new Set(),
+  };
+  for (const [filePath, tree] of entries) {
+    const tier = classifyTier(filePath);
+    for (const token of flattenTokens(tree)) sets[tier].add(token.cssVar);
+  }
+  return {
+    primitive: [...sets.primitive],
+    semantic: [...sets.semantic],
+    component: [...sets.component],
+  };
+}

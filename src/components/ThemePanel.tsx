@@ -9,6 +9,12 @@
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 import "./ThemePanel.css";
 import { worstPair } from "../lib/live-contrast";
+import {
+  dispatchHueChange,
+  dispatchPrefChange,
+  onHueChange,
+  onPrefChange,
+} from "../lib/theme-events";
 
 type Scheme = "system" | "light" | "dark";
 type Density = "normal" | "tight" | "comfy";
@@ -84,36 +90,23 @@ export default function ThemePanel({ variant = "panel" }: Props) {
   );
   const [systemDark, setSystemDark] = useState(false);
 
-  // Follow hue changes from outside the panel (e.g. the poster scrub on
-  // the home hero). Both sides dispatch "hue-change" on user input only,
-  // so there is no feedback loop — React bails out on identical state.
-  useEffect(() => {
-    const onExternalHue = (event: Event) => {
-      const value = (event as CustomEvent<number>).detail;
-      if (Number.isFinite(value)) setHue(Math.round(value));
-    };
-    window.addEventListener("hue-change", onExternalHue);
-    return () => window.removeEventListener("hue-change", onExternalHue);
-  }, []);
-
-  // Same contract for scheme/density: with the panel also living in the
-  // nav popover there can be several instances per page — user input in
-  // one dispatches "pref-change", the others follow. Dispatch happens in
-  // the input handlers only, so there is no feedback loop.
-  useEffect(() => {
-    const onExternalPref = (event: Event) => {
-      const { kind, value } =
-        (event as CustomEvent<{ kind: string; value: string }>).detail ?? {};
-      if (kind === "scheme" && (value === "system" || value === "light" || value === "dark")) {
-        setScheme(value);
-      }
-      if (kind === "density" && (value === "tight" || value === "normal" || value === "comfy")) {
-        setDensity(value);
-      }
-    };
-    window.addEventListener("pref-change", onExternalPref);
-    return () => window.removeEventListener("pref-change", onExternalPref);
-  }, []);
+  // Follow theming input from outside this instance (poster scrub, other
+  // panel instances in nav popover / hero / docs). Dispatch happens in the
+  // input handlers only, so there is no feedback loop — React bails out on
+  // identical state. Contract & ordering rule: src/lib/theme-events.ts.
+  useEffect(() => onHueChange((value) => setHue(Math.round(value))), []);
+  useEffect(
+    () =>
+      onPrefChange(({ kind, value }) => {
+        if (kind === "scheme" && (value === "system" || value === "light" || value === "dark")) {
+          setScheme(value);
+        }
+        if (kind === "density" && (value === "tight" || value === "normal" || value === "comfy")) {
+          setDensity(value);
+        }
+      }),
+    [],
+  );
 
   // Track the OS scheme for the badge while "system" is selected.
   useEffect(() => {
@@ -203,11 +196,7 @@ export default function ThemePanel({ variant = "panel" }: Props) {
             checked={scheme === value}
             onChange={() => {
               setScheme(value);
-              window.dispatchEvent(
-                new CustomEvent("pref-change", {
-                  detail: { kind: "scheme", value },
-                }),
-              );
+              dispatchPrefChange("scheme", value);
             }}
           />
           {value}
@@ -228,11 +217,7 @@ export default function ThemePanel({ variant = "panel" }: Props) {
             checked={density === value}
             onChange={() => {
               setDensity(value);
-              window.dispatchEvent(
-                new CustomEvent("pref-change", {
-                  detail: { kind: "density", value },
-                }),
-              );
+              dispatchPrefChange("density", value);
             }}
           />
           {value}
@@ -273,9 +258,7 @@ export default function ThemePanel({ variant = "panel" }: Props) {
           onChange={(event) => {
             const value = Number(event.target.value);
             setHue(value);
-            window.dispatchEvent(
-              new CustomEvent("hue-change", { detail: value }),
-            );
+            dispatchHueChange(value);
           }}
         />
       </div>

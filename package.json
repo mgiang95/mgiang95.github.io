@@ -9,6 +9,7 @@
     "check:contrast": "node scripts/check-contrast.mjs",
     "audit": "node scripts/audit-tokens.mjs",
     "test": "node --experimental-strip-types --test",
+    "clean": "rm -rf dist .astro node_modules/.astro .tokens-build",
     "dev": "npm run tokens && astro dev",
     "build": "npm run tokens && npm run check:contrast && npm run audit && npm test && astro build",
     "preview": "astro preview",

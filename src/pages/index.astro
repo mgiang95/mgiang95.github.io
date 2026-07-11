@@ -137,6 +137,7 @@ const more = (
 
 <script>
   import { worstPair, currentTheme } from "../lib/live-contrast";
+  import { dispatchHueChange, onHueChange } from "../lib/theme-events";
 
   // Live contrast badge in the annotations: the static claim becomes the
   // computed proof, following hue drags and scheme switches. The no-JS
@@ -169,7 +170,7 @@ const more = (
   // Hue scrubbing on the poster canvas: horizontal dragging maps the full
   // canvas width to 360 degrees. Pointer-only enhancement — the accessible
   // hue control remains the ThemePanel in the nav popover; all instances
-  // stay in sync via the "hue-change" event (dispatched on user input
+  // stay in sync via the theme-events contract (dispatched on user input
   // only, so no loop).
   const canvas = document.querySelector<HTMLElement>("[data-hue-scrub]");
   const readout = document.querySelector("[data-hue-readout]");
@@ -190,7 +191,7 @@ const more = (
     const apply = (hue: number) => {
       html.style.setProperty("--hue", String(hue));
       if (readout) readout.textContent = String(hue);
-      window.dispatchEvent(new CustomEvent("hue-change", { detail: hue }));
+      dispatchHueChange(hue);
       // Persist debounced — same key and cadence as the ThemePanel.
       window.clearTimeout(saveTimer);
       saveTimer = window.setTimeout(() => {
@@ -227,11 +228,8 @@ const more = (
     canvas.addEventListener("pointercancel", endDrag);
 
     // Keep the annotation readouts live when the panel slider is the
-    // source. The event payload carries the hue — the custom property is
-    // not applied yet when a React onChange dispatches.
-    window.addEventListener("hue-change", (event) => {
-      const value = (event as CustomEvent<number>).detail;
-      if (!Number.isFinite(value)) return;
+    // source. The payload carries the hue — ordering rule in theme-events.
+    onHueChange((value) => {
       if (readout) readout.textContent = String(Math.round(value));
       updateContrast(value);
     });

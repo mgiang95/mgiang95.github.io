@@ -5,9 +5,10 @@
  * badge — one source, like color-math.js underneath it.
  */
 import { oklchToSrgb, contrast, parseOklch, PAIRS } from "./color-math.js";
-import primitiveColors from "../../tokens/primitives/color.tokens.json";
-import lightColors from "../../tokens/semantic/color-light.tokens.json";
-import darkColors from "../../tokens/semantic/color-dark.tokens.json";
+// Import attributes so the module also loads under plain Node (tests).
+import primitiveColors from "../../tokens/primitives/color.tokens.json" with { type: "json" };
+import lightColors from "../../tokens/semantic/color-light.tokens.json" with { type: "json" };
+import darkColors from "../../tokens/semantic/color-dark.tokens.json" with { type: "json" };
 
 export type ThemeName = "light" | "dark";
 
@@ -47,6 +48,18 @@ export interface WorstPair {
   margin: number;
   fg: string;
   bg: string;
+}
+
+/**
+ * Proof-pairs whose tokens did NOT resolve to palette steps — must be
+ * empty, or the live badge silently computes over a subset of the proof
+ * (i.e. it lies). Asserted by the test suite.
+ */
+export function unresolvedPairs(theme: ThemeName): string[] {
+  const palette = palettes[theme];
+  return PAIRS.flatMap(([fg, bg]) =>
+    [fg, bg].filter((name) => !palette[name]),
+  );
 }
 
 /**
