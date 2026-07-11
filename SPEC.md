@@ -94,10 +94,13 @@ Mini-"Docs"-Seite im Storybook-Stil: jede Komponente mit Varianten + den konsumi
 ## 6. Seitenstruktur & Inhalt
 
 ```
-/               Work: Plakat-Hero (These + Hue-Scrub) + Projektindex
-                (editoriale Zeilen 01/02/03, System-Zeile, More-Tabelle)
+/               Work: Plakat-Hero (Identity-Kicker, These, Hue-Scrub,
+                Kontroll-Zeile Scheme/Dichte, Live-Kontrast-Annotation)
+                + Projektindex (editoriale Zeilen, System-Zeile,
+                More-Tabelle mit Links) + Contact-Outro als Akzent-Bookend
 /projects       Redirect auf / (Index lebt auf der Startseite)
 /projects/[x]   Case Study: Problem → Ansatz → Entscheidung → Ergebnis
+                (Seiten fuer ALLE Projekte, auch die kleineren Eintraege)
 /blog           Notizen aus der Journey (Content Collection, lose Kadenz)
 /blog/[x]       Blogeintrag mit berechneten Metadaten (Nr., Datum, Lesezeit)
 /about          Person: Bio + Portrait, CV-Timeline mit Work/Education-Filter

@@ -91,3 +91,28 @@
   background: var(--color-text-primary);
   color: var(--color-surface-default);
 }
+
+/* Strip variant: a slim control row at the poster's edge — no surface, no
+   heading; scheme and density read as instrument switches. */
+.theme-panel--strip {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: var(--space-inline-xl);
+  row-gap: var(--space-stack-xs);
+  padding: var(--space-inset-sm) 0;
+  background: none;
+  border: none;
+  border-block-end: 1px solid var(--color-border-default);
+  border-radius: 0;
+  max-inline-size: none;
+}
+
+.theme-panel--strip .theme-panel__group {
+  inline-size: auto;
+  align-items: baseline;
+}
+
+.theme-panel--strip .theme-panel__group .theme-panel__label {
+  inline-size: auto;
+  padding: 0;
+}

@@ -6,7 +6,7 @@ import "@fontsource-variable/archivo/wdth.css";
 import "@fontsource/fragment-mono";
 import "../styles/tokens.css";
 import "../styles/global.css";
-import { flattenTokens } from "../lib/tokens";
+import { flattenTokens, ACCENT_RAMP_STEPS } from "../lib/tokens";
 import pkg from "../../package.json";
 import contact from "../data/contact.json";
 import ThemePanel from "../components/ThemePanel.tsx";
@@ -144,13 +144,26 @@ const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
       <slot />
     </main>
     <footer class="site-footer">
-      <p class="site-footer__note">
-        <code>v{pkg.version}</code> · <code>{tokenCount} tokens</code> ·
-        Astro + React + Lit — <a href="/system">how this site is built</a>
-      </p>
-      <p class="site-footer__copyright">
-        © 2026 Michael Giang · <a href="/imprint">Imprint</a>
-      </p>
+      <div class="site-footer__ramp" aria-hidden="true">
+        {
+          ACCENT_RAMP_STEPS.map((step) => (
+            <span style={`background: var(--color-accent-${step})`} />
+          ))
+        }
+      </div>
+      <div class="site-footer__content">
+        <p class="site-footer__note">
+          <code>v{pkg.version}</code> · <code>{tokenCount} tokens</code> ·
+          Astro + React + Lit — <a href="/system">how this site is built</a>
+        </p>
+        <p class="site-footer__links">
+          <a href={contact.github}>GitHub</a> ·
+          <a href={contact.linkedin}>LinkedIn</a> ·
+          <a href={`mailto:${contact.email}`}>Email</a> ·
+          <a href="/imprint">Imprint</a>
+        </p>
+        <p class="site-footer__copyright">© 2026 Michael Giang</p>
+      </div>
     </footer>
   </body>
 </html>
@@ -162,31 +175,32 @@ const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
   // Contact: on precise pointers, copy the address instead of launching a
   // mail client that is often unconfigured on desktops. The plain mailto
   // stays the no-JS and touch fallback (mail apps work well there).
-  const contactLink = document.querySelector<HTMLAnchorElement>("[data-copy-email]");
-  const contactLabel = contactLink?.querySelector<HTMLElement>("[data-contact-label]");
-  if (
-    contactLink &&
-    contactLabel &&
-    navigator.clipboard &&
-    matchMedia("(pointer: fine)").matches
-  ) {
-    let resetTimer = 0;
-    contactLink.addEventListener("click", (event) => {
-      event.preventDefault();
-      navigator.clipboard
-        .writeText(contactLink.dataset.copyEmail ?? "")
-        .then(() => {
-          contactLabel.textContent = "copied ✓";
-          window.clearTimeout(resetTimer);
-          resetTimer = window.setTimeout(() => {
-            contactLabel.textContent = "Contact";
-          }, 1600);
-        })
-        .catch(() => {
-          // Clipboard blocked — fall back to the mail client after all.
-          window.location.href = contactLink.href;
-        });
-    });
+  // Several copy buttons can exist (instrument bar, home outro).
+  if (navigator.clipboard && matchMedia("(pointer: fine)").matches) {
+    for (const link of document.querySelectorAll<HTMLAnchorElement>(
+      "[data-copy-email]",
+    )) {
+      const label = link.querySelector<HTMLElement>("[data-contact-label]");
+      if (!label) continue;
+      const original = label.textContent;
+      let resetTimer = 0;
+      link.addEventListener("click", (event) => {
+        event.preventDefault();
+        navigator.clipboard
+          .writeText(link.dataset.copyEmail ?? "")
+          .then(() => {
+            label.textContent = "copied ✓";
+            window.clearTimeout(resetTimer);
+            resetTimer = window.setTimeout(() => {
+              label.textContent = original;
+            }, 1600);
+          })
+          .catch(() => {
+            // Clipboard blocked — fall back to the mail client after all.
+            window.location.href = link.href;
+          });
+      });
+    }
   }
 </script>
 
@@ -321,14 +335,28 @@ const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
     padding: var(--space-stack-xl) var(--space-inset-lg);
   }
 
-  .site-footer {
+  /* The poster's ramp returns as the site's closing edge — it follows the
+     hue like everything else. */
+  .site-footer__ramp {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 1fr;
+    block-size: var(--space-stack-xs);
+  }
+
+  .site-footer__content {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
+    align-items: baseline;
     gap: var(--space-inline-lg);
     padding: var(--space-inset-lg);
-    border-block-start: 1px solid var(--color-border-default);
     color: var(--color-text-secondary);
     font-size: var(--font-size-200);
+  }
+
+  .site-footer__links {
+    font-family: var(--typography-label-family);
+    font-size: var(--typography-label-size);
   }
 </style>

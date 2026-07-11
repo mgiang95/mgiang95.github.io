@@ -6,12 +6,9 @@ import Badge from "../../components/Badge.astro";
 import Gallery from "../../components/Gallery.astro";
 
 export async function getStaticPaths() {
-  // Featured cases and their sub-cases get pages; short "more projects"
-  // entries only appear in the overview list.
-  const entries = await getCollection(
-    "projects",
-    ({ data }) => data.featured || data.parent !== undefined,
-  );
+  // Every project gets a page — since the draft pass, the smaller entries
+  // carry full Problem/Approach/Outcome texts and the index table links here.
+  const entries = await getCollection("projects");
   return entries.map((entry) => ({
     params: { slug: entry.id },
     props: { entry },

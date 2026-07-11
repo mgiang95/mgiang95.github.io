@@ -3,6 +3,8 @@ import { getCollection } from "astro:content";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import ThemePanel from "../components/ThemePanel.tsx";
 import ProjectRow from "../components/ProjectRow.astro";
+import { ACCENT_RAMP_STEPS } from "../lib/tokens";
+import contact from "../data/contact.json";
 
 const featured = (
   await getCollection("projects", ({ data }) => data.featured)
@@ -11,9 +13,6 @@ const featured = (
 const more = (
   await getCollection("projects", ({ data }) => !data.featured && !data.parent)
 ).sort((a, b) => a.data.order - b.data.order);
-
-/** Accent ramp steps, light to dark — the poster's right-hand color band. */
-const RAMP_STEPS = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950];
 ---
 
 <BaseLayout
@@ -21,6 +20,9 @@ const RAMP_STEPS = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950];
   description="Portfolio of Michael Giang, Design System Engineer and UX Designer in Zurich. This site runs on a live design token pipeline — adjust hue, color scheme and density yourself."
 >
   <section class="poster" aria-labelledby="poster-headline">
+    <p class="poster__kicker">
+      Michael Giang · Design System Engineer · Zurich
+    </p>
     <h1 class="poster__headline" id="poster-headline">
       This site is a running design system.
     </h1>
@@ -29,7 +31,7 @@ const RAMP_STEPS = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950];
       <p class="poster__facts" aria-hidden="true">
         <code>--hue: <span data-hue-readout>220</span></code>
         <code>color.accent.&lbrace;50…950&rbrace;</code>
-        <code>contrast ≥ 4.5:1 for every hue</code>
+        <code data-contrast-readout>contrast ≥ 4.5:1 for every hue</code>
       </p>
       <a class="poster__how" href="/system">how this is built →</a>
     </div>
@@ -44,7 +46,7 @@ const RAMP_STEPS = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950];
       </div>
       <div class="poster__ramp" aria-hidden="true">
         {
-          RAMP_STEPS.map((step) => (
+          ACCENT_RAMP_STEPS.map((step) => (
             <span
               class="poster__step"
               style={`background: var(--color-accent-${step})`}
@@ -54,18 +56,15 @@ const RAMP_STEPS = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950];
       </div>
     </div>
 
-    <div class="poster__meta">
-      <div class="poster__copy">
-        <p class="poster__lead">
-          I'm Michael Giang, a Design System Engineer and UX Designer based in
-          Zurich. Everything here resolves from design tokens — try it: change
-          hue, scheme and density. Contrast stays AA by construction.
-        </p>
-      </div>
-      <div class="poster__panel">
-        <ThemePanel client:idle />
-      </div>
+    <div class="poster__controls">
+      <ThemePanel client:idle variant="strip" />
     </div>
+
+    <p class="poster__lead">
+      Everything here resolves from design tokens — change hue, scheme and
+      density, and contrast stays AA by construction. The systems I build
+      for product teams follow the same rule: they survive change.
+    </p>
   </section>
 
   <section class="work" aria-labelledby="work-heading">
@@ -104,7 +103,9 @@ const RAMP_STEPS = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950];
             more.map((entry) => (
               <tr>
                 <td class="more__period">{entry.data.period}</td>
-                <td class="more__title">{entry.data.title}</td>
+                <td class="more__title">
+                  <a href={`/projects/${entry.id}`}>{entry.data.title}</a>
+                </td>
                 <td class="more__focus">{entry.data.keywords.join(", ")}</td>
               </tr>
             ))
@@ -113,13 +114,63 @@ const RAMP_STEPS = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950];
       </table>
     </div>
   </section>
+
+  <section class="outro" aria-labelledby="outro-heading">
+    <div class="outro__field">
+      <h2 class="outro__heading" id="outro-heading">
+        Let's build systems that survive&nbsp;change.
+      </h2>
+      <div class="outro__actions">
+        <a
+          class="outro__email"
+          href={`mailto:${contact.email}`}
+          data-copy-email={contact.email}
+        >
+          <span data-contact-label>{contact.email}</span>
+        </a>
+        <a class="outro__link" href={contact.github}>GitHub</a>
+        <a class="outro__link" href={contact.linkedin}>LinkedIn</a>
+      </div>
+    </div>
+  </section>
 </BaseLayout>
 
 <script>
+  import { worstPair, currentTheme } from "../lib/live-contrast";
+
+  // Live contrast badge in the annotations: the static claim becomes the
+  // computed proof, following hue drags and scheme switches. The no-JS
+  // markup keeps the static (and still true) guarantee.
+  const contrastReadout = document.querySelector("[data-contrast-readout]");
+  function updateContrast(hueOverride?: number) {
+    if (!contrastReadout) return;
+    const hue =
+      hueOverride ??
+      (Number.parseFloat(
+        getComputedStyle(document.documentElement).getPropertyValue("--hue"),
+      ) ||
+        220);
+    const worst = worstPair(currentTheme(), hue);
+    contrastReadout.textContent = `contrast ${worst.ratio.toFixed(2)}:1 @ worst pair · AA ${
+      worst.margin >= 1 ? "✓" : "✗"
+    }`;
+  }
+  updateContrast();
+  // data-theme is applied by a React effect AFTER the pref-change event
+  // fires — observe the attribute itself instead of racing the event.
+  new MutationObserver(() => updateContrast()).observe(
+    document.documentElement,
+    { attributes: true, attributeFilter: ["data-theme"] },
+  );
+  matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () =>
+    updateContrast(),
+  );
+
   // Hue scrubbing on the poster canvas: horizontal dragging maps the full
   // canvas width to 360 degrees. Pointer-only enhancement — the accessible
-  // hue control remains the ThemePanel slider below; both stay in sync via
-  // the "hue-change" event (dispatched on user input only, so no loop).
+  // hue control remains the ThemePanel in the nav popover; all instances
+  // stay in sync via the "hue-change" event (dispatched on user input
+  // only, so no loop).
   const canvas = document.querySelector<HTMLElement>("[data-hue-scrub]");
   const readout = document.querySelector("[data-hue-readout]");
 
@@ -175,12 +226,14 @@ const RAMP_STEPS = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950];
     canvas.addEventListener("pointerup", endDrag);
     canvas.addEventListener("pointercancel", endDrag);
 
-    // Keep the annotation readout live when the panel slider is the source.
+    // Keep the annotation readouts live when the panel slider is the
+    // source. The event payload carries the hue — the custom property is
+    // not applied yet when a React onChange dispatches.
     window.addEventListener("hue-change", (event) => {
       const value = (event as CustomEvent<number>).detail;
-      if (readout && Number.isFinite(value)) {
-        readout.textContent = String(Math.round(value));
-      }
+      if (!Number.isFinite(value)) return;
+      if (readout) readout.textContent = String(Math.round(value));
+      updateContrast(value);
     });
   }
 </script>
@@ -190,6 +243,16 @@ const RAMP_STEPS = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950];
     display: grid;
     gap: var(--space-stack-md);
     padding-block: var(--space-stack-lg) var(--space-stack-xl);
+  }
+
+  /* Who/what/where in second one — before the thesis. */
+  .poster__kicker {
+    font-family: var(--typography-label-family);
+    font-size: var(--typography-label-size);
+    font-weight: var(--typography-label-weight);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-text-secondary);
   }
 
   .poster__headline {
@@ -294,22 +357,15 @@ const RAMP_STEPS = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950];
     display: block;
   }
 
-  .poster__meta {
-    display: grid;
-    gap: var(--space-stack-lg);
-    margin-block-start: var(--space-stack-sm);
-  }
-
-  @media (min-width: 60rem) {
-    .poster__meta {
-      grid-template-columns: 3fr 2fr;
-      column-gap: var(--space-inline-xl);
-      align-items: start;
-    }
+  /* The dismantled panel: scheme + density as a control row at the
+     poster's edge (hue is the canvas, the badge the annotations). */
+  .poster__controls {
+    min-block-size: var(--space-stack-xl);
   }
 
   .poster__lead {
     max-width: 55ch;
+    margin-block-start: var(--space-stack-sm);
     font-size: var(--typography-lead-size);
     color: var(--color-text-secondary);
   }
@@ -394,5 +450,62 @@ const RAMP_STEPS = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950];
 
   .more__focus {
     color: var(--color-text-secondary);
+  }
+
+  /* Outro: the poster's accent field returns as the closing bookend. */
+  .outro {
+    margin-block-start: var(--space-stack-xl);
+  }
+
+  .outro__field {
+    margin-inline: calc(50% - 50vw);
+    padding-block: var(--space-stack-xl);
+    padding-inline: calc(max(0px, 50vw - 36rem) + var(--space-inset-lg));
+    background: var(--color-surface-accent);
+    color: var(--color-text-on-accent);
+    display: grid;
+    gap: var(--space-stack-lg);
+    justify-items: start;
+  }
+
+  .outro__heading {
+    font-size: var(--font-size-800);
+    font-stretch: 115%;
+    line-height: var(--font-line-height-tight);
+    max-width: 18ch;
+  }
+
+  .outro__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-inline-lg);
+  }
+
+  .outro__email {
+    font-family: var(--typography-label-family);
+    font-size: var(--typography-label-size);
+    padding: var(--space-inset-xs) var(--space-inset-md);
+    border: 1px solid var(--color-text-on-accent);
+    color: var(--color-text-on-accent);
+    text-decoration: none;
+    transition:
+      background-color var(--motion-state-duration) var(--motion-state-easing),
+      color var(--motion-state-duration) var(--motion-state-easing);
+  }
+
+  .outro__email:hover {
+    background: var(--color-text-on-accent);
+    color: var(--color-surface-accent);
+  }
+
+  .outro__link {
+    font-family: var(--typography-label-family);
+    font-size: var(--typography-label-size);
+    color: var(--color-text-on-accent);
+  }
+
+  .outro__link:hover {
+    color: var(--color-text-on-accent);
   }
 </style>

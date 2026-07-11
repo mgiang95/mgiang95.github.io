@@ -41,6 +41,14 @@ export function flattenTokens(node: DtcgNode, prefix: string[] = []): FlatToken[
     .flatMap(([key, child]) => flattenTokens(child as DtcgNode, [...prefix, key]));
 }
 
+/**
+ * Accent ramp steps, light to dark — shared by the poster's color band and
+ * the footer's closing edge.
+ */
+export const ACCENT_RAMP_STEPS = [
+  50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950,
+] as const;
+
 /** Rewrites a DTCG reference value into the custom property it compiles to. */
 export function referenceToCssVar(value: string): string {
   return value.replace(/\{([^}]+)\}/g, (_, path: string) => `var(--${path.replace(/\./g, "-")})`);

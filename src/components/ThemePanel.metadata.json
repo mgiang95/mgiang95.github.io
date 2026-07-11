@@ -3,7 +3,10 @@
   "description": "React island for runtime theming: hue slider, colour scheme toggle, density choice and a live WCAG contrast badge.",
   "renderer": "react",
   "jsRequired": true,
-  "variants": [],
+  "variants": [
+    { "name": "panel", "use": "Full instrument: heading, hue slider, scheme/density, live contrast badge — nav popover and /system docs." },
+    { "name": "strip", "use": "Slim control row (scheme + density only) at the poster's edge — hue lives on the canvas, the badge in the annotations." }
+  ],
   "usage": {
     "useCases": [
       "Hero of the home page — the visitor operates the system in the first seconds",
