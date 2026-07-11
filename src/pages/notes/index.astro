@@ -1,43 +1,43 @@
 ---
 import { getCollection } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import { readingTime, formatDate } from "../../lib/blog";
+import { readingTime, formatDate } from "../../lib/notes";
 
-const posts = (await getCollection("blog", ({ data }) => !data.draft)).sort(
+const posts = (await getCollection("notes", ({ data }) => !data.draft)).sort(
   (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
 );
 ---
 
 <BaseLayout
-  title="Blog"
-  description="Collected notes from Michael Giang's journey — design systems, tokens, patterns and small findings. Loose cadence, no promises."
+  title="Notes"
+  description="Random thoughts and small findings from Michael Giang's journey — design systems, tokens, patterns. Loose cadence, no promises."
 >
-  <h1>Blog</h1>
+  <h1>Notes</h1>
   <p class="annotations" aria-hidden="true">
     <code>{posts.length} {posts.length === 1 ? "entry" : "entries"}</code>
-    <code>loose cadence</code>
+    <code>random thoughts</code>
+    <code>no cadence</code>
   </p>
-  <p class="blog__lead">
-    Collected notes from my journey — token decisions, patterns and small
-    findings from building design systems. This is an experiment: entries
-    appear when something is worth writing down, and we will see where it
-    goes from here.
+  <p class="notes__lead">
+    Random thoughts from my journey — token decisions, patterns, small
+    findings. Not a blog: entries appear when something is worth writing
+    down, and we will see where this goes.
   </p>
 
-  <div class="blog__list">
+  <div class="notes__list">
     {
       posts.map((post, i) => (
-        <article class="blog__row">
-          <a class="blog__link" href={`/blog/${post.id}`}>
-            <p class="blog__meta">
+        <article class="notes__row">
+          <a class="notes__link" href={`/notes/${post.id}`}>
+            <p class="notes__meta">
               <span aria-hidden="true">
                 {String(posts.length - i).padStart(3, "0")}
               </span>
               <span>{formatDate(post.data.date)}</span>
               <span>{readingTime(post.body ?? "")} min read</span>
             </p>
-            <h2 class="blog__title">{post.data.title}</h2>
-            <p class="blog__description">{post.data.description}</p>
+            <h2 class="notes__title">{post.data.title}</h2>
+            <p class="notes__description">{post.data.description}</p>
           </a>
         </article>
       ))
@@ -46,32 +46,32 @@ const posts = (await getCollection("blog", ({ data }) => !data.draft)).sort(
 </BaseLayout>
 
 <style>
-  .blog__lead {
+  .notes__lead {
     max-width: 55ch;
     margin-block-start: var(--space-stack-md);
     font-size: var(--typography-lead-size);
     color: var(--color-text-secondary);
   }
 
-  .blog__list {
+  .notes__list {
     margin-block-start: var(--space-stack-xl);
   }
 
-  .blog__row {
+  .notes__row {
     border-block-start: 2px solid var(--color-border-default);
     transition: border-color var(--motion-state-duration)
       var(--motion-state-easing);
   }
 
-  .blog__row:last-of-type {
+  .notes__row:last-of-type {
     border-block-end: 1px solid var(--color-border-default);
   }
 
-  .blog__row:hover {
+  .notes__row:hover {
     border-block-start-color: var(--color-surface-accent);
   }
 
-  .blog__link {
+  .notes__link {
     display: grid;
     justify-items: start;
     gap: var(--space-stack-xs);
@@ -80,7 +80,7 @@ const posts = (await getCollection("blog", ({ data }) => !data.draft)).sort(
     text-decoration: none;
   }
 
-  .blog__meta {
+  .notes__meta {
     display: flex;
     flex-wrap: wrap;
     gap: var(--space-inline-lg);
@@ -89,17 +89,17 @@ const posts = (await getCollection("blog", ({ data }) => !data.draft)).sort(
     color: var(--color-text-muted);
   }
 
-  .blog__title {
+  .notes__title {
     font-size: var(--typography-heading-lg-size);
     line-height: var(--typography-heading-lg-line-height);
     transition: color var(--motion-state-duration) var(--motion-state-easing);
   }
 
-  .blog__link:hover .blog__title {
+  .notes__link:hover .notes__title {
     color: var(--color-interactive-hover);
   }
 
-  .blog__description {
+  .notes__description {
     max-width: 55ch;
     color: var(--color-text-secondary);
   }

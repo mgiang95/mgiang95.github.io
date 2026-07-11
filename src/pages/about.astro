@@ -206,7 +206,7 @@ function formatPeriod(start: Date, end: Date | null): string {
                       src={data.cover}
                       alt={`Cover: ${data.title}`}
                       widths={[160, 320]}
-                      sizes="7rem"
+                      sizes="10rem"
                     />
                   ) : (
                     <span
@@ -443,30 +443,28 @@ function formatPeriod(start: Date, end: Date | null): string {
     border-block-end: 1px solid var(--color-border-default);
   }
 
+  /* Dense cover grid: title + author suffice, a takeaway is optional —
+     the shelf scales to many books per year without demanding prose. */
   .about__shelf-list {
     list-style: none;
     margin: var(--space-stack-md) 0 0;
     padding: 0;
     display: grid;
-    gap: var(--space-stack-lg) var(--space-inline-xl);
-  }
-
-  @media (min-width: 60rem) {
-    .about__shelf-list {
-      grid-template-columns: repeat(2, 1fr);
-    }
+    grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr));
+    gap: var(--space-stack-lg) var(--space-inline-lg);
   }
 
   .about__book {
     display: grid;
-    grid-template-columns: 7rem 1fr;
-    column-gap: var(--space-inline-md);
-    align-items: start;
+    gap: var(--space-stack-xs);
+    align-content: start;
   }
 
   .about__book-cover {
     inline-size: 100%;
     block-size: auto;
+    aspect-ratio: 2 / 3;
+    object-fit: cover;
     border: 1px solid var(--color-border-default);
   }
 
@@ -491,6 +489,8 @@ function formatPeriod(start: Date, end: Date | null): string {
 
   .about__book-title {
     font-weight: var(--font-weight-medium);
+    font-size: var(--font-size-200);
+    line-height: var(--font-line-height-tight);
   }
 
   .about__book-author {

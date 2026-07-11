@@ -1,10 +1,10 @@
 ---
 import { getCollection, render } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import { readingTime, formatDate } from "../../lib/blog";
+import { readingTime, formatDate } from "../../lib/notes";
 
 export async function getStaticPaths() {
-  const posts = await getCollection("blog", ({ data }) => !data.draft);
+  const posts = await getCollection("notes", ({ data }) => !data.draft);
   const chronological = [...posts].sort(
     (a, b) => a.data.date.valueOf() - b.data.date.valueOf(),
   );
@@ -35,8 +35,8 @@ const { Content } = await render(entry);
     <div class="prose post__body">
       <Content />
     </div>
-    <nav class="post__footer-nav" aria-label="Blog navigation">
-      <a href="/blog">← All entries</a>
+    <nav class="post__footer-nav" aria-label="Notes navigation">
+      <a href="/notes">← All entries</a>
     </nav>
   </article>
 </BaseLayout>
