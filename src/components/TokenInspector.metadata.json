@@ -5,7 +5,8 @@
   "jsRequired": true,
   "variants": [
     { "name": "default", "use": "Labelled text button — the /system docs demo." },
-    { "name": "compact", "use": "Outlined-square icon trigger for the instrument bar (fills while inspecting) — counterpart to the filled theme swatch." }
+    { "name": "compact", "use": "Outlined-square icon trigger for the instrument bar (fills while inspecting) — counterpart to the filled theme swatch." },
+    { "name": "compact + label", "use": "Hint form (square + visible text, inherits surrounding color) — the poster field's second verb next to the drag hint. Only one instance is active at a time; activating one deactivates the others." }
   ],
   "usage": {
     "useCases": [

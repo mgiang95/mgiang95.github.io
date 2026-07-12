@@ -4,7 +4,10 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import ThemePanel from "../components/ThemePanel.tsx";
 import ProjectRow from "../components/ProjectRow.astro";
 import { ACCENT_RAMP_STEPS } from "../lib/tokens";
+import { tokenTiers } from "../lib/token-tiers";
 import contact from "../data/contact.json";
+
+const tiers = tokenTiers();
 
 const featured = (
   await getCollection("projects", ({ data }) => data.featured)
@@ -39,7 +42,14 @@ const more = (
     <div class="poster__canvas" data-hue-scrub>
       <div class="poster__field">
         <p class="poster__claim">Drag the color. Nothing&nbsp;breaks.</p>
-        <p class="poster__hint" aria-hidden="true">⟷ drag to shift the hue</p>
+        <div class="poster__hints">
+          <p class="poster__hint" aria-hidden="true">⟷ drag to shift the hue</p>
+          <token-inspector
+            compact
+            label="inspect the tokens"
+            class="poster__inspect"
+            tiers={JSON.stringify(tiers)}></token-inspector>
+        </div>
         <code class="poster__field-label" aria-hidden="true">
           --color-surface-accent
         </code>
@@ -321,9 +331,25 @@ const more = (
     max-width: 16ch;
   }
 
+  /* The poster's instruction set: both verbs of the thesis — change
+     (drag) and read (inspect) — as parallel mono hints. */
+  .poster__hints {
+    display: grid;
+    gap: var(--space-stack-xs);
+    justify-items: start;
+  }
+
   .poster__hint {
     font-family: var(--typography-label-family);
     font-size: var(--typography-label-size);
+  }
+
+  /* A hover lens is pointless on touch; narrow screens lose it like the
+     nav square does. */
+  @media (max-width: 30rem) {
+    .poster__inspect {
+      display: none;
+    }
   }
 
   .poster__field-label {

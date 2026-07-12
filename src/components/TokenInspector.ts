@@ -39,6 +39,7 @@ export class TokenInspector extends LitElement {
   static properties = {
     tiers: { type: Object },
     compact: { type: Boolean },
+    label: { type: String },
     active: { state: true },
     inspection: { state: true },
   };
@@ -46,6 +47,11 @@ export class TokenInspector extends LitElement {
   declare tiers: TierLists;
   /** Square icon trigger for the instrument bar instead of the text button. */
   declare compact: boolean;
+  /**
+   * Optional text next to the compact square — the "hint" form used inside
+   * the poster field. Inherits the surrounding color (works on accent).
+   */
+  declare label: string;
   declare active: boolean;
   declare inspection: Inspection | null;
 
@@ -55,8 +61,21 @@ export class TokenInspector extends LitElement {
     super();
     this.tiers = { primitive: [], semantic: [], component: [] };
     this.compact = false;
+    this.label = "";
     this.active = false;
     this.inspection = null;
+  }
+
+  // Only one lens at a time: activating any instance deactivates the rest.
+  private onOtherActive = (event: Event) => {
+    if ((event as CustomEvent<unknown>).detail !== this && this.active) {
+      this.deactivate();
+    }
+  };
+
+  connectedCallback() {
+    super.connectedCallback();
+    window.addEventListener("token-inspector-active", this.onOtherActive);
   }
 
   static styles = css`
@@ -105,6 +124,35 @@ export class TokenInspector extends LitElement {
       background: var(--token-inspector-highlight-border);
     }
 
+    /* Hint form: square + visible label, inheriting the surrounding color —
+       designed for the poster field, parallel to its drag hint. */
+    .trigger--hint {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-inline-xs);
+      padding: 0;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: inherit;
+      font-family: var(--typography-label-family);
+      font-size: var(--typography-label-size);
+    }
+
+    .trigger--hint .trigger__square {
+      display: block;
+      inline-size: 1em;
+      block-size: 1em;
+      border: 2px solid currentColor;
+      background: transparent;
+      transition: background-color var(--motion-state-duration)
+        var(--motion-state-easing);
+    }
+
+    .trigger--hint[aria-pressed="true"] .trigger__square {
+      background: currentColor;
+    }
+
     .highlight {
       position: fixed;
       z-index: 90;
@@ -150,18 +198,30 @@ export class TokenInspector extends LitElement {
   render() {
     const { inspection } = this;
     const trigger = this.compact
-      ? html`
-          <button
-            type="button"
-            class="trigger--compact"
-            aria-pressed=${this.active ? "true" : "false"}
-            aria-label="Inspect tokens"
-            title="Inspect tokens"
-            @click=${this.toggle}
-          >
-            <span class="trigger__square" aria-hidden="true"></span>
-          </button>
-        `
+      ? this.label
+        ? html`
+            <button
+              type="button"
+              class="trigger--hint"
+              aria-pressed=${this.active ? "true" : "false"}
+              @click=${this.toggle}
+            >
+              <span class="trigger__square" aria-hidden="true"></span>
+              ${this.label}
+            </button>
+          `
+        : html`
+            <button
+              type="button"
+              class="trigger--compact"
+              aria-pressed=${this.active ? "true" : "false"}
+              aria-label="Inspect tokens"
+              title="Inspect tokens"
+              @click=${this.toggle}
+            >
+              <span class="trigger__square" aria-hidden="true"></span>
+            </button>
+          `
       : html`
           <button
             type="button"
@@ -207,6 +267,9 @@ export class TokenInspector extends LitElement {
 
   private activate() {
     this.active = true;
+    window.dispatchEvent(
+      new CustomEvent("token-inspector-active", { detail: this }),
+    );
     document.addEventListener("pointermove", this.onPointerMove);
     document.addEventListener("focusin", this.onFocusIn);
     document.addEventListener("keydown", this.onKeyDown);
@@ -224,6 +287,7 @@ export class TokenInspector extends LitElement {
 
   disconnectedCallback() {
     super.disconnectedCallback();
+    window.removeEventListener("token-inspector-active", this.onOtherActive);
     this.deactivate();
   }
 
