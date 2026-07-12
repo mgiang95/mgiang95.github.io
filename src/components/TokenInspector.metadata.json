@@ -3,10 +3,15 @@
   "description": "Lit web component — the third renderer next to Astro and React. While active it reads the page's stylesheets live and shows which token custom properties style the element under cursor or keyboard focus, grouped by tier.",
   "renderer": "lit",
   "jsRequired": true,
-  "variants": [],
+  "variants": [
+    { "name": "default", "use": "Labelled text button — the /system docs demo." },
+    { "name": "compact", "use": "Outlined-square icon trigger for the instrument bar (fills while inspecting) — counterpart to the filled theme swatch." },
+    { "name": "compact + label", "use": "Hint form (square + visible text, inherits surrounding color) — sits in the hero's instrument row next to scheme/density (never inside the drag canvas: pointer capture would steal its clicks). Only one instance is active at a time; activating one deactivates the others." }
+  ],
   "usage": {
     "useCases": [
-      "Token exploration on /system — hover any element and see its token diet",
+      "Site-wide in the instrument bar (compact) — hover any element on any page and see its token diet",
+      "Token exploration demo on /system (default variant)",
       "Proof that theming crosses the shadow DOM boundary: the inspector styles itself via the same custom properties it reports"
     ],
     "antiPatterns": [
@@ -24,7 +29,7 @@
   },
   "tokenPrefixes": ["token-inspector", "button"],
   "a11y": [
-    "Toggle is a real <button> with aria-pressed; Escape deactivates",
+    "Both triggers are real <button>s with aria-pressed; the compact square carries an aria-label; Escape deactivates",
     "Follows keyboard focus (focusin), not only the pointer",
     "Overlay and panel are aria-hidden and pointer-transparent — a visual lens, never an interaction target"
   ]

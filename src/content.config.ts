@@ -76,15 +76,32 @@ const certifications = defineCollection({
   }),
 });
 
-/** Blog — collected notes from the journey; loose cadence, no promises. */
-const blog = defineCollection({
-  loader: glob({ pattern: "**/*.md", base: "./src/content/blog" }),
+/** Notes — random thoughts from the journey; loose cadence, no promises. */
+const notes = defineCollection({
+  loader: glob({ pattern: "**/*.md", base: "./src/content/notes" }),
   schema: z.object({
     title: z.string(),
     description: z.string(),
     date: z.coerce.date(),
     draft: z.boolean().default(false),
   }),
+});
+
+/**
+ * Reading log — an ongoing collection, maintained like the notes: one JSON
+ * file per book. `year` (when read) is the shelf grouping on /about;
+ * `cover` is optional — books without one get a generated typographic cover.
+ */
+const books = defineCollection({
+  loader: glob({ pattern: "**/*.json", base: "./src/content/books" }),
+  schema: ({ image }) =>
+    z.object({
+      title: z.string(),
+      author: z.string(),
+      year: z.number().int(),
+      cover: image().optional(),
+      takeaway: z.string().optional(),
+    }),
 });
 
 /** Prose snippets about the person (intro/bio). */
@@ -101,4 +118,11 @@ const about = defineCollection({
     }),
 });
 
-export const collections = { projects, timeline, certifications, about, blog };
+export const collections = {
+  projects,
+  timeline,
+  certifications,
+  about,
+  notes,
+  books,
+};

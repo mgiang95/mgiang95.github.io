@@ -15,10 +15,8 @@ import galleryDemoHierarchy from "../assets/projects/BNI_DS-css-hierarchy.jpg";
 import galleryDemoDeprecated from "../assets/projects/BNI_DS-deprecated_mode.jpg";
 import galleryDemoAudit from "../assets/projects/BNI_DS-layout_inconsistencies.jpg";
 import { flattenTokens } from "../lib/tokens";
+import { tokenTiers } from "../lib/token-tiers";
 import primitiveColors from "../../tokens/primitives/color.tokens.json";
-import primitiveDimension from "../../tokens/primitives/dimension.tokens.json";
-import primitiveTypography from "../../tokens/primitives/typography.tokens.json";
-import primitiveMotion from "../../tokens/primitives/motion.tokens.json";
 import semanticColorsLight from "../../tokens/semantic/color-light.tokens.json";
 import semanticSpace from "../../tokens/semantic/space-normal.tokens.json";
 import semanticShape from "../../tokens/semantic/shape.tokens.json";
@@ -62,34 +60,12 @@ const componentCount = Object.keys(
   import.meta.glob("../components/*.metadata.json"),
 ).length;
 
-// Tier lists for the TokenInspector — same DTCG sources as everything else.
-const tierVars = {
-  primitive: [
-    ...primitives,
-    ...flattenTokens(primitiveDimension),
-    ...flattenTokens(primitiveTypography),
-    ...flattenTokens(primitiveMotion),
-  ].map((t) => t.cssVar),
-  semantic: [...semanticColors, ...semanticSpacing, ...semanticOther].map(
-    (t) => t.cssVar,
-  ),
-  component: [
-    ...flattenTokens(buttonTokens),
-    ...flattenTokens(badgeTokens),
-    ...flattenTokens(cardTokens),
-    ...flattenTokens(timelineTokens),
-    ...flattenTokens(themePanelTokens),
-    ...flattenTokens(tokenInspectorTokens),
-    ...flattenTokens(accordionTokens),
-    ...flattenTokens(figureTokens),
-    ...flattenTokens(galleryTokens),
-  ].map((t) => t.cssVar),
-};
+// Tier lists for the TokenInspector — globbed from the same DTCG sources
+// as everything else (shared with the instrument bar in BaseLayout).
+const tiers = tokenTiers();
 
 const tokenVarCount =
-  tierVars.primitive.length +
-  tierVars.semantic.length +
-  tierVars.component.length;
+  tiers.primitive.length + tiers.semantic.length + tiers.component.length;
 ---
 
 <BaseLayout
@@ -156,6 +132,15 @@ const tokenVarCount =
       mode changes (scheme, density) animate inside a brief page-wide
       transition window. The hue slider never does — direct manipulation
       must not lag behind the pointer.
+    </p>
+    <p>
+      <strong>One grotesque, one mono, one origin.</strong> Archivo carries
+      display and body — a grotesque with poster DNA and a variable width
+      axis the hero headline actually uses. Fragment Mono, a monospace
+      derived from the same Swiss grotesque form, speaks wherever the system
+      does: token names, annotations, ordinals. The mono carries the
+      character; the grotesque stays disciplined. Both self-hosted — this
+      site makes no third-party requests.
     </p>
     <p>
       <strong>Invariants are enforced, not promised.</strong> An auditor
@@ -331,17 +316,13 @@ const tokenVarCount =
       meta={tokenInspectorMeta}
       tokens={flattenTokens(tokenInspectorTokens)}
     >
-      <token-inspector tiers={JSON.stringify(tierVars)}></token-inspector>
+      <token-inspector tiers={JSON.stringify(tiers)}></token-inspector>
       <p class="system__note">
         Toggle, then move the cursor (or tab) across this page — every
         element reveals the token custom properties that style it.
       </p>
     </ComponentDoc>
   </section>
-
-  <script>
-    import "../components/TokenInspector";
-  </script>
 
   <section class="system__section" aria-labelledby="ai-heading">
     <h2 id="ai-heading">Machine-readable by design</h2>

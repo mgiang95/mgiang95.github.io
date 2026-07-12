@@ -94,19 +94,27 @@ Mini-"Docs"-Seite im Storybook-Stil: jede Komponente mit Varianten + den konsumi
 ## 6. Seitenstruktur & Inhalt
 
 ```
-/               Work: Plakat-Hero (These + Hue-Scrub) + Projektindex
-                (editoriale Zeilen 01/02/03, System-Zeile, More-Tabelle)
+/               Work: Plakat-Hero (Identity-Kicker, These, Hue-Scrub,
+                Instrumenten-Zeile Scheme/Dichte/Token-Linse,
+                Live-Kontrast-Annotation)
+                + Projektindex (editoriale Zeilen, System-Zeile,
+                More-Tabelle mit Links) + Contact-Outro als Akzent-Bookend
 /projects       Redirect auf / (Index lebt auf der Startseite)
 /projects/[x]   Case Study: Problem → Ansatz → Entscheidung → Ergebnis
-/blog           Notizen aus der Journey (Content Collection, lose Kadenz)
-/blog/[x]       Blogeintrag mit berechneten Metadaten (Nr., Datum, Lesezeit)
-/about          Person + CV-Timeline mit Work/Education-Filter (CSS-only)
+                (Seiten fuer ALLE Projekte, auch die kleineren Eintraege)
+/notes          Zufaellige Gedanken/Notizen aus der Journey (Content
+                Collection, lose Kadenz — bewusst nicht "Blog")
+/notes/[x]      Eintrag mit berechneten Metadaten (Nr., Datum, Lesezeit)
+/about          Person: Bio + Portrait, CV-Timeline mit Work/Education-Filter
+                (CSS-only), Zertifikats-Tabelle, Reading-Log (Books-Collection,
+                Jahr als Regal-Überschrift, generierte Typo-Cover als Fallback),
+                Off-screen-Foto-Galerie
 /system         Das Meta-Case-Study — nicht in der Nav, erreichbar über die
                 System-Zeile im Work-Index, Plakat-Link und Kolophon
 /imprint        Impressum + Privacy-Notiz (statisch, kein Tracking)
 ```
 
-Navigation: **Work · Blog · About**. Jede Seite trägt unter der H1 eine Mono-Annotationszeile mit echten, aus dem Build berechneten Fakten (Plakat: `--hue`/Kontrast; System: Komponenten-/Token-Zahl; About: Stationen; Blog: Eintragszahl); der Footer ist ein Kolophon mit Site-Version, Token-Zahl und Imprint-Link. Blog-Metadaten werden ausschließlich aus dem Content berechnet (Lesezeit, Nummer) — keine Zugriffszählung, kein Tracking (Impressums-/Privacy-Versprechen).
+Navigation: **Work · Notes · About** als sticky „Instrumenten-Leiste" — scharfkantiges, flächiges Rechteck, mittig zentriert (bewusst nicht volle Breite, kein Blur/Schatten), mit MG-Monogramm (expandierter Plakat-Schnitt), dem Quadrat-Paar aus der Timeline-Kodierung — **gefülltes Akzent-Quadrat** als Theme-Popover-Trigger (native Popover-API), **umrandetes Quadrat** als site-weiter TokenInspector-Trigger (füllt sich beim Inspizieren; auf Touch/schmalen Screens ausgeblendet) — und Contact-CTA (Copy-to-Clipboard auf Desktop-Pointern, `mailto:` als No-JS-/Touch-Fallback). Ohne JS sind beide Quadrat-Trigger ausgeblendet. Jede Seite trägt unter der H1 eine Mono-Annotationszeile mit echten, aus dem Build berechneten Fakten (Plakat: `--hue`/Kontrast; System: Komponenten-/Token-Zahl; About: Stationen; Notes: Eintragszahl); der Footer ist ein Kolophon mit Site-Version, Token-Zahl und Imprint-Link. Notes-Metadaten werden ausschließlich aus dem Content berechnet (Lesezeit, Nummer) — keine Zugriffszählung, kein Tracking (Impressums-/Privacy-Versprechen).
 
 - Hero der Startseite = die These der Seite: das Theme-Panel (oder eine kompakte Variante davon) ist sofort sichtbar und bedienbar — der Besucher *erlebt* das System in den ersten Sekunden.
 - Alle sichtbaren Inhalte (Copy, Navigation, Case Studies, Timeline) auf **Englisch**.
@@ -118,7 +126,7 @@ Navigation: **Work · Blog · About**. Jede Seite trägt unter der H1 eine Mono-
 **Leitbild: Schweizer Typografie / Bauhaus / HfG-Tradition (Ulm, Schwäbisch Gmünd) — aber mit Charakter, nicht steril.**
 
 - Gestaltung aus dem Raster: sichtbare oder spürbare Grid-Logik, klare Achsen, großzügiger, bewusst gesetzter Weißraum. Ordnung ist hier Inhalt, nicht Dekoration — sie *ist* die Design-System-Haltung.
-- Typografie trägt die Seite: starke, präzise gesetzte Grotesk für Headlines (z. B. aus der Neo-Grotesk-/Swiss-Tradition, konkrete Wahl beim Bau begründen), sehr gut lesbare Body-Schrift, Mono für Token-Namen und Code. Große Größenkontraste statt vieler Schmuckelemente.
+- Typografie trägt die Seite: **Archivo** (variable, wght+wdth) für Display *und* Body — Grotesk mit Plakat-DNA, die Width-Achse wird am Plakat-Headline sichtbar genutzt; **Fragment Mono** (Monospace aus der Schweizer Grotesk-Form) für Token-Namen, Annotationen, Ordinale. Leitsatz: Der Mono trägt den Charakter, die Grotesk bleibt diszipliniert. Beide self-hosted via fontsource (Privacy-Versprechen des Impressums: keine Drittanbieter-Requests). Große Größenkontraste statt vieler Schmuckelemente.
 - Farbe: zurückhaltende, überwiegend neutrale Flächen; der Accent (per Hue-Regler steuerbar) wird gezielt und flächig eingesetzt — Plakatfarbe statt Verlauf. **Keine Gradients, keine Blobs, keine Glassmorphism-/Glow-Effekte, kein Purple-Default.** Farbwirkung entsteht durch Fläche und Kontrast, nicht durch Effekte.
 - Charakter gegen Sterilität (damit der Farbregler etwas zu zeigen hat): der interaktive Umgang mit dem System selbst ist das Signature-Element — z. B. flächige Accent-Zonen, die auf den Hue-Regler reagieren, sichtbare Token-Beschriftungen als gestalterisches Mittel (Mono-Labels im Layout), die Changelog-Timeline. Eine gezielte, begründete Regelbrechung im Raster ist erlaubt; beliebige Verspieltheit nicht.
 - Motion: sparsam und funktional (Zustandswechsel des Themings, Fokus, kleine Übergänge). Kein Ambient-Gewaber. `prefers-reduced-motion` deaktiviert alles Nicht-Essentielle.

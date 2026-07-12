@@ -3,10 +3,14 @@
   "description": "React island for runtime theming: hue slider, colour scheme toggle, density choice and a live WCAG contrast badge.",
   "renderer": "react",
   "jsRequired": true,
-  "variants": [],
+  "variants": [
+    { "name": "panel", "use": "Full instrument: heading, hue slider, scheme/density, live contrast badge — nav popover and /system docs." },
+    { "name": "strip", "use": "Slim control row (scheme + density only) at the poster's edge — hue lives on the canvas, the badge in the annotations." }
+  ],
   "usage": {
     "useCases": [
       "Hero of the home page — the visitor operates the system in the first seconds",
+      "Theme popover in the instrument bar — theming available on every page",
       "Live demo inside the /system component docs"
     ],
     "antiPatterns": [
@@ -18,7 +22,7 @@
       {
         "scenario": "Adding a second theming mechanism next to it",
         "reason": "State must stay on --hue, data-theme and data-density plus the pref-* storage keys the head script reads.",
-        "alternative": "Extend ThemePanel; never introduce parallel state."
+        "alternative": "Extend ThemePanel; never introduce parallel state. Multiple instances are fine — they sync via the hue-change/pref-change events and use per-instance ids (useId)."
       }
     ]
   },

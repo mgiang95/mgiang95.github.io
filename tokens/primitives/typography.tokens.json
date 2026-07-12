@@ -1,17 +1,17 @@
 {
   "font": {
     "family": {
-      "$description": "System grotesque stacks for now; final typeface choice is a design decision documented in the /system case study.",
+      "$description": "One grotesque, one mono, one origin: Archivo (variable, poster DNA, wdth axis) for display AND body; Fragment Mono (a monospace derived from the Swiss grotesque form) for tokens, annotations, ordinals. Decision documented in the /system case study. Self-hosted via fontsource.",
       "display": {
-        "$value": ["Helvetica Neue", "Helvetica", "Arial", "sans-serif"],
+        "$value": ["Archivo Variable", "Helvetica Neue", "Helvetica", "Arial", "sans-serif"],
         "$type": "fontFamily"
       },
       "body": {
-        "$value": ["Helvetica Neue", "Helvetica", "Arial", "sans-serif"],
+        "$value": ["Archivo Variable", "Helvetica Neue", "Helvetica", "Arial", "sans-serif"],
         "$type": "fontFamily"
       },
       "mono": {
-        "$value": ["ui-monospace", "SF Mono", "Menlo", "Consolas", "monospace"],
+        "$value": ["Fragment Mono", "ui-monospace", "SF Mono", "Menlo", "Consolas", "monospace"],
         "$type": "fontFamily"
       }
     },

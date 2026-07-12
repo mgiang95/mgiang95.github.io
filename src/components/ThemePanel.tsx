@@ -6,15 +6,28 @@
  *   pref-theme, pref-density, pref-hue (see BaseLayout.astro).
  * Without JS the panel simply does not render — the site keeps its defaults.
  */
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useId, useMemo, useRef, useState } from "react";
 import "./ThemePanel.css";
-import { oklchToSrgb, contrast, parseOklch, PAIRS } from "../lib/color-math.js";
-import primitiveColors from "../../tokens/primitives/color.tokens.json";
-import lightColors from "../../tokens/semantic/color-light.tokens.json";
-import darkColors from "../../tokens/semantic/color-dark.tokens.json";
+import { worstPair } from "../lib/live-contrast";
+import {
+  dispatchHueChange,
+  dispatchPrefChange,
+  onHueChange,
+  onPrefChange,
+} from "../lib/theme-events";
 
 type Scheme = "system" | "light" | "dark";
 type Density = "normal" | "tight" | "comfy";
+
+interface Props {
+  /**
+   * "panel" (default): full instrument — heading, hue slider, radios,
+   * contrast badge. "strip": slim horizontal row with scheme + density
+   * only, for the poster edge — hue lives on the canvas there, the badge
+   * in the annotations.
+   */
+  variant?: "panel" | "strip";
+}
 
 const DEFAULT_HUE = 220;
 
@@ -39,52 +52,6 @@ function withModeTransition() {
   );
 }
 
-/** Resolves one semantic color file to L/C steps, keyed by "group.name". */
-function resolvePalette(semantic: typeof lightColors) {
-  const palette: Record<string, { L: number; C: number }> = {};
-  const ramps = primitiveColors.color as Record<
-    string,
-    Record<string, { $value?: string }>
-  >;
-  for (const [group, tokens] of Object.entries(semantic.color)) {
-    for (const [name, token] of Object.entries(tokens)) {
-      if (name.startsWith("$") || typeof token === "string") continue;
-      const ref = (token as { $value: string }).$value;
-      const [, ramp, step] = ref.replace(/[{}]/g, "").split(".");
-      const value = ramps[ramp]?.[step]?.$value;
-      const parsed = value ? parseOklch(value) : null;
-      if (parsed) palette[`${group}.${name}`] = parsed;
-    }
-  }
-  return palette;
-}
-
-const palettes = {
-  light: resolvePalette(lightColors),
-  dark: resolvePalette(darkColors),
-};
-
-/**
- * Most critical pair at the given hue: the one with the smallest headroom
- * over ITS OWN requirement (text pairs need 4.5:1, non-text UI 3:1).
- */
-function worstPair(theme: "light" | "dark", hue: number) {
-  const palette = palettes[theme];
-  let worst = { ratio: Infinity, min: 4.5, margin: Infinity, fg: "", bg: "" };
-  for (const [fgName, bgName, min] of PAIRS) {
-    const fg = palette[fgName];
-    const bg = palette[bgName];
-    if (!fg || !bg) continue;
-    const ratio = contrast(
-      oklchToSrgb(fg.L, fg.C, hue),
-      oklchToSrgb(bg.L, bg.C, hue),
-    );
-    const margin = ratio / min;
-    if (margin < worst.margin) worst = { ratio, min, margin, fg: fgName, bg: bgName };
-  }
-  return worst;
-}
-
 /** Initial state from the DOM (already set by the head script) or defaults. */
 function readInitial<T>(read: () => T, fallback: T): T {
   if (typeof document === "undefined") return fallback;
@@ -95,7 +62,12 @@ function readInitial<T>(read: () => T, fallback: T): T {
   }
 }
 
-export default function ThemePanel() {
+export default function ThemePanel({ variant = "panel" }: Props) {
+  // Several instances can coexist (hero, nav popover, /system docs) — ids
+  // and radio-group names must be unique per instance or the native radio
+  // grouping couples them across panels.
+  const uid = useId();
+
   const [hue, setHue] = useState<number>(() =>
     readInitial(() => {
       const v = Number(
@@ -118,17 +90,23 @@ export default function ThemePanel() {
   );
   const [systemDark, setSystemDark] = useState(false);
 
-  // Follow hue changes from outside the panel (e.g. the poster scrub on
-  // the home hero). Both sides dispatch "hue-change" on user input only,
-  // so there is no feedback loop — React bails out on identical state.
-  useEffect(() => {
-    const onExternalHue = (event: Event) => {
-      const value = (event as CustomEvent<number>).detail;
-      if (Number.isFinite(value)) setHue(Math.round(value));
-    };
-    window.addEventListener("hue-change", onExternalHue);
-    return () => window.removeEventListener("hue-change", onExternalHue);
-  }, []);
+  // Follow theming input from outside this instance (poster scrub, other
+  // panel instances in nav popover / hero / docs). Dispatch happens in the
+  // input handlers only, so there is no feedback loop — React bails out on
+  // identical state. Contract & ordering rule: src/lib/theme-events.ts.
+  useEffect(() => onHueChange((value) => setHue(Math.round(value))), []);
+  useEffect(
+    () =>
+      onPrefChange(({ kind, value }) => {
+        if (kind === "scheme" && (value === "system" || value === "light" || value === "dark")) {
+          setScheme(value);
+        }
+        if (kind === "density" && (value === "tight" || value === "normal" || value === "comfy")) {
+          setDensity(value);
+        }
+      }),
+    [],
+  );
 
   // Track the OS scheme for the badge while "system" is selected.
   useEffect(() => {
@@ -206,19 +184,72 @@ export default function ThemePanel() {
   );
   const passes = worst.margin >= 1;
 
+  const schemeGroup = (
+    <fieldset className="theme-panel__group">
+      <legend className="theme-panel__label">Color scheme</legend>
+      {(["system", "light", "dark"] as const).map((value) => (
+        <label className="theme-panel__option" key={value}>
+          <input
+            type="radio"
+            name={`theme-panel-scheme-${uid}`}
+            value={value}
+            checked={scheme === value}
+            onChange={() => {
+              setScheme(value);
+              dispatchPrefChange("scheme", value);
+            }}
+          />
+          {value}
+        </label>
+      ))}
+    </fieldset>
+  );
+
+  const densityGroup = (
+    <fieldset className="theme-panel__group">
+      <legend className="theme-panel__label">Density</legend>
+      {(["tight", "normal", "comfy"] as const).map((value) => (
+        <label className="theme-panel__option" key={value}>
+          <input
+            type="radio"
+            name={`theme-panel-density-${uid}`}
+            value={value}
+            checked={density === value}
+            onChange={() => {
+              setDensity(value);
+              dispatchPrefChange("density", value);
+            }}
+          />
+          {value}
+        </label>
+      ))}
+    </fieldset>
+  );
+
+  // Strip: scheme + density only — hue lives on the poster canvas, the
+  // contrast badge in the poster annotations.
+  if (variant === "strip") {
+    return (
+      <div className="theme-panel theme-panel--strip">
+        {schemeGroup}
+        {densityGroup}
+      </div>
+    );
+  }
+
   return (
-    <section className="theme-panel" aria-labelledby="theme-panel-heading">
-      <h2 className="theme-panel__heading" id="theme-panel-heading">
+    <section className="theme-panel" aria-labelledby={`theme-panel-heading-${uid}`}>
+      <h2 className="theme-panel__heading" id={`theme-panel-heading-${uid}`}>
         Theme
       </h2>
 
       <div className="theme-panel__control">
-        <label className="theme-panel__label" htmlFor="theme-panel-hue">
+        <label className="theme-panel__label" htmlFor={`theme-panel-hue-${uid}`}>
           Hue <code className="theme-panel__token">--hue: {hue}</code>
         </label>
         <input
           className="theme-panel__slider"
-          id="theme-panel-hue"
+          id={`theme-panel-hue-${uid}`}
           type="range"
           min={0}
           max={360}
@@ -227,44 +258,13 @@ export default function ThemePanel() {
           onChange={(event) => {
             const value = Number(event.target.value);
             setHue(value);
-            window.dispatchEvent(
-              new CustomEvent("hue-change", { detail: value }),
-            );
+            dispatchHueChange(value);
           }}
         />
       </div>
 
-      <fieldset className="theme-panel__group">
-        <legend className="theme-panel__label">Color scheme</legend>
-        {(["system", "light", "dark"] as const).map((value) => (
-          <label className="theme-panel__option" key={value}>
-            <input
-              type="radio"
-              name="theme-panel-scheme"
-              value={value}
-              checked={scheme === value}
-              onChange={() => setScheme(value)}
-            />
-            {value}
-          </label>
-        ))}
-      </fieldset>
-
-      <fieldset className="theme-panel__group">
-        <legend className="theme-panel__label">Density</legend>
-        {(["tight", "normal", "comfy"] as const).map((value) => (
-          <label className="theme-panel__option" key={value}>
-            <input
-              type="radio"
-              name="theme-panel-density"
-              value={value}
-              checked={density === value}
-              onChange={() => setDensity(value)}
-            />
-            {value}
-          </label>
-        ))}
-      </fieldset>
+      {schemeGroup}
+      {densityGroup}
 
       <p className="theme-panel__contrast">
         <span

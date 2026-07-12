@@ -1,6 +1,7 @@
 /**
- * Build-time helpers for blog metadata. Everything shown next to a post is
- * computed from the content itself — nothing to maintain, nothing to track.
+ * Build-time helpers for notes metadata. Everything shown next to an entry
+ * is computed from the content itself — nothing to maintain, nothing to
+ * track.
  */
 
 /** Estimated reading time in minutes (~200 words per minute, min 1). */

@@ -1,10 +1,10 @@
 /**
- * Blog metadata is computed, not tracked — so the computation is what needs
+ * Notes metadata is computed, not tracked — so the computation is what needs
  * to be correct. (Imported via Node's type stripping; see the test script.)
  */
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { readingTime, formatDate } from "../src/lib/blog.ts";
+import { readingTime, formatDate } from "../src/lib/notes.ts";
 
 test("readingTime: rounds ~200 wpm and never returns below 1", () => {
   assert.equal(readingTime(""), 1);

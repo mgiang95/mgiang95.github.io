@@ -19,12 +19,21 @@ interface Props {
   /** Accessible name of the scroll region. */
   label: string;
   images: GalleryImage[];
+  /**
+   * Filmstrip: uniform height, natural widths — an editorial photo band
+   * (use inside a full-bleed wrapper). Default: uniform slide width.
+   */
+  filmstrip?: boolean;
 }
 
-const { label, images } = Astro.props;
+const { label, images, filmstrip = false } = Astro.props;
 ---
 
-<div class="gallery" role="region" aria-label={label}>
+<div
+  class={`gallery${filmstrip ? " gallery--filmstrip" : ""}`}
+  role="region"
+  aria-label={label}
+>
   <ul class="gallery__track" tabindex="0">
     {
       images.map((item) => (
@@ -66,5 +75,32 @@ const { label, images } = Astro.props;
 
   .gallery__item {
     scroll-snap-align: start;
+  }
+
+  /* Filmstrip variant: slides take their natural width at a shared height —
+     mixed portrait/landscape photos form one calm band. */
+  .gallery--filmstrip .gallery__track {
+    grid-auto-columns: max-content;
+    /* Browsing, not paging: only settle on an edge when already close —
+       mandatory would yank mid-scroll with these mixed widths. */
+    scroll-snap-type: x proximity;
+  }
+
+  .gallery--filmstrip .gallery__item {
+    max-inline-size: 85vw;
+  }
+
+  .gallery--filmstrip .gallery__item :global(img) {
+    inline-size: auto;
+    max-inline-size: 100%;
+    block-size: clamp(16rem, 40vh, 24rem);
+    object-fit: cover;
+  }
+
+  /* The caption must not widen the column: zero intrinsic width, then
+     stretch to the image — text wraps exactly at the photo's edge. */
+  .gallery--filmstrip .gallery__item :global(figcaption) {
+    inline-size: 0;
+    min-inline-size: 100%;
   }
 </style>
