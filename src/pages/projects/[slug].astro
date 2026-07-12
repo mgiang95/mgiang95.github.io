@@ -55,43 +55,45 @@ const parentEntry = parent ? await getEntry(parent) : undefined;
       )
     }
 
-    <dl class="case__facts">
-      <div class="case__fact">
-        <dt>Role</dt>
-        <dd>{role}</dd>
-      </div>
-      <div class="case__fact">
-        <dt>Period</dt>
-        <dd>{period}</dd>
-      </div>
-      {
-        client && (
-          <div class="case__fact">
-            <dt>Client</dt>
-            <dd>
-              {externalUrl ? <a href={externalUrl}>{client}</a> : client}
-            </dd>
-          </div>
-        )
-      }
-      <div class="case__fact">
-        <dt>Key areas</dt>
-        <dd>
-          <ul class="case__keywords">
-            {
-              keywords.map((keyword) => (
-                <li>
-                  <Badge>{keyword}</Badge>
-                </li>
-              ))
-            }
-          </ul>
-        </dd>
-      </div>
-    </dl>
+    <div class="case__layout">
+      <dl class="case__facts">
+        <div class="case__fact">
+          <dt>Role</dt>
+          <dd>{role}</dd>
+        </div>
+        <div class="case__fact">
+          <dt>Period</dt>
+          <dd>{period}</dd>
+        </div>
+        {
+          client && (
+            <div class="case__fact">
+              <dt>Client</dt>
+              <dd>
+                {externalUrl ? <a href={externalUrl}>{client}</a> : client}
+              </dd>
+            </div>
+          )
+        }
+        <div class="case__fact">
+          <dt>Key areas</dt>
+          <dd>
+            <ul class="case__keywords">
+              {
+                keywords.map((keyword) => (
+                  <li>
+                    <Badge>{keyword}</Badge>
+                  </li>
+                ))
+              }
+            </ul>
+          </dd>
+        </div>
+      </dl>
 
-    <div class="prose case__body">
-      <Content />
+      <div class="prose case__body">
+        <Content />
+      </div>
     </div>
 
     {
@@ -155,13 +157,44 @@ const parentEntry = parent ? await getEntry(parent) : undefined;
     border: 1px solid var(--color-border-default);
   }
 
+  /* The meta rail: facts join the site's rail vocabulary (notes dates,
+     decision ordinals, timeline markers) instead of a horizontal bar —
+     and the reading column stops hugging the container edge. */
+  .case {
+    /* Meta-rail width — one knob for layout, figures and section indents. */
+    --case-rail: 11rem;
+  }
+
+  .case__layout {
+    display: grid;
+    gap: var(--space-stack-lg);
+    margin-block-start: var(--space-stack-lg);
+  }
+
+  @media (min-width: 64rem) {
+    .case__layout {
+      grid-template-columns: var(--case-rail) minmax(0, 65ch);
+      column-gap: var(--space-inline-xl);
+      align-items: start;
+    }
+  }
+
   .case__facts {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-stack-sm) var(--space-inline-xl);
-    margin-block: var(--space-stack-lg);
-    padding: var(--space-inset-md);
-    border-block: 1px solid var(--color-border-default);
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+    gap: var(--space-stack-md) var(--space-inline-xl);
+    margin: 0;
+  }
+
+  @media (min-width: 64rem) {
+    .case__facts {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .case__fact {
+    display: grid;
+    gap: var(--space-stack-xs);
   }
 
   .case__fact dt {
@@ -187,17 +220,29 @@ const parentEntry = parent ? await getEntry(parent) : undefined;
     max-width: 65ch;
   }
 
-  /* Editorial rhythm: text stays at reading width, figures grow to the
-     full content column. */
-  .case__body :global(figure) {
-    inline-size: min(
-      calc(100vw - 2 * var(--space-inset-lg)),
-      calc(72rem - 2 * var(--space-inset-lg))
-    );
+  /* Editorial rhythm: text stays at reading width, figures extend to the
+     right edge of the content column — never over the meta rail, so the
+     two can share vertical space without collisions. */
+  @media (min-width: 64rem) {
+    .case__body :global(figure) {
+      inline-size: calc(
+        min(100vw, 72rem) - 2 * var(--space-inset-lg) - var(--case-rail) -
+          var(--space-inline-xl)
+      );
+    }
   }
 
   .case__gallery {
-    margin-block-start: var(--space-stack-lg);
+    margin-block-start: var(--space-stack-xl);
+  }
+
+  /* Below the layout grid, prose-level sections align with the text axis. */
+  @media (min-width: 64rem) {
+    .case__gallery,
+    .case__achievements,
+    .case__footer-nav {
+      margin-inline-start: calc(var(--case-rail) + var(--space-inline-xl));
+    }
   }
 
   .case__gallery-heading {
@@ -206,7 +251,7 @@ const parentEntry = parent ? await getEntry(parent) : undefined;
   }
 
   .case__achievements {
-    margin-block-start: var(--space-stack-lg);
+    margin-block-start: var(--space-stack-xl);
     padding: var(--space-inset-lg);
     background: var(--color-surface-sunken);
     border-inline-start: var(--space-inline-xs) solid var(--color-surface-accent);
