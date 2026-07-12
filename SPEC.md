@@ -95,7 +95,8 @@ Mini-"Docs"-Seite im Storybook-Stil: jede Komponente mit Varianten + den konsumi
 
 ```
 /               Work: Plakat-Hero (Identity-Kicker, These, Hue-Scrub,
-                Kontroll-Zeile Scheme/Dichte, Live-Kontrast-Annotation)
+                Instrumenten-Zeile Scheme/Dichte/Token-Linse,
+                Live-Kontrast-Annotation)
                 + Projektindex (editoriale Zeilen, System-Zeile,
                 More-Tabelle mit Links) + Contact-Outro als Akzent-Bookend
 /projects       Redirect auf / (Index lebt auf der Startseite)

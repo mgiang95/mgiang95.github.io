@@ -42,14 +42,7 @@ const more = (
     <div class="poster__canvas" data-hue-scrub>
       <div class="poster__field">
         <p class="poster__claim">Drag the color. Nothing&nbsp;breaks.</p>
-        <div class="poster__hints">
-          <p class="poster__hint" aria-hidden="true">⟷ drag to shift the hue</p>
-          <token-inspector
-            compact
-            label="inspect the tokens"
-            class="poster__inspect"
-            tiers={JSON.stringify(tiers)}></token-inspector>
-        </div>
+        <p class="poster__hint" aria-hidden="true">⟷ drag to shift the hue</p>
         <code class="poster__field-label" aria-hidden="true">
           --color-surface-accent
         </code>
@@ -68,6 +61,11 @@ const more = (
 
     <div class="poster__controls">
       <ThemePanel client:idle variant="strip" />
+      <token-inspector
+        compact
+        label="inspect the tokens"
+        class="poster__inspect"
+        tiers={JSON.stringify(tiers)}></token-inspector>
     </div>
 
     <p class="poster__lead">
@@ -331,14 +329,6 @@ const more = (
     max-width: 16ch;
   }
 
-  /* The poster's instruction set: both verbs of the thesis — change
-     (drag) and read (inspect) — as parallel mono hints. */
-  .poster__hints {
-    display: grid;
-    gap: var(--space-stack-xs);
-    justify-items: start;
-  }
-
   .poster__hint {
     font-family: var(--typography-label-family);
     font-size: var(--typography-label-size);
@@ -381,10 +371,21 @@ const more = (
     display: block;
   }
 
-  /* The dismantled panel: scheme + density as a control row at the
-     poster's edge (hue is the canvas, the badge the annotations). */
+  /* The instrument row at the poster's edge: scheme + density switches
+     and the token lens — hue is the canvas, the badge the annotations. */
   .poster__controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    column-gap: var(--space-inline-xl);
+    row-gap: var(--space-stack-xs);
     min-block-size: var(--space-stack-xl);
+    padding-block: var(--space-inset-sm);
+    border-block-end: 1px solid var(--color-border-default);
+  }
+
+  .poster__inspect {
+    color: var(--color-text-secondary);
   }
 
   .poster__lead {

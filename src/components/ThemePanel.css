@@ -93,16 +93,17 @@
 }
 
 /* Strip variant: a slim control row at the poster's edge — no surface, no
-   heading; scheme and density read as instrument switches. */
+   heading; scheme and density read as instrument switches. The hairline
+   and padding belong to the surrounding instrument row (poster__controls),
+   which also holds the token lens. */
 .theme-panel--strip {
   display: flex;
   flex-wrap: wrap;
   column-gap: var(--space-inline-xl);
   row-gap: var(--space-stack-xs);
-  padding: var(--space-inset-sm) 0;
+  padding: 0;
   background: none;
   border: none;
-  border-block-end: 1px solid var(--color-border-default);
   border-radius: 0;
   max-inline-size: none;
 }
