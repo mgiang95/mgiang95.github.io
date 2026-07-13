@@ -52,7 +52,7 @@ const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
     <meta name="generator" content={Astro.generator} />
-    <title>{title} — Michael Giang</title>
+    <title>{title} Portfolio Michael Giang</title>
     <link rel="icon" href="/favicon.png" type="image/png" />
     <link rel="apple-touch-icon" href="/favicon.png" />
     <!--
@@ -123,6 +123,7 @@ const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
         class="site-bar__hue"
         popovertarget="theme-popover"
         aria-label="Theme settings"
+        data-tooltip="Theme settings"
       >
         <span class="site-bar__swatch" aria-hidden="true"></span>
       </button>
@@ -291,12 +292,43 @@ const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
   }
 
   .site-bar__hue {
+    position: relative;
     display: grid;
     place-items: center;
     padding: var(--space-inset-xs);
     background: none;
     border: none;
     cursor: pointer;
+  }
+
+  /* Tooltip: token-styled label below the trigger, on hover and keyboard
+     focus. Pure CSS — the accessible name stays on aria-label. Shares the
+     visual contract with the inspector's tooltip via the same tokens. */
+  .site-bar__hue::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    inset-block-start: calc(100% + var(--space-stack-xs));
+    inset-inline-start: 50%;
+    translate: -50% 0;
+    z-index: 60;
+    padding: var(--space-inset-xs) var(--space-inset-sm);
+    background: var(--color-surface-raised);
+    color: var(--color-text-primary);
+    border: 1px solid var(--color-border-default);
+    border-radius: var(--radius-surface);
+    font-family: var(--typography-label-family);
+    font-size: var(--typography-label-size);
+    font-weight: var(--typography-label-weight);
+    line-height: var(--typography-label-line-height);
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--motion-state-duration) var(--motion-state-easing);
+  }
+
+  .site-bar__hue:hover::after,
+  .site-bar__hue:focus-visible::after {
+    opacity: 1;
   }
 
   /* Live accent swatch — the filled square motif, showing the current hue. */
