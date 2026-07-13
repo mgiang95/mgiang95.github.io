@@ -55,45 +55,43 @@ const parentEntry = parent ? await getEntry(parent) : undefined;
       )
     }
 
-    <div class="case__layout">
-      <dl class="case__facts">
-        <div class="case__fact">
-          <dt>Role</dt>
-          <dd>{role}</dd>
-        </div>
-        <div class="case__fact">
-          <dt>Period</dt>
-          <dd>{period}</dd>
-        </div>
-        {
-          client && (
-            <div class="case__fact">
-              <dt>Client</dt>
-              <dd>
-                {externalUrl ? <a href={externalUrl}>{client}</a> : client}
-              </dd>
-            </div>
-          )
-        }
-        <div class="case__fact">
-          <dt>Key areas</dt>
-          <dd>
-            <ul class="case__keywords">
-              {
-                keywords.map((keyword) => (
-                  <li>
-                    <Badge>{keyword}</Badge>
-                  </li>
-                ))
-              }
-            </ul>
-          </dd>
-        </div>
-      </dl>
-
-      <div class="prose case__body">
-        <Content />
+    <dl class="case__facts">
+      <div class="case__fact">
+        <dt>Role</dt>
+        <dd>{role}</dd>
       </div>
+      <div class="case__fact">
+        <dt>Period</dt>
+        <dd>{period}</dd>
+      </div>
+      {
+        client && (
+          <div class="case__fact">
+            <dt>Client</dt>
+            <dd>
+              {externalUrl ? <a href={externalUrl}>{client}</a> : client}
+            </dd>
+          </div>
+        )
+      }
+      <div class="case__fact">
+        <dt>Key areas</dt>
+        <dd>
+          <ul class="case__keywords">
+            {
+              keywords.map((keyword) => (
+                <li>
+                  <Badge>{keyword}</Badge>
+                </li>
+              ))
+            }
+          </ul>
+        </dd>
+      </div>
+    </dl>
+
+    <div class="prose case__body">
+      <Content />
     </div>
 
     {
@@ -157,39 +155,17 @@ const parentEntry = parent ? await getEntry(parent) : undefined;
     border: 1px solid var(--color-border-default);
   }
 
-  /* The meta rail: facts join the site's rail vocabulary (notes dates,
-     decision ordinals, timeline markers) instead of a horizontal bar —
-     and the reading column stops hugging the container edge. */
-  .case {
-    /* Meta-rail width — one knob for layout, figures and section indents. */
-    --case-rail: 11rem;
-  }
-
-  .case__layout {
-    display: grid;
-    gap: var(--space-stack-lg);
-    margin-block-start: var(--space-stack-lg);
-  }
-
-  @media (min-width: 64rem) {
-    .case__layout {
-      grid-template-columns: var(--case-rail) minmax(0, 65ch);
-      column-gap: var(--space-inline-xl);
-      align-items: start;
-    }
-  }
-
+  /* Single reading axis: the header, the facts band, the prose and every
+     following section share one left edge (the container edge). The facts
+     sit in a horizontal spec band between hero and text — no side rail that
+     would push the prose off-axis and then run empty down the page. */
   .case__facts {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
-    gap: var(--space-stack-md) var(--space-inline-xl);
-    margin: 0;
-  }
-
-  @media (min-width: 64rem) {
-    .case__facts {
-      grid-template-columns: 1fr;
-    }
+    gap: var(--space-stack-sm) var(--space-inline-xl);
+    margin-block: var(--space-stack-lg);
+    padding-block: var(--space-inset-md);
+    border-block: 1px solid var(--color-border-default);
   }
 
   .case__fact {
@@ -220,29 +196,17 @@ const parentEntry = parent ? await getEntry(parent) : undefined;
     max-width: 65ch;
   }
 
-  /* Editorial rhythm: text stays at reading width, figures extend to the
-     right edge of the content column — never over the meta rail, so the
-     two can share vertical space without collisions. */
+  /* Editorial rhythm: prose stays at reading width and hangs off the left
+     edge; figures break out of that column to the full container width, so
+     every figure lands on the same firm left and right edge. */
   @media (min-width: 64rem) {
     .case__body :global(figure) {
-      inline-size: calc(
-        min(100vw, 72rem) - 2 * var(--space-inset-lg) - var(--case-rail) -
-          var(--space-inline-xl)
-      );
+      inline-size: calc(min(100vw, 72rem) - 2 * var(--space-inset-lg));
     }
   }
 
   .case__gallery {
     margin-block-start: var(--space-stack-xl);
-  }
-
-  /* Below the layout grid, prose-level sections align with the text axis. */
-  @media (min-width: 64rem) {
-    .case__gallery,
-    .case__achievements,
-    .case__footer-nav {
-      margin-inline-start: calc(var(--case-rail) + var(--space-inline-xl));
-    }
   }
 
   .case__gallery-heading {
