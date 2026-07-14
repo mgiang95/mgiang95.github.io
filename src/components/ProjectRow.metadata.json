@@ -1,6 +1,6 @@
 {
   "name": "ProjectRow",
-  "description": "Editorial index row for one case study: full-width, hairline-separated, image beside large type with a mono ordinal. Reads like a magazine table of contents; hovering colors the top edge with the poster accent.",
+  "description": "Editorial index row for one case study: full-width, hairline-separated, image beside large type. Title, a mono fact line (product, client, period), a short paragraph on the case and the key areas as badges — enough to judge the project without opening it. Hovering colors the top edge with the poster accent.",
   "renderer": "astro",
   "jsRequired": false,
   "variants": [],
@@ -24,7 +24,7 @@
   "tokenPrefixes": [],
   "a11y": [
     "Whole row is one link; the image is decorative (empty alt)",
-    "Ordinal is aria-hidden — position is presentation, not content",
+    "Product, client and period are read as part of the link name — no visual-only facts",
     "Keyword list carries an aria-label"
   ]
 }

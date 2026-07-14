@@ -81,19 +81,20 @@ const more = (
   <section class="work" aria-labelledby="work-heading">
     <h2 id="work-heading">Selected work</h2>
     <div class="work__rows">
-      {
-        featured.map((project, i) => (
-          <ProjectRow project={project} index={i + 1} />
-        ))
-      }
+      {featured.map((project) => <ProjectRow project={project} />)}
     </div>
 
     <a class="work__system" href="/system">
-      <p class="work__system-meta" aria-hidden="true">meta</p>
-      <h3 class="work__system-title">How this site is built</h3>
+      <p class="work__system-meta" aria-hidden="true">
+        Portfolio as Case Study
+      </p>
+      <h3 class="work__system-title">
+        How Components and Tokens are wired on this Site
+      </h3>
       <p class="work__system-subtitle">
-        The site itself is the case study: a live token pipeline,
-        machine-enforced invariants, one system in three renderers.
+        Primitives, semantic tokens and components run through one pipeline.
+        Every build validates the hierarchy and proves the contrast at every
+        hue.
       </p>
     </a>
   </section>
@@ -130,8 +131,12 @@ const more = (
     <div class="outro__field">
       <Cloud class="outro__cloud" />
       <h2 class="outro__heading" id="outro-heading">
-        Let's build systems that survive&nbsp;change.
+        Interested in connecting?
       </h2>
+      <p class="outro__lead">
+        I'd love to hear from you! Whether you have questions, or just feel like
+        saying hi, don't hesitate to reach out.
+      </p>
       <div class="outro__actions">
         <a
           class="outro__email"
@@ -577,7 +582,11 @@ const more = (
     font-size: var(--font-size-800);
     font-stretch: 115%;
     line-height: var(--font-line-height-tight);
-    max-width: 18ch;
+    max-width: 24ch;
+  }
+
+  .outro__lead {
+    max-width: 65ch;
   }
 
   .outro__actions {

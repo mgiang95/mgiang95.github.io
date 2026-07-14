@@ -11,14 +11,14 @@ import Badge from "./Badge.astro";
 
 interface Props {
   project: CollectionEntry<"projects">;
-  /** 1-based position in the index, rendered as a mono ordinal ("01"). */
-  index?: number;
 }
 
-const { project, index } = Astro.props;
-const { title, subtitle, period, keywords, heroImage } = project.data;
-const ordinal =
-  typeof index === "number" ? String(index).padStart(2, "0") : undefined;
+const { project } = Astro.props;
+const { title, subtitle, description, summary, period, keywords, heroImage } =
+  project.data;
+// `description` doubles as the page's meta description and stays short; a row
+// may carry a longer paragraph via `summary`.
+const paragraph = summary ?? description;
 ---
 
 <article class="project-row">
@@ -35,16 +35,12 @@ const ordinal =
       )
     }
     <div class="project-row__content">
+      <h3 class="project-row__title">{title}</h3>
       <p class="project-row__meta">
-        {ordinal && (
-          <span class="project-row__index" aria-hidden="true">
-            {ordinal}
-          </span>
-        )}
+        <span class="project-row__subtitle">{subtitle}</span>
         <span class="project-row__period">{period}</span>
       </p>
-      <h3 class="project-row__title">{title}</h3>
-      <p class="project-row__subtitle">{subtitle}</p>
+      <p class="project-row__description">{paragraph}</p>
       <ul class="project-row__keywords" aria-label="Key areas">
         {
           keywords.map((keyword) => (
@@ -101,16 +97,15 @@ const ordinal =
     justify-items: start;
   }
 
+  /* One mono line under the title: product, client, period — the facts that
+     place the case, kept apart from the prose below. */
   .project-row__meta {
     display: flex;
+    flex-wrap: wrap;
     gap: var(--space-inline-lg);
     font-family: var(--typography-label-family);
     font-size: var(--typography-label-size);
     color: var(--color-text-muted);
-  }
-
-  .project-row__index {
-    font-weight: var(--typography-label-weight);
   }
 
   .project-row__title {
@@ -126,6 +121,17 @@ const ordinal =
   .project-row__subtitle {
     max-width: 45ch;
     color: var(--color-text-secondary);
+  }
+
+  .project-row__period {
+    white-space: nowrap;
+  }
+
+  /* The paragraph carries the case: what the product is, what was wrong,
+     what I did. The subtitle above stays a one-line deck. */
+  .project-row__description {
+    max-width: 58ch;
+    color: var(--color-text-muted);
   }
 
   .project-row__keywords {

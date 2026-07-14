@@ -116,11 +116,35 @@ a:hover {
   margin-block-start: var(--space-stack-lg);
 }
 
-.prose ul,
 .prose ol {
   padding-inline-start: var(--space-inset-lg);
   display: grid;
   gap: var(--space-stack-xs);
+}
+
+/* Unordered lists carry a chevron instead of a bullet: the accent as a
+   typographic mark. The item is a two-column grid so wrapped lines hang
+   under the text, not under the chevron. Also applies to the achievements
+   box, which shares this list vocabulary. */
+.prose ul,
+.case__achievements ul {
+  padding-inline-start: 0;
+  list-style: none;
+  display: grid;
+  gap: var(--space-stack-xs);
+}
+
+.prose ul > li,
+.case__achievements ul > li {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--prose-marker-gap);
+}
+
+.prose ul > li::before,
+.case__achievements ul > li::before {
+  content: "»";
+  color: var(--prose-marker-color);
 }
 
 .prose img {

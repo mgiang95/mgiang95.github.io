@@ -227,11 +227,10 @@ const parentEntry = parent ? await getEntry(parent) : undefined;
     margin-block-end: var(--space-stack-sm);
   }
 
+  /* List rendering (chevron markers, hanging indent) lives in global.css,
+     shared with .prose — this only removes the default block margin. */
   .case__achievements ul {
     margin: 0;
-    padding-inline-start: var(--space-inset-lg);
-    display: grid;
-    gap: var(--space-stack-xs);
   }
 
   .case__footer-nav {
