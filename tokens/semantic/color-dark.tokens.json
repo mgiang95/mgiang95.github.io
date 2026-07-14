@@ -8,6 +8,11 @@
         "$value": "{color.accent.400}",
         "$type": "color",
         "$description": "Flat poster-style accent zones reacting to the hue slider."
+      },
+      "accent-mark": {
+        "$value": "{color.accent.100}",
+        "$type": "color",
+        "$description": "Tonal graphic layer inside accent zones. Lighter than the accent surface here, because text.on-accent is dark in this scheme — the mark always steps away from the text, never towards it."
       }
     },
     "text": {

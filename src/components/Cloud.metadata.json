@@ -1,0 +1,35 @@
+{
+  "name": "Cloud",
+  "description": "The brand mark as a tonal shape. The PNG is used as a mask, so the silhouette comes from its alpha channel and the colour from a token — the mark follows hue and colour scheme instead of being a fixed white bitmap.",
+  "renderer": "astro",
+  "jsRequired": false,
+  "variants": [],
+  "usage": {
+    "useCases": [
+      "Cropped brand mark bleeding off an accent zone (home poster field, closing field) for visual dynamics",
+      "Any decorative tonal shape inside an accent surface that must survive a hue change"
+    ],
+    "antiPatterns": [
+      {
+        "scenario": "Printing the mark behind body copy",
+        "reason": "The contrast proof covers text against surface tokens, not against a shape laid over them — text over the mark is contrast nobody verified.",
+        "alternative": "Place the mark in the empty part of the field and let it bleed off the edge; keep the text column clear."
+      },
+      {
+        "scenario": "Using it on a neutral surface without a fill token for that context",
+        "reason": "cloud.fill resolves to the accent-mark surface and is only proven to read on accent zones.",
+        "alternative": "Add a fill token for the neutral context before reaching for the mark there."
+      },
+      {
+        "scenario": "Scaling it up as a full-bleed background image",
+        "reason": "Ambient background washes are exactly the decoration the design direction rules out.",
+        "alternative": "Crop it hard against an edge so it reads as a printed shape, not as atmosphere."
+      }
+    ]
+  },
+  "tokenPrefixes": ["cloud"],
+  "a11y": [
+    "Decorative: aria-hidden and pointer-events: none — it carries no meaning and takes no focus",
+    "Never the sole carrier of information; the mark is redundant to the text next to it"
+  ]
+}

@@ -19,7 +19,8 @@
       "sm": { "$value": "{space.3}", "$type": "dimension" },
       "md": { "$value": "{space.4}", "$type": "dimension" },
       "lg": { "$value": "{space.5}", "$type": "dimension" },
-      "xl": { "$value": "{space.6}", "$type": "dimension" }
+      "xl": { "$value": "{space.6}", "$type": "dimension" },
+      "xxl": { "$value": "{space.7}", "$type": "dimension" }
     }
   }
 }

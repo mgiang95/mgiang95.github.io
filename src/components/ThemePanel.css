@@ -51,7 +51,7 @@
 .theme-panel__group {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-inline-md);
+  gap: var(--space-inline-xl);
   border: none;
   padding: 0;
   margin: 0;
@@ -99,7 +99,10 @@
 .theme-panel--strip {
   display: flex;
   flex-wrap: wrap;
-  column-gap: var(--space-inline-xl);
+  /* Between the two switch groups: one step wider than the gap between the
+     options inside a group, so scheme and density read as separate
+     instruments rather than one six-option row. */
+  column-gap: var(--space-inline-xxl);
   row-gap: var(--space-stack-xs);
   padding: 0;
   background: none;
@@ -109,11 +112,36 @@
 }
 
 .theme-panel--strip .theme-panel__group {
+  position: relative;
   inline-size: auto;
   align-items: baseline;
+  column-gap: var(--space-inline-lg);
+  /* Room for the caption, which is lifted out of the flow below. */
+  padding-block-start: calc(
+    var(--typography-label-size) * var(--typography-label-line-height)
+  );
 }
 
+/* The caption sits above the switches, but out of flow: a flex container's
+   baseline is that of its first in-flow item, so an in-flow caption would
+   make the group report the CAPTION's baseline to the instrument row — and
+   the lens and the link would align to the caption line instead of the
+   switches. Out of flow, the switch row is the group's first line, and the
+   whole row shares one baseline. */
 .theme-panel--strip .theme-panel__group .theme-panel__label {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
   inline-size: auto;
   padding: 0;
+}
+
+/* In the strip the switches are instruments, not prose: they carry control
+   typography, like the lens and the link beside them. The equal line boxes
+   that come with it are also what lets the row share one baseline — a
+   fieldset does not reliably propagate its content's baseline to the row. */
+.theme-panel--strip .theme-panel__option {
+  font-family: var(--typography-control-family);
+  font-size: var(--typography-control-size);
+  line-height: var(--typography-control-line-height);
 }

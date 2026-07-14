@@ -1,0 +1,9 @@
+{
+  "cloud": {
+    "fill": {
+      "$value": "{color.surface.accent-mark}",
+      "$type": "color",
+      "$description": "The mark is a mask, not a picture: it takes this fill, so it follows hue and scheme like every other surface."
+    }
+  }
+}

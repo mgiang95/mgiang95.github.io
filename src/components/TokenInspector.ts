@@ -172,21 +172,27 @@ export class TokenInspector extends LitElement {
 
     /* Hint form: square + visible label, inheriting the surrounding color —
        designed for the poster field, parallel to its drag hint. */
+    /* inline-block, not inline-flex: a flex container takes its baseline from
+       its first item — here the square, a block, whose baseline is its bottom
+       edge. The trigger would then sit off the baseline of any label row it is
+       placed in. As an inline-block it reports its text line instead, and the
+       label typography below keeps that line the same height as its neighbours. */
     .trigger--hint {
-      display: inline-flex;
-      align-items: center;
-      gap: var(--space-inline-xs);
+      display: inline-block;
       padding: 0;
       background: none;
       border: none;
       cursor: pointer;
       color: inherit;
-      font-family: var(--typography-label-family);
-      font-size: var(--typography-label-size);
+      font-family: var(--typography-control-family);
+      font-size: var(--typography-control-size);
+      line-height: var(--typography-control-line-height);
     }
 
     .trigger--hint .trigger__square {
-      display: block;
+      display: inline-block;
+      vertical-align: middle;
+      margin-inline-end: var(--space-inline-xs);
       inline-size: 1em;
       block-size: 1em;
       border: 2px solid currentColor;

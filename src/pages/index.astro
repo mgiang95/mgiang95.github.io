@@ -3,6 +3,7 @@ import { getCollection } from "astro:content";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import ThemePanel from "../components/ThemePanel.tsx";
 import ProjectRow from "../components/ProjectRow.astro";
+import Cloud from "../components/Cloud.astro";
 import { ACCENT_RAMP_STEPS } from "../lib/tokens";
 import { tokenTiers } from "../lib/token-tiers";
 import contact from "../data/contact.json";
@@ -23,26 +24,33 @@ const more = (
   description="Portfolio of Michael Giang, Design System Engineer and UX Designer in Zurich. This site runs on a live design token pipeline — adjust hue, color scheme and density yourself."
 >
   <section class="poster" aria-labelledby="poster-headline">
-    <p class="poster__kicker">
-      Michael Giang · Design System Engineer · Zurich
-    </p>
+    <p class="poster__kicker">Multidisciplinary designer based in Zurich, CH</p>
     <h1 class="poster__headline" id="poster-headline">
-      This site is a running design system.
+      Michael Giang <br /> UX Designer
     </h1>
 
     <div class="poster__annotations">
-      <p class="poster__facts" aria-hidden="true">
-        <code>--hue: <span data-hue-readout>220</span></code>
-        <code>color.accent.&lbrace;50…950&rbrace;</code>
-        <code data-contrast-readout>contrast ≥ 4.5:1 for every hue</code>
+      <p class="poster__description">
+        I make complex problems manageable through accessible abstractions. I
+        like to think in sustainable systems and to develop ideas by building
+        them as prototypes, models or notation.
       </p>
-      <a class="poster__how" href="/system">how this is built →</a>
+      <p class="poster__description">
+        This portfolio runs on the same foundation and principles. Every color,
+        space and size on this page resolves from design tokens while keeping
+        accessibility in mind. Feel free to change them and explore my work.
+      </p>
     </div>
 
     <div class="poster__canvas" data-hue-scrub>
       <div class="poster__field">
-        <p class="poster__claim">Drag the color. Nothing&nbsp;breaks.</p>
-        <p class="poster__hint" aria-hidden="true">⟷ drag to shift the hue</p>
+        <Cloud class="poster__cloud" />
+        <p class="poster__claim">Drag to shift the hue.</p>
+        <p class="poster__facts" aria-hidden="true">
+          <code>--hue: <span data-hue-readout>220</span></code>
+          <code>color.accent.&lbrace;50 … 950&rbrace;</code>
+          <code data-contrast-readout>contrast ≥ 4.5:1 for every hue</code>
+        </p>
         <code class="poster__field-label" aria-hidden="true">
           --color-surface-accent
         </code>
@@ -66,13 +74,8 @@ const more = (
         label="inspect the tokens"
         class="poster__inspect"
         tiers={JSON.stringify(tiers)}></token-inspector>
+      <a class="poster__how" href="/system">how this is built →</a>
     </div>
-
-    <p class="poster__lead">
-      Everything here resolves from design tokens — change hue, scheme and
-      density, and contrast stays AA by construction. The systems I build
-      for product teams follow the same rule: they survive change.
-    </p>
   </section>
 
   <section class="work" aria-labelledby="work-heading">
@@ -125,6 +128,7 @@ const more = (
 
   <section class="outro" aria-labelledby="outro-heading">
     <div class="outro__field">
+      <Cloud class="outro__cloud" />
       <h2 class="outro__heading" id="outro-heading">
         Let's build systems that survive&nbsp;change.
       </h2>
@@ -269,31 +273,43 @@ const more = (
     max-width: 14ch;
   }
 
-  .poster__annotations {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: baseline;
-    gap: var(--space-inline-lg);
+  .poster__description {
+    max-width: 65ch;
+    font-size: var(--typography-lead-size);
+    color: var(--color-text-secondary);
   }
 
+  .poster__annotations {
+    display: grid;
+    gap: var(--space-stack-sm);
+  }
+
+  /* Live readouts sit inside the field they describe — the numbers change
+     under the same drag that changes the color. */
   .poster__facts {
     display: flex;
     flex-wrap: wrap;
     gap: var(--space-inline-lg);
     font-size: var(--typography-label-size);
-    color: var(--color-text-muted);
+    /* Held to the text column so the readouts stop running into the half of
+       the field the mark occupies — the line wraps instead of colliding. */
+    max-inline-size: 40ch;
   }
 
+  /* Pushed to the trailing edge of the instrument row — control typography,
+     like the switches and the lens it shares the baseline with. */
   .poster__how {
-    font-family: var(--typography-label-family);
-    font-size: var(--typography-label-size);
+    font-family: var(--typography-control-family);
+    font-size: var(--typography-control-size);
+    line-height: var(--typography-control-line-height);
+    margin-inline-start: auto;
   }
 
   /* Full-bleed rule-break: the poster escapes the centered content column
      and runs edge to edge — the one deliberate grid violation (SPEC §7). */
   .poster__canvas {
     margin-inline: calc(50% - 50vw);
+    margin-block-start: var(--space-stack-md);
     display: grid;
     min-block-size: clamp(18rem, 55svh, 34rem);
     cursor: ew-resize;
@@ -310,6 +326,8 @@ const more = (
 
   .poster__field {
     position: relative;
+    /* The mark is cropped by this edge — the crop is the composition. */
+    overflow: hidden;
     display: grid;
     align-content: center;
     gap: var(--space-stack-md);
@@ -321,17 +339,44 @@ const more = (
     padding-inline: calc(max(0px, 50vw - 36rem) + var(--space-inset-lg));
   }
 
+  /* The brand mark, printed into the empty half of the field and running off
+     its end and bottom edge. It stays clear of the text column: the contrast
+     proof covers text on the accent surface, not text on a shape laid over
+     it, and a claim about contrast is not something to leave to chance. */
+  .poster__cloud {
+    position: absolute;
+    z-index: 0;
+    /* The mark owns the empty half of the field: it runs off the end edge and
+       out of the bottom, and it scales with the viewport so the gap to the
+       text column holds at every width above the breakpoint. */
+    inset-inline-end: -6vw;
+    inset-block-start: 20%;
+    inline-size: clamp(24rem, 48vw, 60rem);
+    aspect-ratio: 1668 / 1091;
+  }
+
+  /* The mark needs a genuinely empty half to print into. Below this width the
+     readouts and the mark would fight over the same space (measured: they
+     collide from ~61rem down), so the mark steps aside instead of crowding
+     the text. It is decoration — it yields first. */
+  @media (max-width: 68rem) {
+    .poster__cloud {
+      display: none;
+    }
+  }
+
+  .poster__claim,
+  .poster__facts {
+    position: relative;
+    z-index: 1;
+  }
+
   .poster__claim {
     font-family: var(--font-family-display);
     font-weight: var(--font-weight-bold);
     font-size: var(--font-size-700);
     line-height: var(--font-line-height-tight);
-    max-width: 16ch;
-  }
-
-  .poster__hint {
-    font-family: var(--typography-label-family);
-    font-size: var(--typography-label-size);
+    max-width: 24ch;
   }
 
   /* A hover lens is pointless on touch; narrow screens lose it like the
@@ -371,25 +416,35 @@ const more = (
     display: block;
   }
 
-  /* The instrument row at the poster's edge: scheme + density switches
-     and the token lens — hue is the canvas, the badge the annotations. */
+  /* The instrument row at the poster's edge: scheme + density switches, the
+     token lens, and the link out — hue is the canvas, the readouts sit in
+     the field. Every item is a single label line of the same line-height,
+     so the switches, the lens and the link share one baseline; the gap
+     between instruments matches the one inside the strip (xxl). */
   .poster__controls {
     display: flex;
     flex-wrap: wrap;
-    align-items: baseline;
-    column-gap: var(--space-inline-xl);
+    /* Not `baseline`: a fieldset reports its bottom edge — not its switch
+       row — as the baseline it hands to this row, which drops the lens and
+       the link below the switches. Every item here is one label line of the
+       same height, so aligning the boxes' end edges puts the text on one
+       shared baseline, deterministically. */
+    align-items: end;
+    column-gap: var(--space-inline-xxl);
     row-gap: var(--space-stack-xs);
     min-block-size: var(--space-stack-xl);
     padding-block: var(--space-inset-sm);
-    border-block-end: 1px solid var(--color-border-default);
+    /*border-block-end: 1px solid var(--color-border-default);*/
   }
 
   .poster__inspect {
+    font-size: var(--typography-control-size);
+    line-height: var(--typography-control-line-height);
     color: var(--color-text-secondary);
   }
 
   .poster__lead {
-    max-width: 55ch;
+    max-width: 65ch;
     margin-block-start: var(--space-stack-sm);
     font-size: var(--typography-lead-size);
     color: var(--color-text-secondary);
@@ -483,6 +538,8 @@ const more = (
   }
 
   .outro__field {
+    position: relative;
+    overflow: hidden;
     margin-inline: calc(50% - 50vw);
     padding-block: var(--space-stack-xl);
     padding-inline: calc(max(0px, 50vw - 36rem) + var(--space-inset-lg));
@@ -491,6 +548,29 @@ const more = (
     display: grid;
     gap: var(--space-stack-lg);
     justify-items: start;
+  }
+
+  /* The bookend: the same mark, upright, cropped against the top edge instead
+     of the bottom — the poster's shape returns from the other side. */
+  .outro__cloud {
+    position: absolute;
+    z-index: 0;
+    inset-inline-end: -4vw;
+    inset-block-start: -22%;
+    inline-size: clamp(18rem, 40vw, 44rem);
+    aspect-ratio: 1668 / 1091;
+  }
+
+  @media (max-width: 60rem) {
+    .outro__cloud {
+      display: none;
+    }
+  }
+
+  .outro__heading,
+  .outro__actions {
+    position: relative;
+    z-index: 1;
   }
 
   .outro__heading {
