@@ -5,7 +5,7 @@
   "jsRequired": true,
   "variants": [
     { "name": "panel", "use": "Full instrument: heading, hue slider, scheme/density, live contrast badge — nav popover and /system docs." },
-    { "name": "strip", "use": "Slim control row (scheme + density only) at the poster's edge — hue lives on the canvas, the badge in the annotations." }
+    { "name": "strip", "use": "Slim stacked switch column (scheme above density) at the poster's edge — hue lives on the canvas, the badge in the annotations." }
   ],
   "usage": {
     "useCases": [

@@ -92,18 +92,19 @@
   color: var(--color-surface-default);
 }
 
-/* Strip variant: a slim control row at the poster's edge — no surface, no
-   heading; scheme and density read as instrument switches. The hairline
-   and padding belong to the surrounding instrument row (poster__controls),
-   which also holds the token lens. */
+/* Strip variant: slim instrument switches at the poster's edge — no surface,
+   no heading. Scheme and density are STACKED: side by side, the two groups
+   plus the lens and the link outgrow the instrument row on mid widths (the
+   fluid control size makes them wider on larger screens, not narrower) and
+   the link wraps onto a lonely second line. Stacked, the strip claims one
+   narrow column and the row holds at every width. The hairline and padding
+   belong to the surrounding instrument row (poster__controls), which also
+   holds the token lens. */
 .theme-panel--strip {
   display: flex;
-  flex-wrap: wrap;
-  /* Between the two switch groups: one step wider than the gap between the
-     options inside a group, so scheme and density read as separate
-     instruments rather than one six-option row. */
-  column-gap: var(--space-inline-xxl);
-  row-gap: var(--space-stack-xs);
+  flex-direction: column;
+  align-items: flex-start;
+  row-gap: var(--space-stack-sm);
   padding: 0;
   background: none;
   border: none;

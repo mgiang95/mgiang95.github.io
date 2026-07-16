@@ -68,12 +68,14 @@ const more = (
     </div>
 
     <div class="poster__controls">
-      <ThemePanel client:idle variant="strip" />
-      <token-inspector
-        compact
-        label="inspect the tokens"
-        class="poster__inspect"
-        tiers={JSON.stringify(tiers)}></token-inspector>
+      <div class="poster__instruments">
+        <ThemePanel client:idle variant="strip" />
+        <token-inspector
+          compact
+          label="inspect the tokens"
+          class="poster__inspect"
+          tiers={JSON.stringify(tiers)}></token-inspector>
+      </div>
       <a class="poster__how" href="/system">how this is built →</a>
     </div>
   </section>
@@ -302,12 +304,18 @@ const more = (
   }
 
   /* Pushed to the trailing edge of the instrument row — control typography,
-     like the switches and the lens it shares the baseline with. */
+     like the switches. The padding repeats the caption offset the switch
+     groups carry (their caption is lifted out of flow into padding of this
+     exact height), so with the row aligned at flex-start the link's baseline
+     lands on the scheme switch row, not on the smaller caption line. */
   .poster__how {
     font-family: var(--typography-control-family);
     font-size: var(--typography-control-size);
     line-height: var(--typography-control-line-height);
     margin-inline-start: auto;
+    padding-block-start: calc(
+      var(--typography-label-size) * var(--typography-label-line-height)
+    );
   }
 
   /* Full-bleed rule-break: the poster escapes the centered content column
@@ -421,25 +429,27 @@ const more = (
     display: block;
   }
 
-  /* The instrument row at the poster's edge: scheme + density switches, the
-     token lens, and the link out — hue is the canvas, the readouts sit in
-     the field. Every item is a single label line of the same line-height,
-     so the switches, the lens and the link share one baseline; the gap
-     between instruments matches the one inside the strip (xxl). */
+  /* The block at the poster's edge, split by function: the instruments that
+     act on the system (scheme, density, token lens) stack as one column on
+     the left; the link out is a signpost, not an instrument, and sits alone
+     at the top right — hue is the canvas, the readouts sit in the field. */
   .poster__controls {
     display: flex;
     flex-wrap: wrap;
-    /* Not `baseline`: a fieldset reports its bottom edge — not its switch
-       row — as the baseline it hands to this row, which drops the lens and
-       the link below the switches. Every item here is one label line of the
-       same height, so aligning the boxes' end edges puts the text on one
-       shared baseline, deterministically. */
-    align-items: end;
+    align-items: flex-start;
     column-gap: var(--space-inline-xxl);
     row-gap: var(--space-stack-xs);
-    min-block-size: var(--space-stack-xl);
     padding-block: var(--space-inset-sm);
-    /*border-block-end: 1px solid var(--color-border-default);*/
+  }
+
+  /* One rhythm for the whole column: this gap matches the strip's internal
+     gap between its switch groups, so scheme, density and the lens read as
+     three rows of the same instrument. */
+  .poster__instruments {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    row-gap: var(--space-stack-sm);
   }
 
   .poster__inspect {
