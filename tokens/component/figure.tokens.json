@@ -11,6 +11,11 @@
       "$type": "dimension",
       "$description": "Gap between image and caption."
     },
+    "margin-block": {
+      "$value": "{space.stack.lg}",
+      "$type": "dimension",
+      "$description": "Air above and below a figure — twice the prose rhythm. A figure carries an order of magnitude more visual weight than a paragraph, and at the prose rhythm it reads as if it were one."
+    },
     "caption": {
       "text": {
         "$value": "{color.text.muted}",

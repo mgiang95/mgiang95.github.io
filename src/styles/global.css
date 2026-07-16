@@ -158,6 +158,18 @@ a:hover {
   display: grid;
   gap: var(--figure-gap);
   margin: 0;
+  margin-block-start: var(--figure-margin-block);
+}
+
+/* The air below the figure is set on the NEXT element, not as the figure's own
+   margin-block-end: inside a grid container margins do not collapse, so an end
+   margin would stack with that element's start margin and leave a figure with
+   more air below than above.
+
+   Headings are excluded: they already open a section with more air than this,
+   and matching them here would shrink a section break that follows a figure. */
+.prose figure + :not(h2, h3) {
+  margin-block-start: var(--figure-margin-block);
 }
 
 .prose figure img {

@@ -1,6 +1,6 @@
 ---
 title: Rebuilding fleet management software around modules
-subtitle: connect:desk · Linde Material Handling
+subtitle: connect:desk, a desktop app for analysing connected forklift and truck fleets
 description: >-
   Years of added features left the UI cluttered and slow for large fleets. We
   made the software modular, so customers enable only the functions they need.
