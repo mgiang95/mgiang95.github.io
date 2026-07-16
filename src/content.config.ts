@@ -8,7 +8,9 @@ import { glob } from "astro/loaders";
  * Case studies and smaller project entries.
  * `featured: true` = full case study with its own page,
  * `featured: false` = short "more projects" entry.
- * `parent` links sub-cases (e.g. WinCredit design system) to their main case.
+ * `related` links sibling cases from the same engagement (e.g. the two
+ * WinCredit cases) — flat cross-reference, no hierarchy: nested sub-cases
+ * proved undiscoverable, so every case lives on the top level.
  * `draft: true` marks harvested legacy copy that still needs editing (Phase 5).
  */
 const projects = defineCollection({
@@ -43,7 +45,7 @@ const projects = defineCollection({
         .optional(),
       featured: z.boolean().default(false),
       order: z.number(),
-      parent: reference("projects").optional(),
+      related: reference("projects").optional(),
       achievements: z.array(z.string()).optional(),
       draft: z.boolean().default(false),
     }),

@@ -15,8 +15,14 @@ export default defineConfig({
     routing: { prefixDefaultLocale: false },
   },
   integrations: [react()],
-  // The former /projects index merged into the home work index.
-  redirects: { "/projects": "/" },
+  redirects: {
+    // The former /projects index merged into the home work index.
+    "/projects": "/",
+    // The WinCredit umbrella case was dissolved into its two sibling cases
+    // (nested sub-cases proved undiscoverable); the UX case carries on the
+    // "Redesign: WinCredit 3" story the old URL promised.
+    "/projects/wincredit-redesign": "/projects/wincredit-ux-patterns",
+  },
   markdown: {
     // ![image] + *caption* paragraphs become <figure>/<figcaption>.
     rehypePlugins: [rehypeFigure],

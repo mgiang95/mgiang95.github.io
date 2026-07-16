@@ -28,23 +28,14 @@ const {
   heroImage,
   gallery,
   achievements,
-  parent,
+  related,
 } = entry.data;
 const { Content } = await render(entry);
-const parentEntry = parent ? await getEntry(parent) : undefined;
+const relatedEntry = related ? await getEntry(related) : undefined;
 ---
 
 <BaseLayout title={title} description={description}>
   <article class="case">
-    {
-      parentEntry && (
-        <p class="case__breadcrumb">
-          <a href={`/projects/${parentEntry.id}`}>
-            ← Part of: {parentEntry.data.title}
-          </a>
-        </p>
-      )
-    }
     {
       /* No annotations row here, unlike the other page headers: everything it
         could say is already in the facts list below — the period verbatim, and
@@ -136,6 +127,13 @@ const parentEntry = parent ? await getEntry(parent) : undefined;
 
     <nav class="case__footer-nav" aria-label="Case study navigation">
       <a href="/projects">← All projects</a>
+      {
+        relatedEntry && (
+          <a class="case__related" href={`/projects/${relatedEntry.id}`}>
+            Related case: {relatedEntry.data.title} →
+          </a>
+        )
+      }
     </nav>
   </article>
 </BaseLayout>
@@ -171,12 +169,6 @@ const parentEntry = parent ? await getEntry(parent) : undefined;
   .case > .case__body,
   .case > .case__gallery {
     grid-column: 1 / -1;
-  }
-
-  .case__breadcrumb {
-    margin-block-end: var(--space-stack-md);
-    font-family: var(--typography-label-family);
-    font-size: var(--typography-label-size);
   }
 
   .case__header {
@@ -312,7 +304,13 @@ const parentEntry = parent ? await getEntry(parent) : undefined;
     margin: 0;
   }
 
+  /* Exit row: back to the index on the left, the sibling case (same
+     engagement, flat cross-reference) on the right. */
   .case__footer-nav {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: var(--space-stack-xs) var(--space-inline-xl);
     margin-block-start: var(--space-stack-xl);
     font-family: var(--typography-label-family);
     font-size: var(--typography-label-size);

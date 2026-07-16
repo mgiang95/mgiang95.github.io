@@ -1,6 +1,6 @@
 ---
 title: Migrating the Component Library from Adobe XD to Figma
-subtitle: Establishing a scalable design system for four software products
+subtitle: A scalable design system for WinCredit 3 and three sibling products
 description: >-
   As part of the WinCredit 3 project, I migrated the component library from
   Adobe XD to Figma and established a standardized, production-ready design
@@ -8,14 +8,15 @@ description: >-
 period: 2024 – 2025
 role: Design System Engineer
 client: BaseNet Informatik AG
-parent: wincredit-redesign
+externalUrl: https://www.basenet.ch/en/solutions-en/wincredit/
+related: wincredit-ux-patterns
 keywords:
   - Design System
   - Component Migration
   - Figma
 heroImage: ../../assets/projects/BNI_DS-hero.jpg
-featured: false
-order: 2
+featured: true
+order: 1
 draft: true
 achievements:
   - A fully production-ready design system used across multiple products
@@ -26,6 +27,12 @@ achievements:
 ---
 
 ## Project context
+
+BaseNet Informatik offers WinCredit, a B2B credit software solution, for over
+two decades: an overview of credit initiation, administration, and associated
+securities for individuals and legal entities. With *WinCredit 3*, the
+application moved to a new software generation — and its design foundation
+had to move with it.
 
 As part of the *WinCredit 3* project, our design team migrated the component
 library from Adobe XD to Figma. The goal was to establish a scalable and
