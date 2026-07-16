@@ -186,10 +186,9 @@ function formatPeriod(start: Date, end: Date | null): string {
   </section>
 
   <section class="about__reading" aria-labelledby="reading-heading">
-    <h2 id="reading-heading">Reading</h2>
+    <h2 id="reading-heading">My Bookshelf</h2>
     <p class="about__note">
-      An ongoing log, one entry per book — the year is when I read it, not
-      when it was published.
+      A collection of the books I read over the past years.
     </p>
     {
       shelfYears.map((year) => (
@@ -216,13 +215,13 @@ function formatPeriod(start: Date, end: Date | null): string {
                       {data.title}
                     </span>
                   )}
-                  <div class="about__book-text">
+                  <!--<div class="about__book-text">
                     <p class="about__book-title">{data.title}</p>
                     <p class="about__book-author">{data.author}</p>
                     {data.takeaway && (
                       <p class="about__book-takeaway">{data.takeaway}</p>
                     )}
-                  </div>
+                  </div> -->
                 </li>
               ))}
           </ul>

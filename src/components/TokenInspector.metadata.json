@@ -5,7 +5,7 @@
   "jsRequired": true,
   "variants": [
     { "name": "default", "use": "Labelled text button — the /system docs demo." },
-    { "name": "compact", "use": "Outlined-square icon trigger for the instrument bar (fills while inspecting) — counterpart to the filled theme swatch." },
+    { "name": "compact", "use": "Outlined-pipette (eyedropper) icon trigger for the instrument bar — a single silhouette path that switches from stroked outline to solid fill on an accent chip while inspecting; counterpart to the filled theme swatch." },
     { "name": "compact + label", "use": "Hint form (square + visible text, inherits surrounding color) — sits in the hero's instrument row next to scheme/density (never inside the drag canvas: pointer capture would steal its clicks). Only one instance is active at a time; activating one deactivates the others." }
   ],
   "usage": {
@@ -29,7 +29,7 @@
   },
   "tokenPrefixes": ["token-inspector", "button"],
   "a11y": [
-    "Both triggers are real <button>s with aria-pressed; the compact square carries an aria-label; Escape deactivates",
+    "Both triggers are real <button>s with aria-pressed; the compact pipette carries an aria-label; Escape deactivates",
     "Follows keyboard focus (focusin), not only the pointer",
     "Overlay and panel are aria-hidden and pointer-transparent — a visual lens, never an interaction target"
   ]

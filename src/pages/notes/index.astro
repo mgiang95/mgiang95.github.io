@@ -24,20 +24,22 @@ const posts = (await getCollection("notes", ({ data }) => !data.draft)).sort(
     down, and we will see where this goes.
   </p>
 
-  <div class="notes__list">
+  <!-- A journal, not a magazine: date column left, compact entry right —
+       random thoughts should not be oversold by index typography. -->
+  <div class="notes__log">
     {
       posts.map((post, i) => (
-        <article class="notes__row">
+        <article class="notes__entry">
+          <p class="notes__date" aria-hidden="true">
+            {formatDate(post.data.date)}
+          </p>
           <a class="notes__link" href={`/notes/${post.id}`}>
-            <p class="notes__meta">
-              <span aria-hidden="true">
-                {String(posts.length - i).padStart(3, "0")}
-              </span>
-              <span>{formatDate(post.data.date)}</span>
-              <span>{readingTime(post.body ?? "")} min read</span>
-            </p>
             <h2 class="notes__title">{post.data.title}</h2>
             <p class="notes__description">{post.data.description}</p>
+            <p class="notes__meta" aria-hidden="true">
+              entry {String(posts.length - i).padStart(3, "0")} ·{" "}
+              {readingTime(post.body ?? "")} min read
+            </p>
           </a>
         </article>
       ))
@@ -53,45 +55,47 @@ const posts = (await getCollection("notes", ({ data }) => !data.draft)).sort(
     color: var(--color-text-secondary);
   }
 
-  .notes__list {
+  .notes__log {
     margin-block-start: var(--space-stack-xl);
+    max-width: 72ch;
   }
 
-  .notes__row {
-    border-block-start: 2px solid var(--color-border-default);
-    transition: border-color var(--motion-state-duration)
-      var(--motion-state-easing);
+  .notes__entry {
+    display: grid;
+    grid-template-columns: 1fr;
+    padding-block: var(--space-stack-md);
+    border-block-start: 1px solid var(--color-border-default);
   }
 
-  .notes__row:last-of-type {
+  .notes__entry:last-child {
     border-block-end: 1px solid var(--color-border-default);
   }
 
-  .notes__row:hover {
-    border-block-start-color: var(--color-surface-accent);
+  @media (min-width: 40rem) {
+    .notes__entry {
+      grid-template-columns: 8rem 1fr;
+      column-gap: var(--space-inline-lg);
+    }
+  }
+
+  .notes__date {
+    font-family: var(--typography-label-family);
+    font-size: var(--typography-label-size);
+    color: var(--color-text-muted);
+    padding-block-start: var(--space-stack-xs);
+    white-space: nowrap;
   }
 
   .notes__link {
     display: grid;
     justify-items: start;
     gap: var(--space-stack-xs);
-    padding-block: var(--space-stack-md);
     color: inherit;
     text-decoration: none;
   }
 
-  .notes__meta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-inline-lg);
-    font-family: var(--typography-label-family);
-    font-size: var(--typography-label-size);
-    color: var(--color-text-muted);
-  }
-
   .notes__title {
-    font-size: var(--typography-heading-lg-size);
-    line-height: var(--typography-heading-lg-line-height);
+    font-size: var(--typography-heading-sm-size);
     transition: color var(--motion-state-duration) var(--motion-state-easing);
   }
 
@@ -102,5 +106,11 @@ const posts = (await getCollection("notes", ({ data }) => !data.draft)).sort(
   .notes__description {
     max-width: 55ch;
     color: var(--color-text-secondary);
+  }
+
+  .notes__meta {
+    font-family: var(--typography-label-family);
+    font-size: var(--typography-label-size);
+    color: var(--color-text-muted);
   }
 </style>

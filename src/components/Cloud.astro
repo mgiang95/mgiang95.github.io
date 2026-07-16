@@ -1,0 +1,63 @@
+---
+/**
+ * Cloud — the brand mark as a tonal shape.
+ *
+ * The source PNG is used as a MASK, never as a picture: the shape comes from
+ * its alpha channel, the color from `--cloud-fill`. That is what keeps the
+ * mark inside the system — it follows the hue slider and the color scheme
+ * like every other surface, instead of being a fixed white bitmap that only
+ * works on one background.
+ *
+ * Purely decorative (aria-hidden). Size and placement belong to the context
+ * that prints it, via a `class` from the consumer — the mark itself has no
+ * opinion about where it is cropped.
+ */
+import { getImage } from "astro:assets";
+import cloud from "../assets/brand/asset-cloud.png";
+
+// Only the alpha channel survives as a mask, so the colour data in the source
+// PNG is dead weight on the wire — the pipeline converts it to WebP (615 KB ->
+// ~120 KB). Quality is not the lever here: nearly all the payload IS the alpha
+// channel, and dropping quality to 40 saves ~3 KB. Width is the lever, and a
+// soft-edged mask survives downscaling without a visible seam.
+const mask = await getImage({ src: cloud, format: "webp", width: 1200 });
+
+interface Props {
+  /** Class from the consumer: sizing, placement, cropping. */
+  class?: string;
+  [key: string]: unknown;
+}
+
+// The rest carries Astro's scope attribute from the consumer, so the class it
+// passes actually matches its own scoped rules.
+const { class: className, ...rest } = Astro.props;
+---
+
+<div
+  class:list={["cloud", className]}
+  aria-hidden="true"
+  style={`--cloud-source: url("${mask.src}")`}
+  {...rest}
+>
+</div>
+
+<style>
+  .cloud {
+    /* The asset URL, not a design value: the template sets it from the
+       imported (and hashed) asset. Declared here so the contract is visible
+       and a missing source degrades to nothing instead of a broken box. */
+    --cloud-source: none;
+
+    background-color: var(--cloud-fill);
+    /* The alpha channel is the shape. Safari still needs the prefix. */
+    -webkit-mask-image: var(--cloud-source);
+    mask-image: var(--cloud-source);
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    -webkit-mask-position: center;
+    mask-position: center;
+    pointer-events: none;
+  }
+</style>

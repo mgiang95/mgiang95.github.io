@@ -16,8 +16,20 @@ export async function getStaticPaths() {
 }
 
 const { entry } = Astro.props;
-const { title, subtitle, description, period, role, client, externalUrl, keywords, heroImage, gallery, achievements, parent } =
-  entry.data;
+const {
+  title,
+  subtitle,
+  description,
+  period,
+  role,
+  client,
+  externalUrl,
+  keywords,
+  heroImage,
+  gallery,
+  achievements,
+  parent,
+} = entry.data;
 const { Content } = await render(entry);
 const parentEntry = parent ? await getEntry(parent) : undefined;
 ---
@@ -33,14 +45,15 @@ const parentEntry = parent ? await getEntry(parent) : undefined;
         </p>
       )
     }
+    {
+      /* No annotations row here, unlike the other page headers: everything it
+        could say is already in the facts list below — the period verbatim, and
+        "N focus areas" is just a count of the badges next to it. An annotation
+        that repeats the next paragraph is noise. */
+    }
     <header class="case__header">
       <h1 class="case__title">{title}</h1>
       <p class="case__subtitle">{subtitle}</p>
-      <p class="annotations" aria-hidden="true">
-        <code>case study</code>
-        <code>{period}</code>
-        <code>{keywords.length} focus areas</code>
-      </p>
     </header>
 
     {
@@ -68,9 +81,7 @@ const parentEntry = parent ? await getEntry(parent) : undefined;
         client && (
           <div class="case__fact">
             <dt>Client</dt>
-            <dd>
-              {externalUrl ? <a href={externalUrl}>{client}</a> : client}
-            </dd>
+            <dd>{externalUrl ? <a href={externalUrl}>{client}</a> : client}</dd>
           </div>
         )
       }
@@ -107,7 +118,10 @@ const parentEntry = parent ? await getEntry(parent) : undefined;
 
     {
       achievements && (
-        <aside class="case__achievements" aria-labelledby="achievements-heading">
+        <aside
+          class="case__achievements"
+          aria-labelledby="achievements-heading"
+        >
           <h2 class="case__achievements-heading" id="achievements-heading">
             Key achievements
           </h2>
@@ -127,6 +141,38 @@ const parentEntry = parent ? await getEntry(parent) : undefined;
 </BaseLayout>
 
 <style>
+  /* One reading axis for the whole case. Every block lands in the centred
+     reading column by default; only what is meant to break out — hero, spec
+     band, figures, gallery — spans all three columns.
+
+     The measure is declared once and reused by the nested grids below: the
+     prose column only lines up with the heading above it as long as both
+     grids resolve to identical columns, so that has to be one definition
+     rather than two that happen to match. */
+  .case {
+    --case-measure: 1fr min(65ch, 100%) 1fr;
+
+    display: grid;
+    grid-template-columns: var(--case-measure);
+    align-content: start;
+  }
+
+  .case > * {
+    grid-column: 2;
+  }
+
+  /* Matched through `.case >` rather than on the class alone: Astro scopes a
+     bare `*` into an attribute selector, which makes the rule above weigh
+     (0,3,0) — heavier than a plain `.case__hero` (0,2,0) would. Naming the
+     parent puts these at (0,4,0), so the breakout wins on structure instead
+     of on !important. */
+  .case > .case__hero,
+  .case > .case__facts,
+  .case > .case__body,
+  .case > .case__gallery {
+    grid-column: 1 / -1;
+  }
+
   .case__breadcrumb {
     margin-block-end: var(--space-stack-md);
     font-family: var(--typography-label-family);
@@ -140,13 +186,13 @@ const parentEntry = parent ? await getEntry(parent) : undefined;
   }
 
   .case__title {
-    max-width: 24ch;
+    max-width: 30ch;
   }
 
+  /* No max-width: the reading column already is the measure. */
   .case__subtitle {
     font-size: var(--typography-lead-size);
     color: var(--color-text-secondary);
-    max-width: 55ch;
   }
 
   .case__hero {
@@ -155,13 +201,36 @@ const parentEntry = parent ? await getEntry(parent) : undefined;
     border: 1px solid var(--color-border-default);
   }
 
+  /* Single reading axis: the header, the facts band, the prose and every
+     following section share one left edge (the container edge). The facts
+     sit in a horizontal spec band between hero and text — no side rail that
+     would push the prose off-axis and then run empty down the page. */
+  /* Flex, not an auto-fit grid: equal-width columns stretched every entry to
+     the same 1fr box, so a short value like "2017" sat in a column as wide as
+     the client name and left a ragged trail of whitespace behind it. Here each
+     fact hugs its content and the row is justified to the rule above and below
+     it, like a line of justified type — the gap token stays the MINIMUM, the
+     slack is shared out. A wrapped row falls back to the left, as the last
+     line of justified text does.
+
+     This holds because "Key areas" is by far the widest fact and therefore
+     always wraps alone. A project whose badges are narrow enough to share the
+     last row with another fact would push the two apart to opposite edges —
+     if that shows up, give the keyword list flex-basis: 100% and it is a row
+     of its own by construction rather than by luck. */
   .case__facts {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--space-stack-sm) var(--space-inline-xl);
+    justify-content: space-between;
+    gap: var(--space-stack-sm) var(--space-inline-xxl);
     margin-block: var(--space-stack-lg);
-    padding: var(--space-inset-md);
+    padding-block: var(--space-inset-md);
     border-block: 1px solid var(--color-border-default);
+  }
+
+  .case__fact {
+    display: grid;
+    gap: var(--space-stack-xs);
   }
 
   .case__fact dt {
@@ -183,34 +252,53 @@ const parentEntry = parent ? await getEntry(parent) : undefined;
     padding: 0;
   }
 
+  /* Same measure as the article, so the prose column lands exactly under the
+     heading: the side columns do the centring, and the text inside stays
+     ranged left. No negative margins, no width calc — below the reading
+     measure min(65ch, 100%) resolves to 100%, the side columns collapse to
+     zero, and prose and figures share one edge without a media query. */
   .case__body {
-    max-width: 65ch;
+    display: grid;
+    grid-template-columns: var(--case-measure);
   }
 
-  /* Editorial rhythm: text stays at reading width, figures grow to the
-     full content column. */
-  .case__body :global(figure) {
-    inline-size: min(
-      calc(100vw - 2 * var(--space-inset-lg)),
-      calc(72rem - 2 * var(--space-inset-lg))
-    );
+  .case__body > :global(*) {
+    grid-column: 2;
   }
 
+  .case__body > :global(figure) {
+    grid-column: 1 / -1;
+  }
+
+  /* Full-bleed like the figures, but its heading belongs to the reading
+     column — so the section re-splits into the same measure. */
   .case__gallery {
-    margin-block-start: var(--space-stack-lg);
+    display: grid;
+    grid-template-columns: var(--case-measure);
+    margin-block-start: var(--space-stack-xl);
   }
 
-  .case__gallery-heading {
+  /* :global(*), not a scoped *: the <Gallery> root renders without this
+     page's scope attribute (no class is passed through), so a scoped child
+     selector would skip it and auto-place the gallery into the left gutter. */
+  .case__gallery > :global(*) {
+    grid-column: 1 / -1;
+  }
+
+  /* Same scoping rule as above: the parent has to be named, or the heading
+     loses to the bare `*` rule and drifts out of the reading column. */
+  .case__gallery > .case__gallery-heading {
+    grid-column: 2;
     font-size: var(--typography-heading-sm-size);
     margin-block-end: var(--space-stack-sm);
   }
 
   .case__achievements {
-    margin-block-start: var(--space-stack-lg);
+    margin-block-start: var(--space-stack-xl);
     padding: var(--space-inset-lg);
     background: var(--color-surface-sunken);
-    border-inline-start: var(--space-inline-xs) solid var(--color-surface-accent);
-    max-width: 65ch;
+    border-inline-start: var(--space-inline-xs) solid
+      var(--color-surface-accent);
   }
 
   .case__achievements-heading {
@@ -218,11 +306,10 @@ const parentEntry = parent ? await getEntry(parent) : undefined;
     margin-block-end: var(--space-stack-sm);
   }
 
+  /* List rendering (chevron markers, hanging indent) lives in global.css,
+     shared with .prose — this only removes the default block margin. */
   .case__achievements ul {
     margin: 0;
-    padding-inline-start: var(--space-inset-lg);
-    display: grid;
-    gap: var(--space-stack-xs);
   }
 
   .case__footer-nav {

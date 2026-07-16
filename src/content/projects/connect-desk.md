@@ -1,11 +1,13 @@
 ---
-title: connect:desk
-subtitle: Modernized UI with enhanced performance
+title: Rebuilding fleet management software around modules
+subtitle: connect:desk, a desktop app for analysing connected forklift and truck fleets
 description: >-
-  A fleet management and analyzing tool for industrial truck data. Within a
-  multidisciplinary team, I focused on modernizing the UI, addressing
-  performance issues, and introducing new features, while maintaining the
-  component library and streamlining the software's usability.
+  Years of added features left the UI cluttered and slow for large fleets. We
+  made the software modular, so customers enable only the functions they need.
+summary: >-
+  A desktop application that analyses forklift data used by single warehouses
+  and international companies alike. This one-size-fits-all approach had bloated the software. Our design team made it
+  modular, modernized the UI and evolved the component library underneath.
 period: 2018 – 2020
 role: Interaction Designer
 client: Linde Material Handling GmbH
@@ -27,13 +29,13 @@ achievements:
 ## About connect:desk
 
 Linde Material Handling GmbH, a leading industrial truck manufacturer, offers
-*connect:desk* as a complementing software tool. It provides an overview in
+_connect:desk_ as a complementing software tool. It provides an overview in
 managing and analyzing data from connected industrial trucks. This enables
 features like accident detection, usage data and further detailed reports on
 vehicle performance.
 
 ![connect:desk dashboard](../../assets/projects/connect_desk-dashboard.jpg)
-*connect:desk provides an overview in managing and analyzing data from connected industrial trucks with features such as the dashboard*
+_connect:desk provides an overview in managing and analyzing data from connected industrial trucks with features such as the dashboard_
 
 ## Challenges and contribution
 
@@ -56,7 +58,7 @@ Our design team tackled this by:
 - Evolving and optimizing the design system
 
 ![Feature bloat](../../assets/projects/connect_desk-feature_bloat.jpg)
-*Feature bloat led to a cluttered UI, causing issues due to insufficient space for new features and reports*
+_Feature bloat led to a cluttered UI, causing issues due to insufficient space for new features and reports_
 
 ## Modularizing the software
 
@@ -78,7 +80,7 @@ maintain system stability across the platform, ensuring that new or modified
 features integrated seamlessly with existing ones.
 
 ![Modularization](../../assets/projects/connect_desk-modules.jpg)
-*Modularization enabled toggling features, ensuring usability and stability through careful dependency and permissions mapping*
+_Modularization enabled toggling features, ensuring usability and stability through careful dependency and permissions mapping_
 
 ## Introducing zone control
 
@@ -106,7 +108,7 @@ this concept was on balancing flexibility with reliability, making sure the UI
 was both intuitive and secure for various user needs.
 
 ![Zone control](../../assets/projects/connect_desk-zones.jpg)
-*The feature required new UI elements, such as draggable radii for adjusting zone sizes and map navigation tools*
+_The feature required new UI elements, such as draggable radii for adjusting zone sizes and map navigation tools_
 
 ## Modernizing UI and component library
 
@@ -134,21 +136,24 @@ communication with the development team ensured smooth implementation
 throughout the process.
 
 ![Isometric view](../../assets/projects/connect_desk-isometric.jpg)
-*The facelift removed skeuomorphic patterns and transitioned to a cleaner, more modern design*
+_The facelift removed skeuomorphic patterns and transitioned to a cleaner, more modern design_
 
 ## Outcome
 
-Initially designed as an integrated system, connect:desk faced feature bloat
-over time. Emerging technologies demanded new features and reports. However,
-its diverse customer base had varying needs. This led to a rigid, cluttered UI
-with unnecessary complexity and performance issues, which we addressed through
-modularization, new features and an evolved design system.
+connect:desk shipped as a modular product: customers now enable the functions
+according to their needs and requirements. We had no measured baseline to compare
+against, but the feedback from customers and from our the service teams was
+consistent. The software felt noticeably faster, especially for the large
+fleets that had suffered most from the clutter.
+
+Zone control, battery management and driver reports went live as new features,
+and the component library came out of the project in a state where the next
+feature could be built from existing parts instead of new ones.
 
 ## Lessons learned
 
 Being part of a skilled design team with well-established processes allowed me
-to learn key project metrics and experience the value of multidisciplinary
-collaboration. Over time, we developed best practices, which were made easier
+to learn collaboration in a multidisciplinary team. Over time, we developed best practices, which were made easier
 through methods like Photoshop scripts. The experience highlighted the
 importance of collaboration and keeping a flexible design system, grounded in
 Brad Frost's atomic design, to manage scalability and changes during the
@@ -156,6 +161,6 @@ product life cycle.
 
 ## Shoutout
 
-I want to thank Marcel Münchow, Kai Tomala, and Kim Heller who challenged me
-daily to push my design skills to the boundaries and expand my knowledge of
-the tools.
+Thanks to the design team at stellar design und engineering GmbH, who challenged me daily
+to push my design skills to their boundaries and expand my knowledge of the
+tools for this client project.

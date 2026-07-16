@@ -15,6 +15,13 @@
         "$description": "Line height for single-line labels and badges."
       }
     },
+    "control": {
+      "$description": "Text of interactive controls: switch labels, control buttons and the links sitting beside them. Mono like labels, but at body size — controls are read and hit, not skimmed. Sharing one size and line height across a control row is what puts it on a single baseline.",
+      "size": { "$value": "{font.size.300}", "$type": "dimension" },
+      "family": { "$value": "{font.family.mono}", "$type": "fontFamily" },
+      "weight": { "$value": "{font.weight.medium}", "$type": "fontWeight" },
+      "line-height": { "$value": "{font.line-height.base}", "$type": "number" }
+    },
     "heading-sm": {
       "$description": "Compact headings inside components (card titles, timeline entries).",
       "size": { "$value": "{font.size.500}", "$type": "dimension" }

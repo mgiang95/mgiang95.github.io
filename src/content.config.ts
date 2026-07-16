@@ -17,7 +17,14 @@ const projects = defineCollection({
     z.object({
       title: z.string(),
       subtitle: z.string(),
+      /** Meta description of the case study page — keep it under ~160 chars. */
       description: z.string(),
+      /**
+       * Paragraph shown in the work index row. Longer than `description`,
+       * which has to stay short enough for search snippets. Falls back to
+       * `description` when unset.
+       */
+      summary: z.string().optional(),
       period: z.string(),
       role: z.string(),
       client: z.string().optional(),

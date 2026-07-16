@@ -79,82 +79,132 @@ const tokenVarCount =
     <code>audit passing</code>
   </p>
   <p class="system__lead">
-    The site is its own case study: a live design system with a real token
-    pipeline. Below is the reasoning — and the living docs generated from the
-    actual token source.
+    Every page you have seen runs on the system documented here. This page
+    holds the reasoning — and reference docs generated from the same source
+    files the site consumes, so they cannot drift.
   </p>
 
   <div class="prose system__case">
     <h2>Problem</h2>
     <p>
-      Portfolio sites usually <em>describe</em> design system work with
-      screenshots. That proves little — the craft is in constraints that hold
-      under change: contrast that survives any brand color, spacing that
-      adapts without breaking rhythm, components that never hardcode a value.
+      Portfolios <em>describe</em> design system work with screenshots — and
+      screenshots prove nothing. The craft is in constraints that hold under
+      change: contrast that survives any brand color, spacing that adapts
+      without breaking rhythm, components that cannot hardcode a value even
+      by accident.
     </p>
 
     <h2>Approach</h2>
     <p>
-      Make the system itself the exhibit. Design tokens live as DTCG JSON in
-      three strict tiers — primitives (raw scales), semantic (meaning;
-      the switching point for light/dark and density) and component tokens.
-      Style Dictionary compiles them to CSS custom properties; components may
-      only consume component or semantic tokens. Visitors change hue, scheme
-      and density at runtime and watch every part of the site follow.
+      Make the system itself the exhibit. Tokens live as DTCG JSON in three
+      strict tiers — primitives, semantic, component — and compile to CSS
+      custom properties. Visitors change hue, scheme and density at runtime
+      and watch every element follow; an auditor and a test suite keep the
+      rules from being prose.
     </p>
+  </div>
 
-    <h2>Decisions</h2>
-    <p>
-      <strong>OKLCH with fixed lightness/chroma steps.</strong> All color
-      primitives derive from a single <code>--hue</code>. Because contrast is
-      driven by lightness, every text/surface pair is proven against WCAG AA
-      for all 360 hues at build time — a failing pair fails the build. The
-      theme panel shows the same math live.
-    </p>
-    <p>
-      <strong>Astro, one React island, one web component.</strong> Static
-      content stays static; JavaScript is reserved for the theme panel
-      (React) and the token inspector (Lit). Without JS the site falls back
-      to system color scheme and default density — theming is an
-      enhancement, not a dependency. Three renderers, one token system:
-      custom properties inherit through the shadow DOM boundary, so the
-      contrast guarantee needs no per-framework wiring.
-    </p>
-    <p>
-      <strong>Density switches spacing, never type.</strong>
-      <code>data-density</code> resolves semantic spacing tokens to other
-      steps of the 4px scale; readability is untouched. Type responds to the
-      viewport instead: the display steps of the scale are fluid
-      <code>clamp()</code> primitives, while body sizes stay fixed.
-    </p>
-    <p>
-      <strong>Motion distinguishes switches from dragging.</strong> Discrete
-      mode changes (scheme, density) animate inside a brief page-wide
-      transition window. The hue slider never does — direct manipulation
-      must not lag behind the pointer.
-    </p>
-    <p>
-      <strong>One grotesque, one mono, one origin.</strong> Archivo carries
-      display and body — a grotesque with poster DNA and a variable width
-      axis the hero headline actually uses. Fragment Mono, a monospace
-      derived from the same Swiss grotesque form, speaks wherever the system
-      does: token names, annotations, ordinals. The mono carries the
-      character; the grotesque stays disciplined. Both self-hosted — this
-      site makes no third-party requests.
-    </p>
-    <p>
-      <strong>Invariants are enforced, not promised.</strong> An auditor
-      script checks every architecture rule on each build and fails the
-      build on violations. What that means, and what it found in this very
-      codebase: see <a href="#ai-heading">Machine-readable by design</a>.
-    </p>
+  <section class="system__section" aria-labelledby="decisions-heading">
+    <h2 id="decisions-heading">Decisions</h2>
+    <ol class="system__decisions">
+      <li class="system__decision">
+        <span class="system__decision-index" aria-hidden="true">01</span>
+        <div class="system__decision-body">
+          <h3 class="system__decision-title">
+            OKLCH with fixed lightness and chroma
+          </h3>
+          <p>
+            All color derives from a single <code>--hue</code>. Contrast is
+            driven by lightness, so every text/surface pair is proven against
+            WCAG AA for all 360 hues at build time — a failing pair fails the
+            build. The badge on the poster runs the same math live.
+          </p>
+        </div>
+      </li>
+      <li class="system__decision">
+        <span class="system__decision-index" aria-hidden="true">02</span>
+        <div class="system__decision-body">
+          <h3 class="system__decision-title">
+            The semantic tier is the only switch
+          </h3>
+          <p>
+            Light/dark and the three density modes are nothing but different
+            resolutions of the same semantic tokens. Components never know
+            which mode they are in.
+          </p>
+        </div>
+      </li>
+      <li class="system__decision">
+        <span class="system__decision-index" aria-hidden="true">03</span>
+        <div class="system__decision-body">
+          <h3 class="system__decision-title">Islands, not an app</h3>
+          <p>
+            Astro keeps content static; JavaScript exists only where behavior
+            lives — the theme panel (React) and the token inspector (Lit).
+            Without JS the site works fully on its defaults. Three renderers,
+            one token contract: custom properties cross the shadow DOM
+            boundary on their own.
+          </p>
+        </div>
+      </li>
+      <li class="system__decision">
+        <span class="system__decision-index" aria-hidden="true">04</span>
+        <div class="system__decision-body">
+          <h3 class="system__decision-title">
+            Density moves whitespace, the viewport moves type
+          </h3>
+          <p>
+            <code>data-density</code> resolves spacing tokens to other steps
+            of the 4px scale — readability is untouched. Display type is
+            fluid via <code>clamp()</code> primitives; body sizes stay fixed.
+          </p>
+        </div>
+      </li>
+      <li class="system__decision">
+        <span class="system__decision-index" aria-hidden="true">05</span>
+        <div class="system__decision-body">
+          <h3 class="system__decision-title">Motion has meanings, not moods</h3>
+          <p>
+            Exactly three: state feedback, expand/collapse, and discrete mode
+            switches inside a brief page-wide window. The hue slider never
+            animates — direct manipulation must not lag behind the pointer.
+          </p>
+        </div>
+      </li>
+      <li class="system__decision">
+        <span class="system__decision-index" aria-hidden="true">06</span>
+        <div class="system__decision-body">
+          <h3 class="system__decision-title">One grotesque, one mono, one origin</h3>
+          <p>
+            Archivo carries display and body — its width axis works on the
+            poster headline. Fragment Mono, cut from the same Swiss grotesque
+            form, speaks wherever the system does: tokens, annotations,
+            ordinals. Both self-hosted; this site makes no third-party
+            requests.
+          </p>
+        </div>
+      </li>
+      <li class="system__decision">
+        <span class="system__decision-index" aria-hidden="true">07</span>
+        <div class="system__decision-body">
+          <h3 class="system__decision-title">Invariants are enforced, not promised</h3>
+          <p>
+            An auditor fails the build on any rule violation, and the checking
+            tools are themselves under test. What that means in practice:
+            <a href="#ai-heading">Machine-readable by design</a>.
+          </p>
+        </div>
+      </li>
+    </ol>
+  </section>
 
+  <div class="prose system__case">
     <h2>Outcome</h2>
     <p>
-      A portfolio where the design system claim is verifiable in the browser:
-      version 2 of this site, rebuilt from the vanilla HTML/CSS v1 as a
-      token-driven system. The docs below are generated from the same token
-      and metadata files the site consumes — they cannot drift.
+      A portfolio whose central claim is verifiable in the browser instead of
+      asserted in prose: drag the hue, flip the scheme, inspect any element —
+      nothing breaks, and the numbers under the heading above are computed
+      from the same files that style this page.
     </p>
   </div>
 
@@ -446,6 +496,49 @@ src/components/Button.astro
 
   .system__section {
     margin-block-start: var(--space-stack-xl);
+  }
+
+  /* Decisions as a scannable index: mono ordinal | title + two sentences —
+     the site's ordinal vocabulary instead of a wall of bold paragraphs. */
+  .system__decisions {
+    list-style: none;
+    margin: var(--space-stack-md) 0 0;
+    padding: 0;
+    max-width: 72ch;
+  }
+
+  .system__decision {
+    display: grid;
+    grid-template-columns: var(--space-inline-xl) 1fr;
+    column-gap: var(--space-inline-lg);
+    padding-block: var(--space-stack-md);
+    border-block-start: 1px solid var(--color-border-default);
+  }
+
+  .system__decision:last-child {
+    border-block-end: 1px solid var(--color-border-default);
+  }
+
+  .system__decision-index {
+    font-family: var(--typography-label-family);
+    font-size: var(--typography-label-size);
+    font-weight: var(--typography-label-weight);
+    color: var(--color-text-muted);
+    padding-block-start: var(--space-stack-xs);
+  }
+
+  .system__decision-body {
+    display: grid;
+    gap: var(--space-stack-xs);
+  }
+
+  .system__decision-title {
+    font-size: var(--typography-heading-sm-size);
+  }
+
+  .system__decision-body p {
+    max-width: 60ch;
+    color: var(--color-text-secondary);
   }
 
   .system__section h3 {

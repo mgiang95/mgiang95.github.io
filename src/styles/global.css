@@ -116,11 +116,35 @@ a:hover {
   margin-block-start: var(--space-stack-lg);
 }
 
-.prose ul,
 .prose ol {
   padding-inline-start: var(--space-inset-lg);
   display: grid;
   gap: var(--space-stack-xs);
+}
+
+/* Unordered lists carry a chevron instead of a bullet: the accent as a
+   typographic mark. The item is a two-column grid so wrapped lines hang
+   under the text, not under the chevron. Also applies to the achievements
+   box, which shares this list vocabulary. */
+.prose ul,
+.case__achievements ul {
+  padding-inline-start: 0;
+  list-style: none;
+  display: grid;
+  gap: var(--space-stack-xs);
+}
+
+.prose ul > li,
+.case__achievements ul > li {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--prose-marker-gap);
+}
+
+.prose ul > li::before,
+.case__achievements ul > li::before {
+  content: "»";
+  color: var(--prose-marker-color);
 }
 
 .prose img {
@@ -134,6 +158,18 @@ a:hover {
   display: grid;
   gap: var(--figure-gap);
   margin: 0;
+  margin-block-start: var(--figure-margin-block);
+}
+
+/* The air below the figure is set on the NEXT element, not as the figure's own
+   margin-block-end: inside a grid container margins do not collapse, so an end
+   margin would stack with that element's start margin and leave a figure with
+   more air below than above.
+
+   Headings are excluded: they already open a section with more air than this,
+   and matching them here would shrink a section break that follows a figure. */
+.prose figure + :not(h2, h3) {
+  margin-block-start: var(--figure-margin-block);
 }
 
 .prose figure img {

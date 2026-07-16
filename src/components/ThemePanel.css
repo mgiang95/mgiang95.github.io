@@ -51,7 +51,7 @@
 .theme-panel__group {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-inline-md);
+  gap: var(--space-inline-xl);
   border: none;
   padding: 0;
   margin: 0;
@@ -92,15 +92,19 @@
   color: var(--color-surface-default);
 }
 
-/* Strip variant: a slim control row at the poster's edge — no surface, no
-   heading; scheme and density read as instrument switches. The hairline
-   and padding belong to the surrounding instrument row (poster__controls),
-   which also holds the token lens. */
+/* Strip variant: slim instrument switches at the poster's edge — no surface,
+   no heading. Scheme and density are STACKED: side by side, the two groups
+   plus the lens and the link outgrow the instrument row on mid widths (the
+   fluid control size makes them wider on larger screens, not narrower) and
+   the link wraps onto a lonely second line. Stacked, the strip claims one
+   narrow column and the row holds at every width. The hairline and padding
+   belong to the surrounding instrument row (poster__controls), which also
+   holds the token lens. */
 .theme-panel--strip {
   display: flex;
-  flex-wrap: wrap;
-  column-gap: var(--space-inline-xl);
-  row-gap: var(--space-stack-xs);
+  flex-direction: column;
+  align-items: flex-start;
+  row-gap: var(--space-stack-sm);
   padding: 0;
   background: none;
   border: none;
@@ -109,11 +113,36 @@
 }
 
 .theme-panel--strip .theme-panel__group {
+  position: relative;
   inline-size: auto;
   align-items: baseline;
+  column-gap: var(--space-inline-lg);
+  /* Room for the caption, which is lifted out of the flow below. */
+  padding-block-start: calc(
+    var(--typography-label-size) * var(--typography-label-line-height)
+  );
 }
 
+/* The caption sits above the switches, but out of flow: a flex container's
+   baseline is that of its first in-flow item, so an in-flow caption would
+   make the group report the CAPTION's baseline to the instrument row — and
+   the lens and the link would align to the caption line instead of the
+   switches. Out of flow, the switch row is the group's first line, and the
+   whole row shares one baseline. */
 .theme-panel--strip .theme-panel__group .theme-panel__label {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
   inline-size: auto;
   padding: 0;
+}
+
+/* In the strip the switches are instruments, not prose: they carry control
+   typography, like the lens and the link beside them. The equal line boxes
+   that come with it are also what lets the row share one baseline — a
+   fieldset does not reliably propagate its content's baseline to the row. */
+.theme-panel--strip .theme-panel__option {
+  font-family: var(--typography-control-family);
+  font-size: var(--typography-control-size);
+  line-height: var(--typography-control-line-height);
 }

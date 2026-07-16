@@ -1,0 +1,17 @@
+{
+  "prose": {
+    "$description": "Rendered markdown from content collections (case studies, bio) and the key-achievements box that shares its list vocabulary.",
+    "marker": {
+      "color": {
+        "$value": "{color.interactive.default}",
+        "$type": "color",
+        "$description": "Chevron in front of list items — the accent as a typographic mark, not a decoration."
+      },
+      "gap": {
+        "$value": "{space.inline.sm}",
+        "$type": "dimension",
+        "$description": "Distance between chevron and list text; the text hangs in its own column."
+      }
+    }
+  }
+}

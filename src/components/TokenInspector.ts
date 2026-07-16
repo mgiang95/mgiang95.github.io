@@ -99,9 +99,10 @@ export class TokenInspector extends LitElement {
       background: var(--button-secondary-background-hover);
     }
 
-    /* Compact trigger: the outlined square — counterpart to the filled
-       theme swatch in the instrument bar. Fills while inspecting. */
+    /* Compact trigger: the outlined pipette — counterpart to the filled
+       theme swatch in the instrument bar. Fills solid while inspecting. */
     .trigger--compact {
+      position: relative;
       display: grid;
       place-items: center;
       padding: var(--space-inset-xs);
@@ -110,37 +111,88 @@ export class TokenInspector extends LitElement {
       cursor: pointer;
     }
 
-    .trigger--compact .trigger__square {
+    .trigger--compact .trigger__pipette {
       display: block;
-      inline-size: 1em;
-      block-size: 1em;
-      border: 2px solid var(--token-inspector-highlight-border);
-      background: transparent;
+      inline-size: 1.6em;
+      block-size: 1.6em;
+      /* Outline-Zustand: nur die Kontur */
+      fill: none;
+      stroke: var(--token-inspector-highlight-border);
+      stroke-width: 2;
+      stroke-linejoin: round;
+      vector-effect: non-scaling-stroke; /* Strichstärke bleibt konstant */
+      transition:
+        fill var(--motion-state-duration) var(--motion-state-easing),
+        stroke var(--motion-state-duration) var(--motion-state-easing);
+    }
+
+    /* Aktiv: gefüllter Chip + massiv gefüllte Pipette */
+    .trigger--compact[aria-pressed="true"] {
+      background: var(--token-inspector-highlight-border);
+      border-radius: var(--button-radius);
       transition: background-color var(--motion-state-duration)
         var(--motion-state-easing);
     }
 
-    .trigger--compact[aria-pressed="true"] .trigger__square {
-      background: var(--token-inspector-highlight-border);
+    .trigger--compact[aria-pressed="true"] .trigger__pipette {
+      fill: var(--color-text-on-accent);
+      stroke: none;
+    }
+
+    /* Tooltip: token-styled label below the trigger, on hover and keyboard
+       focus. Pure CSS — no JS needed. The accessible name lives in aria-label;
+       this is the visible echo of the button's function. */
+    .trigger--compact::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      inset-block-start: calc(100% + var(--space-stack-xs));
+      inset-inline-start: 50%;
+      translate: -50% 0;
+      z-index: 92;
+      padding: var(--space-inset-xs) var(--space-inset-sm);
+      background: var(--color-surface-raised);
+      color: var(--color-text-primary);
+      border: 1px solid var(--color-border-default);
+      border-radius: var(--radius-surface);
+      font-family: var(--typography-label-family);
+      font-size: var(--typography-label-size);
+      font-weight: var(--typography-label-weight);
+      line-height: var(--typography-label-line-height);
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity var(--motion-state-duration)
+        var(--motion-state-easing);
+    }
+
+    .trigger--compact:hover::after,
+    .trigger--compact:focus-visible::after {
+      opacity: 1;
     }
 
     /* Hint form: square + visible label, inheriting the surrounding color —
        designed for the poster field, parallel to its drag hint. */
+    /* inline-block, not inline-flex: a flex container takes its baseline from
+       its first item — here the square, a block, whose baseline is its bottom
+       edge. The trigger would then sit off the baseline of any label row it is
+       placed in. As an inline-block it reports its text line instead, and the
+       label typography below keeps that line the same height as its neighbours. */
     .trigger--hint {
-      display: inline-flex;
-      align-items: center;
-      gap: var(--space-inline-xs);
+      display: inline-block;
       padding: 0;
       background: none;
       border: none;
       cursor: pointer;
       color: inherit;
-      font-family: var(--typography-label-family);
-      font-size: var(--typography-label-size);
+      font-family: var(--typography-control-family);
+      font-size: var(--typography-control-size);
+      line-height: var(--typography-control-line-height);
     }
 
     .trigger--hint .trigger__square {
-      display: block;
+      display: inline-block;
+      vertical-align: middle;
+      margin-inline-end: var(--space-inline-xs);
       inline-size: 1em;
       block-size: 1em;
       border: 2px solid currentColor;
@@ -216,10 +268,20 @@ export class TokenInspector extends LitElement {
               class="trigger--compact"
               aria-pressed=${this.active ? "true" : "false"}
               aria-label="Inspect tokens"
-              title="Inspect tokens"
+              data-tooltip=${this.active ? "Stop inspecting" : "Inspect tokens"}
               @click=${this.toggle}
             >
-              <span class="trigger__square" aria-hidden="true"></span>
+              <svg
+                class="trigger__pipette"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path
+                  d="M12 21.5 L13.3 17.8 L13.3 9 L15.5 8.2 L15.5 4.5
+                     A3.5 3.5 0 0 0 8.5 4.5 L8.5 8.2 L10.7 9 L10.7 17.8 Z"
+                  transform="rotate(45 12 12)"
+                />
+              </svg>
             </button>
           `
       : html`
@@ -234,30 +296,32 @@ export class TokenInspector extends LitElement {
         `;
     return html`
       ${trigger}
-      ${this.active && inspection
-        ? html`
-            <div
-              class="highlight"
-              aria-hidden="true"
-              style=${`inset-block-start:${inspection.rect.top}px;inset-inline-start:${inspection.rect.left}px;inline-size:${inspection.rect.width}px;block-size:${inspection.rect.height}px;`}
-            ></div>
-            <div
-              class="panel"
-              aria-hidden="true"
-              style=${`inset-block-start:${inspection.y}px;inset-inline-start:${inspection.x}px;`}
-            >
-              <p class="panel__target"><code>${inspection.label}</code></p>
-              ${inspection.groups.map(
-                (group) => html`
-                  <p class="panel__tier">${group.tier}</p>
-                  <ul>
-                    ${group.names.map((name) => html`<li><code>${name}</code></li>`)}
-                  </ul>
-                `,
-              )}
-            </div>
-          `
-        : nothing}
+      ${
+        this.active && inspection
+          ? html`
+              <div
+                class="highlight"
+                aria-hidden="true"
+                style=${`inset-block-start:${inspection.rect.top}px;inset-inline-start:${inspection.rect.left}px;inline-size:${inspection.rect.width}px;block-size:${inspection.rect.height}px;`}
+              ></div>
+              <div
+                class="panel"
+                aria-hidden="true"
+                style=${`inset-block-start:${inspection.y}px;inset-inline-start:${inspection.x}px;`}
+              >
+                <p class="panel__target"><code>${inspection.label}</code></p>
+                ${inspection.groups.map(
+                  (group) => html`
+                    <p class="panel__tier">${group.tier}</p>
+                    <ul>
+                      ${group.names.map((name) => html`<li><code>${name}</code></li>`)}
+                    </ul>
+                  `,
+                )}
+              </div>
+            `
+          : nothing
+      }
     `;
   }
 
@@ -352,12 +416,15 @@ export class TokenInspector extends LitElement {
             /* pseudo-element or unsupported selector — never matches */
           }
           if (matched) {
-            for (const m of rule.cssText.matchAll(/var\(\s*(--[a-zA-Z0-9-]+)/g)) {
+            for (const m of rule.cssText.matchAll(
+              /var\(\s*(--[a-zA-Z0-9-]+)/g,
+            )) {
               names.add(m[1]);
             }
           }
         } else if (rule instanceof CSSMediaRule) {
-          if (window.matchMedia(rule.conditionText).matches) visit(rule.cssRules);
+          if (window.matchMedia(rule.conditionText).matches)
+            visit(rule.cssRules);
         } else if (rule instanceof CSSGroupingRule) {
           visit(rule.cssRules);
         }

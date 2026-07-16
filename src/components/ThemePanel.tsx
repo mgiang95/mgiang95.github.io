@@ -22,9 +22,9 @@ type Density = "normal" | "tight" | "comfy";
 interface Props {
   /**
    * "panel" (default): full instrument — heading, hue slider, radios,
-   * contrast badge. "strip": slim horizontal row with scheme + density
-   * only, for the poster edge — hue lives on the canvas there, the badge
-   * in the annotations.
+   * contrast badge. "strip": slim stacked switch column (scheme above
+   * density) for the poster edge — hue lives on the canvas there, the
+   * badge in the annotations.
    */
   variant?: "panel" | "strip";
 }
