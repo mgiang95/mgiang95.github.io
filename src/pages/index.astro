@@ -15,7 +15,7 @@ const featured = (
 ).sort((a, b) => a.data.order - b.data.order);
 
 const more = (
-  await getCollection("projects", ({ data }) => !data.featured && !data.parent)
+  await getCollection("projects", ({ data }) => !data.featured)
 ).sort((a, b) => a.data.order - b.data.order);
 ---
 

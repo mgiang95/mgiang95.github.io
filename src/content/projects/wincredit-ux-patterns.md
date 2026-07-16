@@ -1,6 +1,6 @@
 ---
 title: Redesign and UX patterns for the new software generation
-subtitle: Guided workflows and UI density for a modern B2B credit tool
+subtitle: Guided workflows and UI density for WinCredit 3, a B2B credit tool
 description: >-
   Within a cross-functional team I redesigned core features and established UX
   patterns for the new version of WinCredit — from high-fidelity screens and
@@ -8,14 +8,15 @@ description: >-
 period: 2024 – 2025
 role: UX Designer
 client: BaseNet Informatik AG
-parent: wincredit-redesign
+externalUrl: https://www.basenet.ch/en/solutions-en/wincredit/
+related: wincredit-design-system
 keywords:
   - UX Patterns
   - Redesign
   - User Journey Mapping
 heroImage: ../../assets/projects/BNI_redesign-hero.jpg
-featured: false
-order: 3
+featured: true
+order: 2
 draft: true
 achievements:
   - Streamlined collaboration with fewer design iterations
@@ -25,6 +26,13 @@ achievements:
 ---
 
 ## Overview
+
+BaseNet Informatik offers WinCredit, a B2B credit software solution, for over
+two decades: an overview of credit initiation, administration, and associated
+securities for individuals and legal entities. After more than 20 years in
+use, the application had an outdated UI and required updates to support cloud
+migration — with *WinCredit 3*, usability became a key part of the new
+software generation.
 
 As part of a cross-functional team that included business analysts, product
 owners, developers, and designers, I contributed to redesigning core features
@@ -166,3 +174,10 @@ just about making the software visually appealing. It was about making it
 usable, scalable, and adaptable for future growth. Through close
 collaboration, user-centric design, and technical feasibility, we delivered a
 product that was both functional and future-proof.
+
+## Shoutout
+
+I want to thank Rafael Adame and Sonja Frey for the opportunity to work on
+this project. Their high-level UX design approach was impressive and something
+I aim to apply in future projects. Lastly, I appreciate the product team,
+especially Damian Hofmann, for their technical explanations on the context.
